@@ -3,19 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Video - own's hub</title>
+    <title>Premium Tiers</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .tiers-container { display: flex; justify-content: center; gap: 32px; margin-top: 60px; }
+        .tier-card { background: #181818; border-radius: 16px; box-shadow: 0 2px 12px #0008; padding: 32px 24px; width: 220px; text-align: center; color: #fff; transition: transform 0.2s; cursor: pointer; }
+        .tier-card:hover { transform: scale(1.05); box-shadow: 0 4px 24px #000a; }
+        .tier-title { font-size: 1.5em; margin-bottom: 12px; font-weight: bold; }
+        .tier-free-btn { margin-top: 18px; background: linear-gradient(90deg,#ffb347,#ffd700); color: #222; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        .tier-free-btn:disabled { background: #aaa; color: #666; cursor: not-allowed; }
+    </style>
 </head>
 <body>
+    <!-- Header (copied from index.html for consistency) -->
     <header class="header">
         <a href="index.html" class="logo"><img src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
         <nav class="nav-links">
+            <a href="chat.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
             <a href="#" class="nav-link">Live</a>
             <a href="#" class="nav-link">Models</a>
             <a href="#" class="nav-link">Categories</a>
             <a href="premium.html" class="nav-link">Premium</a>
+            <a href="arts.html" class="nav-link">Arts</a>
         </nav>
-        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
         <div class="profile-dropdown">
             <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
                 <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
@@ -37,6 +50,7 @@
                 const signoutLink = document.getElementById('signoutLink');
                 const dropdownLogin = document.getElementById('dropdownLogin');
                 const dropdownSignup = document.getElementById('dropdownSignup');
+                const chatHeaderBtn = document.getElementById('chatHeaderBtn');
                 const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
                 const profileAvatarIcon = document.getElementById('profileAvatarIcon');
                 const profileAvatarFallback = document.getElementById('profileAvatarFallback');
@@ -45,6 +59,7 @@
                     if (signoutLink) signoutLink.style.display = '';
                     if (dropdownLogin) dropdownLogin.style.display = 'none';
                     if (dropdownSignup) dropdownSignup.style.display = 'none';
+                    if (chatHeaderBtn) chatHeaderBtn.style.display = '';
                     // Fetch premiumTier and avatar from backend
                     let premiumTier = '';
                     let avatar = '';
@@ -82,6 +97,7 @@
                     if (signoutLink) signoutLink.style.display = 'none';
                     if (dropdownLogin) dropdownLogin.style.display = '';
                     if (dropdownSignup) dropdownSignup.style.display = '';
+                    if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
                     if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
                     if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
                     if (profileAvatarFallback) profileAvatarFallback.style.display = '';
@@ -96,35 +112,58 @@
         });
         </script>
     </header>
-    <main class="video-main">
-        <div class="video-player-section">
-            <div class="video-player-container">
-                <iframe id="videoIframe" width="720" height="405" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="video-info">
-                <h2 id="videoTitle"></h2>
-                <div class="video-meta">
-                    <span id="videoViews"></span>
-                    <span id="videoRating"></span>
-                    <span id="videoDuration"></span>
-                </div>
-                <p id="videoDescription"></p>
-            </div>
-            <div class="comments-section">
-                <h3>Comments</h3>
-                <form id="commentForm">
-                    <textarea id="commentInput" placeholder="Add a comment..." required></textarea>
-                    <button type="submit">Post</button>
-                </form>
-                <div id="commentsList"></div>
-            </div>
+    <main class="main-content">
+        <div class="premium-banner">
+            <h3>💎 Unlock Premium Features</h3>
+            <p>HD quality, private shows, unlimited tokens, and VIP access to all models</p>
         </div>
-        <aside class="recommended-section">
-            <h3>Recommended Videos</h3>
-            <div id="recommendedVideos"></div>
-        </aside>
+        <section class="section">
+            <h2 class="section-title" style="justify-content:center;">Choose Your Premium Tier</h2>
+            <div class="tiers-container" style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
+                <div class="tier-card" id="bronzeTier" style="background:var(--card-bg);color:var(--text-light);border:1.5px solid #cd7f32;">
+                    <div class="tier-title" style="color:#cd7f32;">🥉 Bronze</div>
+                    <div>All features, free forever</div>
+                    <button class="tier-free-btn" onclick="claimPremium('Bronze')">Free</button>
+                </div>
+                <div class="tier-card" id="silverTier" style="background:var(--card-bg);color:var(--text-light);border:1.5px solid #c0c0c0;">
+                    <div class="tier-title" style="color:#c0c0c0;">🥈 Silver</div>
+                    <div>All features, free forever</div>
+                    <button class="tier-free-btn" onclick="claimPremium('Silver')">Free</button>
+                </div>
+                <div class="tier-card" id="goldTier" style="background:var(--card-bg);color:var(--text-light);border:1.5px solid #ffd700;">
+                    <div class="tier-title" style="color:#ffd700;">🥇 Gold</div>
+                    <div>All features, free forever</div>
+                    <button class="tier-free-btn" onclick="claimPremium('Gold')">Free</button>
+                </div>
+            </div>
+        </section>
     </main>
-    <script src="script.js"></script>
-    <script src="video.js"></script>
+    <script>
+    async function claimPremium(tier) {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        const token = localStorage.getItem('token');
+        if (!loggedInUser || !token) {
+            alert('You need an account to claim premium! Please log in or sign up.');
+            window.location.href = 'login.html';
+            return;
+        }
+        localStorage.setItem('premiumTier', tier);
+        try {
+            const res = await fetch('https://ownshub.onrender.com/api/premium', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ premiumTier: tier })
+            });
+            if (!res.ok) throw new Error('Failed to update premium on backend');
+        } catch {
+            alert('Failed to update premium on backend, but it is set locally.');
+        }
+        alert('Congratulations! You now have ' + tier + ' premium.');
+        window.location.href = 'profile.html';
+    }
+    </script>
 </body>
 </html>

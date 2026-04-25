@@ -30,7 +30,27 @@ async function loadArt() {
                 profile = { displayName: art.username, avatar: '' };
             }
             const avatar = profile.avatar ? `<img src="${profile.avatar}" alt="Avatar" style="width:48px;height:48px;border-radius:50%;vertical-align:middle;margin-right:10px;">` : '';
-            artistHtml = `${avatar}<span style="vertical-align:middle;font-weight:bold;font-size:1.1em;">${profile.displayName || art.username}</span> <a href="public-profile.html?user=${encodeURIComponent(art.username)}" style="color:#ffb347;">@${art.username}</a>`;
+            // Premium badge if this is the logged-in user and they have premium (from backend)
+            let premiumBadge = '';
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const token = localStorage.getItem('token');
+            let userPremiumTier = '';
+            if (loggedInUser && art.username === loggedInUser && token) {
+                try {
+                    const res = await fetch('https://ownshub.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+                    if (res.ok) {
+                        const data = await res.json();
+                        userPremiumTier = data.premiumTier;
+                    }
+                } catch {}
+                if (userPremiumTier) {
+                    let color = '#ffd700';
+                    if (userPremiumTier === 'Silver') color = '#c0c0c0';
+                    if (userPremiumTier === 'Bronze') color = '#cd7f32';
+                    premiumBadge = `<span style=\"margin-left:6px;padding:2px 8px;border-radius:8px;background:${color};color:#181818;font-size:0.85em;font-weight:bold;vertical-align:middle;\">${userPremiumTier} Premium</span>`;
+                }
+            }
+            artistHtml = `${avatar}<span style="vertical-align:middle;font-weight:bold;font-size:1.1em;">${profile.displayName || art.username}</span> <a href="public-profile.html?user=${encodeURIComponent(art.username)}" style="color:#ffb347;">@${art.username}</a> ${premiumBadge}`;
         } catch {
             artistHtml = `<span style="font-weight:bold;">@${art.username}</span>`;
         }
