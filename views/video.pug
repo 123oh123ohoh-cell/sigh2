@@ -1,0 +1,41 @@
+// Pug template for video.html
+//- Video Player Page
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Watch Video - own's hub
+    link(rel="stylesheet" href="styles.css")
+  body
+    header.header
+      a.logo(href="index.html")
+        | 🔥 own's hub
+      nav.nav-links
+        a.nav-link(href="#") Live
+        a.nav-link(href="#") Models
+        a.nav-link(href="#") Categories
+        a#premiumTab.nav-link(href="membership.html") Premium
+    main.video-main
+      .video-player-section
+        .video-player-container
+          iframe#videoIframe(width="720" height="405" src="" frameborder="0" allowfullscreen)
+        .video-info
+          h2#videoTitle
+          .video-meta
+            span#videoViews
+            span#videoRating
+            span#videoDuration
+          p#videoDescription
+        .comments-section
+          h3 Comments
+          form#commentForm
+            textarea#commentInput(placeholder="Add a comment..." required)
+            button(type="submit") Post
+          #commentsList
+      aside.recommended-section
+        h3 Recommended Videos
+        #recommendedVideos
+    script(src="script.js")
+    script(src="video.js")

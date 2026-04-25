@@ -1,0 +1,66 @@
+/* premium.css - styles for premium membership page */
+.premium-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.premium-tiers {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.tier {
+  flex: 1 1 220px;
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  border: 2px solid #eee;
+  transition: border 0.2s;
+}
+.tier h2 {
+  margin-bottom: 0.5rem;
+}
+.tier .price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.tier ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+.tier li {
+  margin: 0.5rem 0;
+}
+.tier .subscribe-btn {
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.tier .subscribe-btn:hover {
+  background: #444;
+}
+.tier.bronze {
+  border-color: #cd7f32;
+}
+.tier.silver {
+  border-color: #c0c0c0;
+}
+.tier.gold {
+  border-color: #ffd700;
+}
+.tier.bronze h2 { color: #cd7f32; }
+.tier.silver h2 { color: #c0c0c0; }
+.tier.gold h2 { color: #ffd700; }

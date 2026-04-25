@@ -1,0 +1,23 @@
+// Pug template for signout.html
+//- Sign Out Page
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Sign Out - own's hub
+    link(rel="stylesheet" href="styles.css")
+    link(rel="icon" type="image/png" href="logo2.png")
+  body
+    header.header
+      a.logo(href="index.html")
+        | 🔥 own's hub
+    main.signout-main
+      .signout-container
+        h2 You have been signed out.
+        a.nav-link(href="index.html") Return to Home
+    script.
+      localStorage.removeItem('token');
+      localStorage.removeItem('loggedInUser');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1500);

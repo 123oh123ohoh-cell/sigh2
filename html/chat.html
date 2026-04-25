@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - OwnsHub</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="header" style="margin-bottom:0;">
+    <a href="index.html" class="logo"><img src="../png/logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="arts.html" class="nav-link">Arts</a>
+      <a href="#" class="nav-link" id="logoutBtn">Log Out</a>
+    </nav>
+  </header>
+  <div class="chat-container">
+    <div style="display:flex;flex-direction:column;width:260px;background:#181818;border-right:1.5px solid #333;">
+      <input id="userSearchInput" type="text" placeholder="Type @ to search users..." style="margin:12px 12px 0 12px;padding:8px 12px;border-radius:8px;border:none;background:#232323;color:#fff;font-size:1em;outline:none;">
+        <script>
+          // Log out logic
+          document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+              logoutBtn.onclick = function(e) {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('loggedInUser');
+                window.location.href = 'login.html';
+              };
+            }
+          });
+        </script>
+      <div style="padding:10px 12px 0 12px;">
+        <select id="statusSelect" style="width:100%;padding:6px 10px;border-radius:8px;background:#232323;color:#fff;border:none;font-size:1em;">
+          <option value="online">🟢 Online</option>
+          <option value="dnd">⛔ Do Not Disturb</option>
+          <option value="away">🌙 Away</option>
+          <option value="offline">⚫ Offline</option>
+        </select>
+      </div>
+      <ul class="user-list" id="userList" style="flex:1 1 auto;"></ul>
+    </div>
+    <div class="chat-main">
+      <div class="chat-header" id="chatHeader">Messages</div>
+      <div class="messages-area" id="messagesArea">
+        <div id="chatWelcome" style="display:flex;flex:1;align-items:center;justify-content:center;flex-direction:column;color:var(--text-gray);font-size:1.2em;min-height:300px;">
+          <img src="../png/logo2.png" alt="OwnsHub Logo" style="width:80px;height:80px;opacity:0.7;margin-bottom:18px;">
+          <div>Welcome to OwnsHub Chat</div>
+          <div style="font-size:0.95em;margin-top:8px;">Select a user to start chatting!</div>
+        </div>
+      </div>
+      <div class="chat-input-area" id="chatInputArea" style="display:none;">
+        <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="../js/chat.js"></script>
+  <script>
+    // Hide input area and show welcome by default
+    document.getElementById('chatInputArea').style.display = 'none';
+    document.getElementById('chatWelcome').style.display = 'flex';
+    // When a user is selected, chat.js should hide welcome and show input area
+    window.showChatInput = function() {
+      document.getElementById('chatInputArea').style.display = 'flex';
+      document.getElementById('chatWelcome').style.display = 'none';
+    };
+    window.showChatWelcome = function() {
+      document.getElementById('chatInputArea').style.display = 'none';
+      document.getElementById('chatWelcome').style.display = 'flex';
+      document.getElementById('messagesArea').innerHTML = document.getElementById('chatWelcome').outerHTML;
+    };
+  </script>
+</body>
+</html>

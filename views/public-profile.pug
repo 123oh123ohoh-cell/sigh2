@@ -1,0 +1,48 @@
+// Pug template for public-profile.html
+//- Public User Profile Page
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title View Profile
+    link(rel="stylesheet" href="styles.css")
+    link(rel="stylesheet" href="public-profile.css")
+    link(rel="icon" type="image/png" href="logo2.png")
+  body
+    header.header
+      a.logo(href="index.html")
+        | 🔥 own's hub
+      nav.nav-links
+        a.nav-link(href="index.html") Home
+        a#loginNav.nav-link(href="login.html") Login
+        a#signupNav.nav-link(href="signup.html") Create Account
+        a#profileNav.nav-link(href="profile.html") Profile
+        a#signoutNav.nav-link(href="signout.html") Sign Out
+      script.
+        document.addEventListener('DOMContentLoaded', function() {
+          const loggedInUser = localStorage.getItem('loggedInUser');
+          const loginNav = document.getElementById('loginNav');
+          const signupNav = document.getElementById('signupNav');
+          const profileNav = document.getElementById('profileNav');
+          const signoutNav = document.getElementById('signoutNav');
+          if (loggedInUser) {
+            if (loginNav) loginNav.style.display = 'none';
+            if (signupNav) signupNav.style.display = 'none';
+            if (profileNav) profileNav.style.display = '';
+            if (signoutNav) signoutNav.style.display = '';
+          } else {
+            if (loginNav) loginNav.style.display = '';
+            if (signupNav) signupNav.style.display = '';
+            if (profileNav) profileNav.style.display = 'none';
+            if (signoutNav) signoutNav.style.display = 'none';
+          }
+        });
+    main.public-profile-main
+      .public-profile-container
+        h2#profileTitle @username
+        #publicProfileInfo.public-profile-summary
+        #editProfileBtnContainer(style="display:flex;justify-content:center;")
+        #followBtnContainer(style="display:flex;justify-content:center;margin-top:16px;")
+    script(src="public-profile.js")

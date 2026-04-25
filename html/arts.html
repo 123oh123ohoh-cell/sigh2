@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arts Gallery - own's hub</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/png" href="../png/logo2.png">
+    <style>
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: #181818;
+            padding: 40px 0 24px 0;
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .arts-card {
+            background: #222;
+            border-radius: 12px;
+            padding: 16px;
+            width: 220px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .arts-card img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #333;
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #ffb347;
+        }
+        .arts-card .author {
+            font-size: 0.98em;
+            color: #bbb;
+            margin: 4px 0 6px 0;
+        }
+        .arts-card .desc {
+            font-size: 0.97em;
+            color: #eee;
+            min-height: 32px;
+            text-align: center;
+        }
+        .arts-card .date {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 6px;
+        }
+        .post-art-section {
+            margin-top: 24px;
+            text-align: center;
+        }
+        .post-art-form {
+            background: #222;
+            padding: 18px 18px 12px 18px;
+            border-radius: 12px;
+            display: inline-block;
+            max-width: 340px;
+        }
+        .post-art-form input[type="file"],
+        .post-art-form input[type="text"],
+        .post-art-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #181818;
+            color: #fff;
+        }
+        .post-art-form button {
+            background: linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);
+            color: #181818;
+            padding: 8px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .post-art-form-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffb347;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery {
+                gap: 10px;
+            }
+            .arts-card {
+                width: 98vw;
+                padding: 8px;
+            }
+            .arts-card img {
+                width: 90vw;
+                height: 40vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="../png/logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link nav-link-active">Arts</a>
+            <a href="login.html" class="nav-link" id="loginNav">Login</a>
+            <a href="signup.html" class="nav-link" id="signupNav">Create Account</a>
+            <a href="profile.html" class="nav-link" id="profileNav">Profile</a>
+            <a href="signout.html" class="nav-link" id="signoutNav">Sign Out</a>
+            <script>
+            // Responsive nav links for login state
+            document.addEventListener('DOMContentLoaded', function() {
+                const loggedInUser = localStorage.getItem('loggedInUser');
+                const loginNav = document.getElementById('loginNav');
+                const signupNav = document.getElementById('signupNav');
+                const profileNav = document.getElementById('profileNav');
+                const signoutNav = document.getElementById('signoutNav');
+                if (loggedInUser) {
+                    if (loginNav) loginNav.style.display = 'none';
+                    if (signupNav) signupNav.style.display = 'none';
+                    if (profileNav) profileNav.style.display = '';
+                    if (signoutNav) signoutNav.style.display = '';
+                } else {
+                    if (loginNav) loginNav.style.display = '';
+                    if (signupNav) signupNav.style.display = '';
+                    if (profileNav) profileNav.style.display = 'none';
+                    if (signoutNav) signoutNav.style.display = 'none';
+                }
+            });
+            </script>
+        </nav>
+    </header>
+    <main class="arts-gallery-page">
+        <h2 style="color:#ffb347;text-align:center;margin-bottom:24px;">Arts Gallery</h2>
+        <div id="artsTagBar" style="display:flex;gap:10px;justify-content:center;margin-bottom:18px;"></div>
+        <div id="artsGallery" class="arts-gallery"></div>
+        <div id="postArtContainer" class="post-art-section"></div>
+    </main>
+    <script src="../js/arts.js"></script>
+</body>
+</html>

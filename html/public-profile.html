@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Profile</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/public-profile.css">
+    <link rel="icon" type="image/png" href="../png/logo2.png">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">🔥 own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="login.html" class="nav-link" id="loginNav">Login</a>
+            <a href="signup.html" class="nav-link" id="signupNav">Create Account</a>
+            <a href="profile.html" class="nav-link" id="profileNav">Profile</a>
+            <a href="signout.html" class="nav-link" id="signoutNav">Sign Out</a>
+            <script>
+            // Responsive nav links for login state
+            document.addEventListener('DOMContentLoaded', function() {
+                const loggedInUser = localStorage.getItem('loggedInUser');
+                const loginNav = document.getElementById('loginNav');
+                const signupNav = document.getElementById('signupNav');
+                const profileNav = document.getElementById('profileNav');
+                const signoutNav = document.getElementById('signoutNav');
+                if (loggedInUser) {
+                    if (loginNav) loginNav.style.display = 'none';
+                    if (signupNav) signupNav.style.display = 'none';
+                    if (profileNav) profileNav.style.display = '';
+                    if (signoutNav) signoutNav.style.display = '';
+                } else {
+                    if (loginNav) loginNav.style.display = '';
+                    if (signupNav) signupNav.style.display = '';
+                    if (profileNav) profileNav.style.display = 'none';
+                    if (signoutNav) signoutNav.style.display = 'none';
+                }
+            });
+            </script>
+        </nav>
+    </header>
+    <main class="public-profile-main">
+        <div class="public-profile-container">
+            <h2 id="profileTitle">@username</h2>
+            <div id="publicProfileInfo" class="public-profile-summary"></div>
+            <div id="editProfileBtnContainer" style="display:flex;justify-content:center;"></div>
+            <div id="followBtnContainer" style="display:flex;justify-content:center;margin-top:16px;"></div>
+        </div>
+    </main>
+    <script src="../js/public-profile.js"></script>
+</body>
+</html>

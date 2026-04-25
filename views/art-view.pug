@@ -1,0 +1,51 @@
+// Pug template for art-view.html
+//- View Art Page
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title View Art - own's hub
+    link(rel="stylesheet" href="styles.css")
+    link(rel="icon" type="image/png" href="logo2.png")
+  body
+    header.header
+      a.logo(href="index.html")
+        img(src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;")
+        | own's hub
+      nav.nav-links
+        a.nav-link(href="index.html") Home
+        a.nav-link(href="arts.html") Arts
+        a#loginNav.nav-link(href="login.html") Login
+        a#signupNav.nav-link(href="signup.html") Create Account
+        a#profileNav.nav-link(href="profile.html") Profile
+        a#signoutNav.nav-link(href="signout.html") Sign Out
+      script.
+        document.addEventListener('DOMContentLoaded', function() {
+          const loggedInUser = localStorage.getItem('loggedInUser');
+          const loginNav = document.getElementById('loginNav');
+          const signupNav = document.getElementById('signupNav');
+          const profileNav = document.getElementById('profileNav');
+          const signoutNav = document.getElementById('signoutNav');
+          if (loggedInUser) {
+            if (loginNav) loginNav.style.display = 'none';
+            if (signupNav) signupNav.style.display = 'none';
+            if (profileNav) profileNav.style.display = '';
+            if (signoutNav) signoutNav.style.display = '';
+          } else {
+            if (loginNav) loginNav.style.display = '';
+            if (signupNav) signupNav.style.display = '';
+            if (profileNav) profileNav.style.display = 'none';
+            if (signoutNav) signoutNav.style.display = 'none';
+          }
+        });
+    main.art-view-page(style="min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;")
+      #artViewContainer(style="background:#222;padding:32px 24px;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.12);max-width:600px;width:100%;text-align:center;")
+        img#artViewImage(src="" alt="Art" style="max-width:100%;max-height:400px;border-radius:12px;background:#333;")
+        h2#artViewTitle(style="color:#ffb347;margin-top:18px;")
+        div#artViewAuthor(style="color:#bbb;margin:8px 0 12px 0;")
+        div#artViewDesc(style="color:#eee;margin-bottom:12px;")
+        div#artViewDate(style="color:#888;font-size:0.95em;")
+        div#artDeleteBtnContainer
+    script(src="art-view.js")

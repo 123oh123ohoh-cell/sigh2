@@ -1,0 +1,99 @@
+// Pug template for membership.html
+//- Membership Page (Premium)
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Membership - own's hub
+    link(rel="stylesheet" href="styles.css")
+    link(rel="icon" type="image/png" href="logo2.png")
+    style.
+      .membership-page {
+        min-height: 80vh;
+        background: #181818;
+        padding: 40px 0 24px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .membership-card {
+        background: #222;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        padding: 32px 24px;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+      }
+      .membership-title {
+        color: #ffb347;
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 18px;
+      }
+      .membership-price {
+        color: #fff;
+        font-size: 1.5em;
+        margin-bottom: 12px;
+      }
+      .membership-benefits {
+        color: #fff;
+        margin-bottom: 18px;
+        text-align: left;
+      }
+      .membership-btn {
+        background: linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);
+        color: #181818;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1em;
+        cursor: pointer;
+      }
+  body
+    header.header
+      a.logo(href="index.html")
+        img(src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;")
+        | own's hub
+      nav.nav-links
+        a.nav-link(href="index.html") Home
+        a.nav-link(href="arts.html") Arts
+        a.nav-link(href="leaderboard.html") Leaderboard
+        a#loginNav.nav-link(href="login.html") Login
+        a#signupNav.nav-link(href="signup.html") Create Account
+        a#profileNav.nav-link(href="profile.html") Profile
+        a#signoutNav.nav-link(href="signout.html") Sign Out
+      script.
+        document.addEventListener('DOMContentLoaded', function() {
+          const loggedInUser = localStorage.getItem('loggedInUser');
+          const loginNav = document.getElementById('loginNav');
+          const signupNav = document.getElementById('signupNav');
+          const profileNav = document.getElementById('profileNav');
+          const signoutNav = document.getElementById('signoutNav');
+          if (loggedInUser) {
+            if (loginNav) loginNav.style.display = 'none';
+            if (signupNav) signupNav.style.display = 'none';
+            if (profileNav) profileNav.style.display = '';
+            if (signoutNav) signoutNav.style.display = '';
+          } else {
+            if (loginNav) loginNav.style.display = '';
+            if (signupNav) signupNav.style.display = '';
+            if (profileNav) profileNav.style.display = 'none';
+            if (signoutNav) signoutNav.style.display = 'none';
+          }
+        });
+    main.membership-page
+      .membership-card
+        .membership-title 💎 Premium Membership
+        .membership-price $0 / Free Forever
+        .membership-benefits
+          ul
+            li Unlimited HD streaming
+            li Private shows
+            li VIP access to all models
+            li All premium features unlocked
+        button.membership-btn(disabled) You are already a Premium Member!

@@ -1,0 +1,96 @@
+// Pug template for leaderboard.html
+//- Leaderboard Page
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Leaderboard - own's hub
+    link(rel="stylesheet" href="styles.css")
+    link(rel="icon" type="image/png" href="logo2.png")
+    style.
+      .leaderboard-page {
+        min-height: 80vh;
+        background: #181818;
+        padding: 40px 0 24px 0;
+      }
+      .leaderboard-list {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #222;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        padding: 32px 24px;
+      }
+      .leaderboard-user {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 12px 0;
+        border-bottom: 1px solid #333;
+      }
+      .leaderboard-user:last-child {
+        border-bottom: none;
+      }
+      .leaderboard-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ffb347;
+        background: #333;
+      }
+      .leaderboard-rank {
+        font-size: 1.3em;
+        color: #ffb347;
+        width: 32px;
+        text-align: right;
+      }
+      .leaderboard-username {
+        font-weight: bold;
+        color: #ffb347;
+        font-size: 1.1em;
+        cursor: pointer;
+      }
+      .leaderboard-followers {
+        margin-left: auto;
+        color: #fff;
+        font-size: 1.1em;
+      }
+  body
+    header.header
+      a.logo(href="index.html")
+        img(src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;")
+        | own's hub
+      nav.nav-links
+        a.nav-link(href="index.html") Home
+        a.nav-link(href="arts.html") Arts
+        a.nav-link.nav-link-active(href="leaderboard.html") Leaderboard
+        a#loginNav.nav-link(href="login.html") Login
+        a#signupNav.nav-link(href="signup.html") Create Account
+        a#profileNav.nav-link(href="profile.html") Profile
+        a#signoutNav.nav-link(href="signout.html") Sign Out
+      script.
+        document.addEventListener('DOMContentLoaded', function() {
+          const loggedInUser = localStorage.getItem('loggedInUser');
+          const loginNav = document.getElementById('loginNav');
+          const signupNav = document.getElementById('signupNav');
+          const profileNav = document.getElementById('profileNav');
+          const signoutNav = document.getElementById('signoutNav');
+          if (loggedInUser) {
+            if (loginNav) loginNav.style.display = 'none';
+            if (signupNav) signupNav.style.display = 'none';
+            if (profileNav) profileNav.style.display = '';
+            if (signoutNav) signoutNav.style.display = '';
+          } else {
+            if (loginNav) loginNav.style.display = '';
+            if (signupNav) signupNav.style.display = '';
+            if (profileNav) profileNav.style.display = 'none';
+            if (signoutNav) signoutNav.style.display = 'none';
+          }
+        });
+    main.leaderboard-page
+      h2(style="color:#ffb347;text-align:center;margin-bottom:24px;") 🏆 Leaderboard
+      .leaderboard-list#leaderboardList
+    script(src="leaderboard.js")

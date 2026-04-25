@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Membership - own's hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="premium.css">
+    <style>
+      body {
+        background: linear-gradient(135deg, #18122B 0%, #393053 100%);
+        color: #fff;
+      }
+      .premium-container {
+        background: rgba(30, 20, 60, 0.95);
+        border: 2px solid #ffd70044;
+        box-shadow: 0 4px 32px #000a, 0 0 0 4px #ffd70022;
+      }
+      .premium-tiers {
+        gap: 2.5rem;
+      }
+      .tier {
+        background: linear-gradient(120deg, #232046 60%, #393053 100%);
+        border: 2px solid #fff2;
+        box-shadow: 0 2px 16px #0006;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .tier.gold {
+        border-color: #ffd700;
+        box-shadow: 0 0 32px #ffd70055, 0 2px 16px #0006;
+        z-index: 2;
+      }
+      .tier.gold::before {
+        content: '👑';
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2.5rem;
+        color: #ffd700;
+        filter: drop-shadow(0 0 8px #ffd700cc);
+      }
+      .tier .subscribe-btn {
+        background: linear-gradient(90deg, #ffd700, #ffb300);
+        color: #222;
+        font-weight: bold;
+        box-shadow: 0 2px 8px #ffd70044;
+      }
+      .tier.gold .subscribe-btn {
+        background: linear-gradient(90deg, #ffd700 60%, #fffbe6 100%);
+        color: #222;
+        border: 2px solid #ffd700;
+        box-shadow: 0 0 16px #ffd70099;
+      }
+      .tier.gold h2 {
+        color: #ffd700;
+        text-shadow: 0 2px 8px #ffd70099;
+      }
+      .tier.silver h2 {
+        color: #c0c0c0;
+        text-shadow: 0 2px 8px #c0c0c099;
+      }
+      .tier.bronze h2 {
+        color: #cd7f32;
+        text-shadow: 0 2px 8px #cd7f3299;
+      }
+      .premium-container h2#tiers {
+        font-size: 2.2rem;
+        margin-bottom: 1.5rem;
+        color: #ffd700;
+        text-shadow: 0 2px 12px #ffd70055;
+      }
+      .hero-title {
+        color: #ffd700;
+        text-shadow: 0 2px 12px #ffd70055;
+      }
+      .hero-buttons .btn-secondary {
+        background: linear-gradient(90deg, #ffd700, #ffb300);
+        color: #222;
+        font-weight: bold;
+        border: none;
+        box-shadow: 0 2px 8px #ffd70044;
+      }
+    </style>
+  <link rel="icon" type="image/png" href="png/logo2.png">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="html/index.html" class="logo"><img src="png/logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+    <nav class="nav-links">
+      <a href="chat.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+      <a href="#" class="nav-link">Live</a>
+      <a href="#" class="nav-link">Models</a>
+      <a href="#" class="nav-link">Categories</a>
+            <a href="../leaderboard.html" class="nav-link">Leaderboard</a>
+      <a href="../premium.html" class="nav-link active">Premium</a>
+      <a href="arts.html" class="nav-link">Arts</a>
+    </nav>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search models...">
+    </div>
+    <!-- Dropdown for login/profile -->
+    <div class="profile-dropdown">
+      <button class="profile-btn" id="profileDropdownBtn">👤</button>
+      <div class="dropdown-content" id="profileDropdownMenu">
+        <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+        <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+        <a href="login.html" id="dropdownLogin">Log In</a>
+        <a href="signup.html" id="dropdownSignup">Create Account</a>
+      </div>
+    </div>
+    <script>
+    // Switch dropdown menu and chat button based on login state
+    document.addEventListener('DOMContentLoaded', function() {
+      function updateDropdownMenu() {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        const profileLink = document.getElementById('profileLink');
+        const signoutLink = document.getElementById('signoutLink');
+        const dropdownLogin = document.getElementById('dropdownLogin');
+        const dropdownSignup = document.getElementById('dropdownSignup');
+        const chatHeaderBtn = document.getElementById('chatHeaderBtn');
+        if (loggedInUser) {
+          if (profileLink) profileLink.style.display = '';
+          if (signoutLink) signoutLink.style.display = '';
+          if (dropdownLogin) dropdownLogin.style.display = 'none';
+          if (dropdownSignup) dropdownSignup.style.display = 'none';
+          if (chatHeaderBtn) chatHeaderBtn.style.display = '';
+        } else {
+          if (profileLink) profileLink.style.display = 'none';
+          if (signoutLink) signoutLink.style.display = 'none';
+          if (dropdownLogin) dropdownLogin.style.display = '';
+          if (dropdownSignup) dropdownSignup.style.display = '';
+          if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
+        }
+      }
+      updateDropdownMenu();
+      // Listen for storage changes (e.g., login/logout in another tab)
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'loggedInUser') {
+          updateDropdownMenu();
+        }
+      });
+    });
+    </script>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">Premium Membership</h1>
+        <p class="hero-subtitle" style="font-size:1.2rem;max-width:500px;margin:0 auto 1.5rem auto;">All premium features are now <b style='color:#ffd700;'>FREE</b> for every user! Enjoy every tier and get your crown badge instantly.</p>
+        <div class="hero-buttons">
+          <a href="#tiers" class="btn-secondary" style="font-size:1.1rem;">✨ Claim Your Free Premium</a>
+        </div>
+      </div>
+      <div class="hero-video">
+        <img src="png/logo2.png" alt="Premium" style="width:220px;height:auto;border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,0.08);background:#fff;">
+      </div>
+    </div>
+  </section>
+
+  <main class="premium-container">
+    <h2 id="tiers">Choose Your Tier</h2>
+    <div class="premium-tiers">
+      <div class="tier bronze">
+        <h2>Bronze</h2>
+        <p class="price">$1 / month</p>
+        <ul>
+          <li>Bronze premium badge</li>
+          <li>Access to premium-only arts</li>
+          <li>Support the community</li>
+        </ul>
+                <button class="subscribe-btn" data-tier="bronze" disabled style="opacity:0.7;cursor:default;">Free for All</button>
+      </div>
+      <div class="tier silver">
+        <h2>Silver</h2>
+        <p class="price">$2 / month</p>
+        <ul>
+          <li>All Bronze features</li>
+          <li>Silver premium badge</li>
+          <li>Priority support</li>
+          <li>Special monthly gifts</li>
+        </ul>
+                <button class="subscribe-btn" data-tier="silver" disabled style="opacity:0.7;cursor:default;">Free for All</button>
+      </div>
+      <div class="tier gold">
+        <h2>Gold</h2>
+        <p class="price">$3 / month</p>
+        <ul>
+          <li>All Silver features</li>
+          <li>Gold premium badge</li>
+          <li>Early access to new features</li>
+          <li>VIP status on your profile</li>
+          <li>Direct line to the team</li>
+        </ul>
+                <button class="subscribe-btn" data-tier="gold" disabled style="opacity:0.7;cursor:default;">Free for All</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;font-size:1.1rem;color:#ffd700;">
+      <span style="font-size:2rem;">✨</span> Go Gold for the ultimate experience and recognition! <span style="font-size:2rem;">👑</span>
+    </div>
+  </main>
+  <script src="premium.js"></script>
+</body>
+</html>

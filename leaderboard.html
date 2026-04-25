@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard - own's hub</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/png" href="png/logo2.png">
+</head>
+<body>
+  <header class="header">
+    <a href="html/index.html" class="logo"><img src="png/logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+    <nav class="nav-links">
+      <a href="chat.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+      <a href="#" class="nav-link">Live</a>
+      <a href="#" class="nav-link">Models</a>
+      <a href="#" class="nav-link">Categories</a>
+      <a href="leaderboard.html" class="nav-link active">Leaderboard</a>
+      <a href="../premium.html" class="nav-link">Premium</a>
+      <a href="arts.html" class="nav-link">Arts</a>
+    </nav>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search models...">
+    </div>
+    <div class="profile-dropdown">
+      <button class="profile-btn" id="profileDropdownBtn">👤</button>
+      <div class="dropdown-content" id="profileDropdownMenu">
+        <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+        <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+        <a href="login.html" id="dropdownLogin">Log In</a>
+        <a href="signup.html" id="dropdownSignup">Create Account</a>
+      </div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function updateDropdownMenu() {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        const profileLink = document.getElementById('profileLink');
+        const signoutLink = document.getElementById('signoutLink');
+        const dropdownLogin = document.getElementById('dropdownLogin');
+        const dropdownSignup = document.getElementById('dropdownSignup');
+        const chatHeaderBtn = document.getElementById('chatHeaderBtn');
+        if (loggedInUser) {
+          if (profileLink) profileLink.style.display = '';
+          if (signoutLink) signoutLink.style.display = '';
+          if (dropdownLogin) dropdownLogin.style.display = 'none';
+          if (dropdownSignup) dropdownSignup.style.display = 'none';
+          if (chatHeaderBtn) chatHeaderBtn.style.display = '';
+        } else {
+          if (profileLink) profileLink.style.display = 'none';
+          if (signoutLink) signoutLink.style.display = 'none';
+          if (dropdownLogin) dropdownLogin.style.display = '';
+          if (dropdownSignup) dropdownSignup.style.display = '';
+          if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
+        }
+      }
+      updateDropdownMenu();
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'loggedInUser') {
+          updateDropdownMenu();
+        }
+      });
+    });
+    </script>
+  </header>
+  <main class="main-content" style="max-width:600px;margin:2rem auto 0 auto;">
+    <h1 style="text-align:center;margin-bottom:2rem;">🏆 Leaderboard</h1>
+    <div id="leaderboardList"></div>
+  </main>
+  <script src="public/js/leaderboard.js"></script>
+</body>
+</html>

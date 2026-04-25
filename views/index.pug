@@ -1,0 +1,133 @@
+// Pug template for index.html
+//- Main layout for own's hub
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title own's hub Premium - Your Ultimate Entertainment Hub
+    link(href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet")
+    link(rel="stylesheet" href="styles.css")
+    link(rel="icon" type="image/png" href="logo2.png")
+  body
+    //- Header
+    header.header
+      a.logo(href="#")
+        img(src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;")
+        | own's hub
+      nav.nav-links
+        a#chatHeaderBtn.nav-link(href="chat.html" style="display:none;") Chat
+        a.nav-link(href="#") Live
+        a.nav-link(href="#") Models
+        a.nav-link(href="#") Categories
+        a#premiumTab.nav-link(href="membership.html") Premium
+        a.nav-link(href="arts.html") Arts
+        a.nav-link(href="leaderboard.html") Leaderboard
+      .search-bar
+        input#searchInput(type="text" placeholder="Search models...")
+      .profile-dropdown
+        button#profileDropdownBtn.profile-btn 👤
+        .dropdown-content#profileDropdownMenu
+          a#profileLink(href="profile.html" style="display:none;") Profile
+          a#signoutLink(href="signout.html" style="display:none;") Sign Out
+          a#dropdownLogin(href="login.html") Log In
+          a#dropdownSignup(href="signup.html") Create Account
+      script(src="/scripts/dropdown.js")
+    //- Hero Section
+    section.hero
+      .hero-content
+        .hero-text
+          h1.hero-title Live Hot Shows
+          p.hero-subtitle Connect with thousands of beautiful models in real-time. Premium HD shows, private sessions, and exclusive content.
+          .hero-buttons
+            button.btn-primary(onclick="openPlayer(1)") 🔥 Start Watching
+            button.btn-secondary(onclick="window.location='membership.html'") 💎 Go Premium
+        .hero-video
+          iframe(width="560" height="315" src="https://txxx.tube/embed/18948929/" title="Featured Cleaning Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen)
+    //- Main Content
+    main.main-content
+      //- Categories
+      .categories
+        button.category-btn.active(onclick="filterByCategory('All')") All Models
+        button.category-btn(onclick="filterByCategory('New Girls')") New Girls
+        button.category-btn(onclick="filterByCategory('Mature')") Mature
+        button.category-btn(onclick="filterByCategory('HD Shows')") HD Shows
+        button.category-btn(onclick="filterByCategory('Private')") Private
+        button.category-btn(onclick="filterByCategory('Live now')") Live Now
+        button.category-btn(onclick="filterByCategory('Couples')") Couples
+        button.category-btn(onclick="filterByCategory('Asian')") Asian
+        button.category-btn(onclick="filterByCategory('Ebony')") Ebony
+        button.category-btn(onclick="filterByCategory('Latin')") Latin
+        button.category-btn(onclick="filterByCategory('Hijab')") Hijab
+      //- Premium Banner
+      .premium-banner
+        h3 💎 Unlock Premium Features
+        p HD quality, private shows, unlimited tokens, and VIP access to all models. Everything is FREE!
+        button.btn-secondary(onclick="window.location='membership.html'") 💎 Go Premium
+      //- Video Sections
+      section.section
+        h2.section-title 🔥 Live Now
+        .video-row#trendingRow
+      section.section
+        h2.section-title 💻 New Girls
+        .video-row#programmingRow
+      section.section
+        h2.section-title 🚀 Mature
+        .video-row#webdevRow
+      section.section
+        h2.section-title 📊 HD Shows
+        .video-row#datascienceRow
+      section.section
+        h2.section-title 🧕 Hijab
+        .video-row#hijabRow
+    //- Arts Section
+    section.section#artsSection
+      h2.section-title 🎨 Arts
+      #artsGallery.arts-gallery
+      #postArtContainer(style="margin-top:24px;text-align:center;")
+    //- Leaderboard Section
+    section.section#leaderboardSection
+      h2.section-title 🏆 Leaderboard
+      #leaderboardList
+    script(src="arts.js")
+    //- Player Modal
+    #playerModal.player-modal
+      .player-container
+        .player-header
+          h2#playerTitle.player-title Video Title
+          button.close-btn(onclick="closePlayer()") ×
+        .player-content
+          .player-video
+            iframe#playerIframe(width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen)
+          .player-info
+            .player-meta
+              span#playerViews 0 views
+              span#playerRating.player-rating ⭐ 5.0
+              span#playerDuration 45 min
+            p#playerDescription.player-description Video description goes here...
+            .player-actions
+              button.action-btn.primary 👍 Like
+              button.action-btn 👎 Dislike
+              button.action-btn 📤 Share
+              button.action-btn 📥 Download
+              button.action-btn ⭐ Watchlist
+              button.action-btn 🚩 Report
+            //- Comments Section
+            .comments-section
+              h3 Comments
+              form#commentForm
+                textarea#commentInput(placeholder="Add a comment..." required)
+                button(type="submit") Post
+              #commentsList
+    //- Footer
+    footer.footer
+      h4 🔥 own's hub Premium
+      .footer-links
+        a.footer-link(href="#") About
+        a.footer-link(href="#") Safety
+        a.footer-link(href="#") Terms
+        a.footer-link(href="#") Privacy
+        a.footer-link(href="#") Contact
+      p &copy; 2024 ZhenTube. Premium adult entertainment for everyone.
+    script(src="script.js")

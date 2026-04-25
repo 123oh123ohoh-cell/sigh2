@@ -1,0 +1,66 @@
+// Pug template for chat.html
+//- Chat Page
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Chat - OwnsHub
+    link(rel="stylesheet" href="styles.css")
+  body
+    //- Top Navigation Bar
+    header.header(style="margin-bottom:0;")
+      a.logo(href="index.html")
+        img(src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;")
+        | own's hub
+      nav.nav-links
+        a.nav-link(href="index.html") Home
+        a.nav-link(href="arts.html") Arts
+        a#logoutBtn.nav-link(href="#") Log Out
+    .chat-container
+      .chat-sidebar(style="display:flex;flex-direction:column;width:260px;background:#181818;border-right:1.5px solid #333;")
+        input#userSearchInput(type="text" placeholder="Type @ to search users..." style="margin:12px 12px 0 12px;padding:8px 12px;border-radius:8px;border:none;background:#232323;color:#fff;font-size:1em;outline:none;")
+        script.
+          document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+              logoutBtn.onclick = function(e) {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                localStorage.removeItem('loggedInUser');
+                window.location.href = 'login.html';
+              };
+            }
+          });
+        .status-select-container(style="padding:10px 12px 0 12px;")
+          select#statusSelect(style="width:100%;padding:6px 10px;border-radius:8px;background:#232323;color:#fff;border:none;font-size:1em;")
+            option(value="online") 🟢 Online
+            option(value="dnd") ⛔ Do Not Disturb
+            option(value="away") 🌙 Away
+            option(value="offline") ⚫ Offline
+        ul.user-list#userList(style="flex:1 1 auto;")
+      .chat-main
+        .chat-header#chatHeader Messages
+        .messages-area#messagesArea
+          #chatWelcome(style="display:flex;flex:1;align-items:center;justify-content:center;flex-direction:column;color:var(--text-gray);font-size:1.2em;min-height:300px;")
+            img(src="logo2.png" alt="OwnsHub Logo" style="width:80px;height:80px;opacity:0.7;margin-bottom:18px;")
+            div Welcome to OwnsHub Chat
+            div(style="font-size:0.95em;margin-top:8px;") Select a user to start chatting!
+        .chat-input-area#chatInputArea(style="display:none;")
+          input#chatInput(type="text" placeholder="Type a message..." autocomplete="off")
+          button#sendBtn Send
+    script(src="https://cdn.socket.io/4.7.5/socket.io.min.js")
+    script(src="chat.js")
+    script.
+      document.getElementById('chatInputArea').style.display = 'none';
+      document.getElementById('chatWelcome').style.display = 'flex';
+      window.showChatInput = function() {
+        document.getElementById('chatInputArea').style.display = 'flex';
+        document.getElementById('chatWelcome').style.display = 'none';
+      };
+      window.showChatWelcome = function() {
+        document.getElementById('chatInputArea').style.display = 'none';
+        document.getElementById('chatWelcome').style.display = 'flex';
+        document.getElementById('messagesArea').innerHTML = document.getElementById('chatWelcome').outerHTML;
+      };

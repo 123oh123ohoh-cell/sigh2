@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Video - own's hub</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">🔥 own's hub</a>
+        <nav class="nav-links">
+            <a href="#" class="nav-link">Live</a>
+            <a href="#" class="nav-link">Models</a>
+            <a href="#" class="nav-link">Categories</a>
+            <a href="#" class="nav-link">Premium</a>
+        </nav>
+        <div class="profile-btn">👤</div>
+    </header>
+    <main class="video-main">
+        <div class="video-player-section">
+            <div class="video-player-container">
+                <iframe id="videoIframe" width="720" height="405" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="video-info">
+                <h2 id="videoTitle"></h2>
+                <div class="video-meta">
+                    <span id="videoViews"></span>
+                    <span id="videoRating"></span>
+                    <span id="videoDuration"></span>
+                </div>
+                <p id="videoDescription"></p>
+            </div>
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <form id="commentForm">
+                    <textarea id="commentInput" placeholder="Add a comment..." required></textarea>
+                    <button type="submit">Post</button>
+                </form>
+                <div id="commentsList"></div>
+            </div>
+        </div>
+        <aside class="recommended-section">
+            <h3>Recommended Videos</h3>
+            <div id="recommendedVideos"></div>
+        </aside>
+    </main>
+    <script src="../js/script.js"></script>
+    <script src="video.js"></script>
+</body>
+</html>

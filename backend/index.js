@@ -1,56 +1,113 @@
-// --- Chat Messages Endpoints ---
-// Messages table: sender, receiver, content, timestamp
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS messages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sender TEXT,
-    receiver TEXT,
-    content TEXT,
-    timestamp TEXT
-  )`);
-});
 
-// Get chat history with a user (auth required)
-app.get('/api/messages', authenticateToken, (req, res) => {
-  const user1 = req.user.username;
-  const user2 = req.query.user;
-  if (!user2) return res.status(400).json({ error: 'Missing user' });
-  db.all(
-    `SELECT * FROM messages WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?) ORDER BY id ASC`,
-    [user1, user2, user2, user1],
-    (err, rows) => {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json(rows || []);
-    }
-  );
-});
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-// Send a message (auth required)
-app.post('/api/messages', authenticateToken, (req, res) => {
-  const sender = req.user.username;
-  const { receiver, content } = req.body;
-  if (!receiver || !content) return res.status(400).json({ error: 'Missing fields' });
-  const timestamp = new Date().toISOString();
-  db.run(
-    'INSERT INTO messages (sender, receiver, content, timestamp) VALUES (?, ?, ?, ?)',
-    [sender, receiver, content, timestamp],
-    function(err) {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json({ id: this.lastID, sender, receiver, content, timestamp });
-    }
-  );
+// --- Mongoose Models ---
+const userSchema = new mongoose.Schema({
+  username: { type: String, unique: true, required: true },
+  password: { type: String, required: true }
 });
+const User = mongoose.model('User', userSchema);
+
+const profileSchema = new mongoose.Schema({
+  username: { type: String, unique: true, required: true },
+  displayName: String,
+  pronouns: String,
+  customPronouns: String,
+  bio: String,
+  avatar: String,
+  followers: { type: Number, default: 0 },
+  following: { type: Number, default: 0 }
+});
+const Profile = mongoose.model('Profile', profileSchema);
+
+const artSchema = new mongoose.Schema({
+  username: String,
+  image: String,
+  title: String,
+  description: String,
+  date: String,
+  tags: String
+});
+const Art = mongoose.model('Art', artSchema);
+
+const messageSchema = new mongoose.Schema({
+  sender: String,
+  receiver: String,
+  content: String,
+  timestamp: String
+});
+const Message = mongoose.model('Message', messageSchema);
+
+const commentSchema = new mongoose.Schema({
+  videoId: String,
+  username: String,
+  text: String,
+  date: String
+});
+const Comment = mongoose.model('Comment', commentSchema);
 
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const sqlite3 = require('sqlite3').verbose();
+
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ownshub');
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
+
+
+
+// Leaderboard: Get all users sorted by followers (descending)
+app.get('/api/leaderboard', async (req, res) => {
+  try {
+    const profiles = await Profile.find({}, 'username displayName avatar followers').sort({ followers: -1, username: 1 });
+    res.json(profiles);
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
+});
+// --- Chat Messages Endpoints ---
+// Get chat history with a user (auth required)
+app.get('/api/messages', authenticateToken, async (req, res) => {
+  const user1 = req.user.username;
+  const user2 = req.query.user;
+  if (!user2) return res.status(400).json({ error: 'Missing user' });
+  try {
+    const messages = await Message.find({
+      $or: [
+        { sender: user1, receiver: user2 },
+        { sender: user2, receiver: user1 }
+      ]
+    }).sort({ _id: 1 });
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
+});
+// Send a message (auth required)
+app.post('/api/messages', authenticateToken, async (req, res) => {
+  const sender = req.user.username;
+  const { receiver, content } = req.body;
+  if (!receiver || !content) return res.status(400).json({ error: 'Missing fields' });
+  const timestamp = new Date().toISOString();
+  try {
+    const message = new Message({ sender, receiver, content, timestamp });
+    await message.save();
+    res.json(message);
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
+});
 const io = new Server(server, {
   cors: { origin: '*', methods: ['GET', 'POST'] }
 });
@@ -112,123 +169,62 @@ app.get('/', (req, res) => {
   res.send('Welcome to the OwnsHub Backend API!');
 });
 // Follow a user
-app.post('/api/follow', authenticateToken, (req, res) => {
+app.post('/api/follow', authenticateToken, async (req, res) => {
   const follower = req.user.username;
   const { followee } = req.body;
   if (!followee || follower === followee) return res.status(400).json({ error: 'Invalid followee' });
-  // Increment following for follower
-  db.run('UPDATE profiles SET following = following + 1 WHERE username = ?', [follower], function(err) {
-    if (err) return res.status(500).json({ error: 'DB error (following)' });
-    // Increment followers for followee
-    db.run('UPDATE profiles SET followers = followers + 1 WHERE username = ?', [followee], function(err2) {
-      if (err2) return res.status(500).json({ error: 'DB error (followers)' });
-      res.json({ success: true });
-    });
-  });
+  try {
+    await Profile.updateOne({ username: follower }, { $inc: { following: 1 } });
+    await Profile.updateOne({ username: followee }, { $inc: { followers: 1 } });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Unfollow a user
-app.post('/api/unfollow', authenticateToken, (req, res) => {
+app.post('/api/unfollow', authenticateToken, async (req, res) => {
   const follower = req.user.username;
   const { followee } = req.body;
   if (!followee || follower === followee) return res.status(400).json({ error: 'Invalid followee' });
-  // Decrement following for follower
-  db.run('UPDATE profiles SET following = MAX(following - 1, 0) WHERE username = ?', [follower], function(err) {
-    if (err) return res.status(500).json({ error: 'DB error (following)' });
-    // Decrement followers for followee
-    db.run('UPDATE profiles SET followers = MAX(followers - 1, 0) WHERE username = ?', [followee], function(err2) {
-      if (err2) return res.status(500).json({ error: 'DB error (followers)' });
-      res.json({ success: true });
-    });
-  });
+  try {
+    await Profile.updateOne({ username: follower, following: { $gt: 0 } }, { $inc: { following: -1 } });
+    await Profile.updateOne({ username: followee, followers: { $gt: 0 } }, { $inc: { followers: -1 } });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
 });
 
-// SQLite setup
-const db = new sqlite3.Database('./ownshub.db');
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password TEXT
-  )`);
-  db.run(`CREATE TABLE IF NOT EXISTS comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    videoId INTEGER,
-    username TEXT,
-    text TEXT,
-    date TEXT
-  )`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS profiles (
-    username TEXT PRIMARY KEY,
-    displayName TEXT,
-    pronouns TEXT,
-    customPronouns TEXT,
-    bio TEXT,
-    avatar TEXT,
-    followers INTEGER DEFAULT 0,
-    following INTEGER DEFAULT 0
-  )`, (err) => {
-    if (err) console.error('Error creating profiles table:', err);
-  });
 
-  // Migration: Add followers and following columns if missing
-  db.run('ALTER TABLE profiles ADD COLUMN followers INTEGER DEFAULT 0', err => {
-    if (err && !/duplicate column/.test(err.message)) console.error('Migration error (followers):', err.message);
-  });
-  db.run('ALTER TABLE profiles ADD COLUMN following INTEGER DEFAULT 0', err => {
-    if (err && !/duplicate column/.test(err.message)) console.error('Migration error (following):', err.message);
-  });
 
-  // Arts table
-  db.run(`CREATE TABLE IF NOT EXISTS arts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    image TEXT,
-    title TEXT,
-    description TEXT,
-    date TEXT
-  )`, (err) => {
-    if (err) console.error('Error creating arts table:', err);
-  });
 
   // Get all art posts
-  app.get('/api/arts', (req, res) => {
-    db.all('SELECT * FROM arts ORDER BY id DESC', (err, rows) => {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json(rows);
-    });
+  app.get('/api/arts', async (req, res) => {
+    try {
+      const arts = await Art.find({}).sort({ _id: -1 });
+      res.json(arts);
+    } catch (err) {
+      res.status(500).json({ error: 'DB error' });
+    }
   });
 
   // Post new art (auth required)
-  app.post('/api/arts', authenticateToken, (req, res) => {
+  app.post('/api/arts', authenticateToken, async (req, res) => {
     const username = req.user.username;
-    const { image, title, description } = req.body;
+    const { image, title, description, tags } = req.body;
     if (!image || !title) return res.status(400).json({ error: 'Missing fields' });
     const date = new Date().toLocaleString();
-    db.run('INSERT INTO arts (username, image, title, description, date) VALUES (?, ?, ?, ?, ?)', [username, image, title, description, date], function(err) {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json({ id: this.lastID, username, image, title, description, date });
-    });
+    try {
+      const art = new Art({ username, image, title, description, date, tags });
+      await art.save();
+      res.json(art);
+    } catch (err) {
+      res.status(500).json({ error: 'DB error' });
+    }
   });
-  db.run(`CREATE TABLE IF NOT EXISTS art_posts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    image TEXT,
-    title TEXT,
-    description TEXT,
-    date TEXT
-  )`, (err) => {
-    if (err) console.error('Error creating art_posts table:', err);
-  });
-});
-// Get all art posts
-app.get('/api/art', (req, res) => {
-  db.all('SELECT * FROM art_posts ORDER BY id DESC', (err, rows) => {
-    if (err) return res.status(500).json({ error: 'DB error' });
-    res.json(rows);
-  });
-});
+
 
 // Post new art (auth required)
 app.post('/api/art', authenticateToken, (req, res) => {
@@ -242,50 +238,46 @@ app.post('/api/art', authenticateToken, (req, res) => {
   });
 });
 // Get profile (auth required for own, public for ?user=)
-app.get('/api/profile', (req, res) => {
+app.get('/api/profile', async (req, res) => {
   const username = req.query.user;
-  if (username) {
-    // Public profile view
-    db.get('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following FROM profiles WHERE username = ?', [username], (err, row) => {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json(row || {});
-    });
-  } else {
-    // Own profile (auth required)
-    authenticateToken(req, res, () => {
-      const user = req.user.username;
-      db.get('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following FROM profiles WHERE username = ?', [user], (err, row) => {
-        if (err) return res.status(500).json({ error: 'DB error' });
-        res.json(row || {});
+  try {
+    if (username) {
+      // Public profile view
+      const profile = await Profile.findOne({ username }, 'displayName pronouns customPronouns bio avatar followers following');
+      res.json(profile || {});
+    } else {
+      // Own profile (auth required)
+      authenticateToken(req, res, async () => {
+        const user = req.user.username;
+        const profile = await Profile.findOne({ username: user }, 'displayName pronouns customPronouns bio avatar followers following');
+        res.json(profile || {});
       });
-    });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
   }
 });
 
 // Update profile (auth required)
-app.post('/api/profile', authenticateToken, (req, res) => {
+app.post('/api/profile', authenticateToken, async (req, res) => {
   const username = req.user.username;
   const { displayName, pronouns, customPronouns, bio, avatar } = req.body;
-  // Fetch current followers/following to preserve them
-  db.get('SELECT followers, following FROM profiles WHERE username = ?', [username], (err, row) => {
-    let followers = 0, following = 0;
-    if (row) {
-      followers = row.followers || 0;
-      following = row.following || 0;
+  try {
+    let profile = await Profile.findOne({ username });
+    if (!profile) {
+      profile = new Profile({ username, displayName, pronouns, customPronouns, bio, avatar });
+    } else {
+      profile.displayName = displayName;
+      profile.pronouns = pronouns;
+      profile.customPronouns = customPronouns;
+      profile.bio = bio;
+      profile.avatar = avatar;
     }
-    db.run(`INSERT INTO profiles (username, displayName, pronouns, customPronouns, bio, avatar, followers, following)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(username) DO UPDATE SET displayName=excluded.displayName, pronouns=excluded.pronouns, customPronouns=excluded.customPronouns, bio=excluded.bio, avatar=excluded.avatar`,
-      [username, displayName, pronouns, customPronouns, bio, avatar, followers, following],
-      function(err) {
-        if (err) {
-          console.error('Profile save DB error:', err);
-          return res.status(500).json({ error: 'DB error', details: err.message });
-        }
-        res.json({ success: true });
-      }
-    );
-  });
+    await profile.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'DB error', details: err.message });
+  }
 });
 
 // Helper: authenticate JWT
@@ -301,50 +293,60 @@ function authenticateToken(req, res, next) {
 }
 
 // Register
-app.post('/api/signup', (req, res) => {
+app.post('/api/signup', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Missing fields' });
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-    if (row) return res.status(409).json({ error: 'Username exists' });
+  try {
+    const existing = await User.findOne({ username });
+    if (existing) return res.status(409).json({ error: 'Username exists' });
     const hash = bcrypt.hashSync(password, 10);
-    db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hash], function(err) {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
-      res.json({ token, username });
-    });
-  });
+    const user = new User({ username, password: hash });
+    await user.save();
+    const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
+    res.json({ token, username });
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Login
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-    if (!row) return res.status(401).json({ error: 'Invalid credentials' });
-    if (!bcrypt.compareSync(password, row.password)) return res.status(401).json({ error: 'Invalid credentials' });
+  try {
+    const user = await User.findOne({ username });
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!bcrypt.compareSync(password, user.password)) return res.status(401).json({ error: 'Invalid credentials' });
     const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
     res.json({ token, username });
-  });
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Post comment (no auth required, anonymous allowed)
-app.post('/api/comments', (req, res) => {
+app.post('/api/comments', async (req, res) => {
   const { videoId, text } = req.body;
   let username = req.body.username || 'Anonymous';
   if (!videoId || !text) return res.status(400).json({ error: 'Missing fields' });
   const date = new Date().toLocaleString();
-  db.run('INSERT INTO comments (videoId, username, text, date) VALUES (?, ?, ?, ?)', [videoId, username, text, date], function(err) {
-    if (err) return res.status(500).json({ error: 'DB error' });
-    res.json({ id: this.lastID, videoId, username, text, date });
-  });
+  try {
+    const comment = new Comment({ videoId, username, text, date });
+    await comment.save();
+    res.json(comment);
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Get comments for a video
-app.get('/api/comments/:videoId', (req, res) => {
+app.get('/api/comments/:videoId', async (req, res) => {
   const videoId = req.params.videoId;
-  db.all('SELECT * FROM comments WHERE videoId = ? ORDER BY id DESC', [videoId], (err, rows) => {
-    if (err) return res.status(500).json({ error: 'DB error' });
-    res.json(rows);
-  });
+  try {
+    const comments = await Comment.find({ videoId }).sort({ _id: -1 });
+    res.json(comments);
+  } catch (err) {
+    res.status(500).json({ error: 'DB error' });
+  }
 });
 
 server.listen(PORT, () => {

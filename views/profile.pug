@@ -1,0 +1,65 @@
+// Pug template for profile.html
+//- User Profile Page
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Profile - own's hub
+    link(rel="stylesheet" href="styles.css")
+    link(rel="stylesheet" href="profile.css")
+    link(rel="icon" type="image/png" href="logo2.png")
+  body
+    header.header
+      a.logo(href="index.html")
+        | 🔥 own's hub
+      nav.nav-links
+        a.nav-link(href="index.html") Home
+        a#loginNav.nav-link(href="login.html") Login
+        a#signupNav.nav-link(href="signup.html") Create Account
+        a#profileNav.nav-link(href="profile.html") Profile
+        a#signoutNav.nav-link(href="signout.html") Sign Out
+      script.
+        document.addEventListener('DOMContentLoaded', function() {
+          const loggedInUser = localStorage.getItem('loggedInUser');
+          const loginNav = document.getElementById('loginNav');
+          const signupNav = document.getElementById('signupNav');
+          const profileNav = document.getElementById('profileNav');
+          const signoutNav = document.getElementById('signoutNav');
+          if (loggedInUser) {
+            if (loginNav) loginNav.style.display = 'none';
+            if (signupNav) signupNav.style.display = 'none';
+            if (profileNav) profileNav.style.display = '';
+            if (signoutNav) signoutNav.style.display = '';
+          } else {
+            if (loginNav) loginNav.style.display = '';
+            if (signupNav) signupNav.style.display = '';
+            if (profileNav) profileNav.style.display = 'none';
+            if (signoutNav) signoutNav.style.display = 'none';
+          }
+        });
+    main.profile-main
+      .profile-container
+        h2 Your Profile
+        #profileInfo
+        #profileSavedMsg(style="display:none;color:green;margin-top:12px;font-weight:bold;")
+        #profileSummary.profile-summary
+        form#profileForm.profile-form(enctype="multipart/form-data")
+          label Profile Picture
+            input#profilePic(type="file" accept="image/*")
+          img#avatarPreview.profile-avatar(src="" alt="Profile Picture" style="display:none;")
+          label Display Name
+            input#displayName(type="text" maxlength="32")
+          label Pronouns
+            select#pronouns
+              option(value="") Select pronouns
+              option(value="he/him") he/him
+              option(value="she/her") she/her
+              option(value="they/them") they/them
+              option(value="custom") Custom
+            input#customPronouns(type="text" placeholder="Enter custom pronouns" style="display:none;")
+          label Bio
+            textarea#bio(maxlength="200" rows="3")
+          button(type="submit") Save Profile
+    script(src="profile.js")
