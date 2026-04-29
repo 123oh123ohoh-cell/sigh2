@@ -1,0 +1,5 @@
+{
+    "files.autoSave": "onWindowChange",
+    "chat.checkpoints.showFileChanges": true,
+    "chat.agent.sandbox.enabled": "on"
+}
