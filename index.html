@@ -17,17 +17,20 @@
             <a href="#" class="nav-link">Live</a>
             <a href="#" class="nav-link">Models</a>
             <a href="#" class="nav-link">Categories</a>
-            <a href="#" class="nav-link">Premium</a>
+            <a href="premium.html" class="nav-link">Premium</a>
             <a href="arts.html" class="nav-link">Arts</a>
             <!-- Profile and Sign Out moved to dropdown -->
         </nav>
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search models...">
         </div>
-
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
         <!-- Dropdown for login/profile -->
         <div class="profile-dropdown">
-            <button class="profile-btn" id="profileDropdownBtn">👤</button>
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
             <div class="dropdown-content" id="profileDropdownMenu">
                 <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
                 <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
@@ -38,25 +41,64 @@
         <script>
         // Switch dropdown menu and chat button based on login state
         document.addEventListener('DOMContentLoaded', function() {
-            function updateDropdownMenu() {
+            async function updateDropdownMenu() {
                 const loggedInUser = localStorage.getItem('loggedInUser');
+                const token = localStorage.getItem('token');
                 const profileLink = document.getElementById('profileLink');
                 const signoutLink = document.getElementById('signoutLink');
                 const dropdownLogin = document.getElementById('dropdownLogin');
                 const dropdownSignup = document.getElementById('dropdownSignup');
                 const chatHeaderBtn = document.getElementById('chatHeaderBtn');
-                if (loggedInUser) {
+                const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
+                const profileAvatarIcon = document.getElementById('profileAvatarIcon');
+                const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                if (loggedInUser && token) {
                     if (profileLink) profileLink.style.display = '';
                     if (signoutLink) signoutLink.style.display = '';
                     if (dropdownLogin) dropdownLogin.style.display = 'none';
                     if (dropdownSignup) dropdownSignup.style.display = 'none';
                     if (chatHeaderBtn) chatHeaderBtn.style.display = '';
+                    // Fetch premiumTier and avatar from backend
+                    let premiumTier = '';
+                    let avatar = '';
+                    try {
+                        const res = await fetch('https://ownshub.onrender.com/api/profile', {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            premiumTier = data.premiumTier;
+                            avatar = data.avatar;
+                        }
+                    } catch {}
+                    if (premiumBadgeHeader) {
+                        if (premiumTier) {
+                            let color = '#ffd700';
+                            if (premiumTier === 'Silver') color = '#c0c0c0';
+                            if (premiumTier === 'Bronze') color = '#cd7f32';
+                            premiumBadgeHeader.innerHTML = `<span style=\"padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;\">${premiumTier} Premium</span>`;
+                        } else {
+                            premiumBadgeHeader.innerHTML = '';
+                        }
+                    }
+                    // Set avatar icon
+                    if (profileAvatarIcon && avatar) {
+                        profileAvatarIcon.src = avatar;
+                        profileAvatarIcon.style.display = '';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
+                    } else {
+                        if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                    }
                 } else {
                     if (profileLink) profileLink.style.display = 'none';
                     if (signoutLink) signoutLink.style.display = 'none';
                     if (dropdownLogin) dropdownLogin.style.display = '';
                     if (dropdownSignup) dropdownSignup.style.display = '';
                     if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
+                    if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
+                    if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                    if (profileAvatarFallback) profileAvatarFallback.style.display = '';
                 }
             }
             updateDropdownMenu();
@@ -78,7 +120,7 @@
                 <p class="hero-subtitle">Connect with thousands of beautiful models in real-time. Premium HD shows, private sessions, and exclusive content.</p>
                 <div class="hero-buttons">
                     <button class="btn-primary" onclick="openPlayer(1)">🔥 Start Watching</button>
-                    <button class="btn-secondary">💎 Go Premium</button>
+                    <a href="premium.html" class="btn-secondary" style="display:inline-block;text-decoration:none;">💎 Go Premium</a>
                 </div>
             </div>
             <div class="hero-video">
@@ -189,7 +231,7 @@
                 <p class="hero-subtitle">Connect with thousands of beautiful models in real-time. Premium HD shows, private sessions, and exclusive content.</p>
                 <div class="hero-buttons">
                     <button class="btn-primary" onclick="openPlayer(1)">🔥 Start Watching</button>
-                    <button class="btn-secondary">💎 Go Premium</button>
+                    <a href="premium.html" class="btn-secondary" style="display:inline-block;text-decoration:none;">💎 Go Premium</a>
                 </div>
             </div>
             <div class="hero-video">
@@ -205,7 +247,7 @@
                 <p class="hero-subtitle">Connect with thousands of beautiful models in real-time. Premium HD shows, private sessions, and exclusive content.</p>
                 <div class="hero-buttons">
                     <button class="btn-primary" onclick="openPlayer(1)">🔥 Start Watching</button>
-                    <button class="btn-secondary">💎 Go Premium</button>
+                    <a href="premium.html" class="btn-secondary" style="display:inline-block;text-decoration:none;">💎 Go Premium</a>
                 </div>
             </div>
             <div class="hero-video">
@@ -221,7 +263,7 @@
                 <p class="hero-subtitle">i like this one</p>
                 <div class="hero-buttons">
                     <button class="btn-primary" onclick="openPlayer(1)">🔥 Start Watching</button>
-                    <button class="btn-secondary">💎 Go Premium</button>
+                    <a href="premium.html" class="btn-secondary" style="display:inline-block;text-decoration:none;">💎 Go Premium</a>
                 </div>
             </div>
             <div class="hero-video">

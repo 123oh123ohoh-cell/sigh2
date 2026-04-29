@@ -2,11 +2,20 @@
 function renderProfileSummary(data, username) {
     const summary = document.getElementById('profileSummary');
     let pronouns = data.pronouns === 'custom' ? data.customPronouns : data.pronouns;
+    // Premium badge
+    let premiumBadge = '';
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser && username === loggedInUser && data.premiumTier) {
+        let color = '#ffd700';
+        if (data.premiumTier === 'Silver') color = '#c0c0c0';
+        if (data.premiumTier === 'Bronze') color = '#cd7f32';
+        premiumBadge = `<span style="margin-left:8px;padding:2px 10px;border-radius:8px;background:${color};color:#181818;font-size:0.95em;font-weight:bold;vertical-align:middle;">${data.premiumTier} Premium</span>`;
+    }
     summary.innerHTML = `
         <div style="display:flex;align-items:center;gap:18px;">
             ${data.avatar ? `<img class='profile-avatar' src='${data.avatar}' alt='Avatar'>` : ''}
             <div>
-                <div><strong>${data.displayName || username}</strong></div>
+                <div><strong>${data.displayName || username}</strong> ${premiumBadge}</div>
                 ${pronouns ? `<div style='font-size:0.98em;color:var(--text-dark);'>${pronouns}</div>` : ''}
             </div>
         </div>

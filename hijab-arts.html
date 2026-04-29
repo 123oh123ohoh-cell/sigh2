@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arts Gallery - own's hub</title>
+    <title>Hijab Arts Gallery - own's hub</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="logo2.png">
     <style>
         .arts-gallery-page {
             min-height: 90vh;
             background: #181818;
-            padding: 80px 0 24px 0; /* Add top padding to prevent content from being hidden behind header */
+            padding: 80px 0 24px 0;
         }
         .arts-gallery {
             display: flex;
@@ -61,38 +61,6 @@
             margin-top: 24px;
             text-align: center;
         }
-        .post-art-form {
-            background: #222;
-            padding: 18px 18px 12px 18px;
-            border-radius: 12px;
-            display: inline-block;
-            max-width: 340px;
-        }
-        .post-art-form input[type="file"],
-        .post-art-form input[type="text"],
-        .post-art-form textarea {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 6px 8px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #181818;
-            color: #fff;
-        }
-        .post-art-form button {
-            background: linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);
-            color: #181818;
-            padding: 8px 24px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .post-art-form-title {
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #ffb347;
-        }
         @media (max-width: 600px) {
             .arts-gallery {
                 gap: 10px;
@@ -113,8 +81,8 @@
         <a href="index.html" class="logo"><img src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="arts.html" class="nav-link nav-link-active">Arts</a>
-            <a href="hijab-arts.html" class="nav-link">Hijab Arts</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="hijab-arts.html" class="nav-link nav-link-active">Hijab Arts</a>
         </nav>
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search models...">
@@ -201,10 +169,78 @@
         </script>
     </header>
     <main class="arts-gallery-page">
-        <h2 style="color:#ffb347;text-align:center;margin-bottom:24px;">Arts Gallery</h2>
+        <h2 style="color:#ffb347;text-align:center;margin-bottom:24px;">Hijab Arts Gallery</h2>
         <div id="artsGallery" class="arts-gallery"></div>
         <div id="postArtContainer" class="post-art-section"></div>
+        <script>
+        function showHijabPostArtForm() {
+            const container = document.getElementById('postArtContainer');
+            if (!container) return;
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const token = localStorage.getItem('token');
+            if (!loggedInUser || !token) {
+                container.innerHTML = '<p style="color:#bbb;">Log in to post your hijab art!</p>';
+                return;
+            }
+            container.innerHTML = `
+                <form id="postHijabArtForm" style="background:#222;padding:18px 18px 12px 18px;border-radius:12px;display:inline-block;max-width:340px;">
+                    <div style="margin-bottom:10px;font-weight:bold;color:#ffb347;">Post Your Hijab Art</div>
+                    <input type="file" id="hijabArtImage" accept="image/*" required style="margin-bottom:10px;width:100%;">
+                    <input type="text" id="hijabArtTitle" placeholder="Title" maxlength="40" required style="margin-bottom:10px;width:100%;padding:6px 8px;">
+                    <textarea id="hijabArtDesc" placeholder="Description (optional)" maxlength="120" rows="2" style="margin-bottom:10px;width:100%;padding:6px 8px;"></textarea>
+                    <button type="submit" style="background:linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);color:#181818;padding:8px 24px;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Post Art</button>
+                </form>
+            `;
+            document.getElementById('postHijabArtForm').onsubmit = async function(e) {
+                e.preventDefault();
+                const imgInput = document.getElementById('hijabArtImage');
+                const title = document.getElementById('hijabArtTitle').value.trim();
+                const desc = document.getElementById('hijabArtDesc').value.trim();
+                if (!imgInput.files[0]) return alert('Please select an image.');
+                const reader = new FileReader();
+                reader.onload = async function(evt) {
+                    const image = evt.target.result;
+                    try {
+                        const res = await fetch('/api/hijab-arts', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify({ image, title, description: desc })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.id) {
+                            await fetchAndRenderHijabArts();
+                            document.getElementById('postHijabArtForm').reset();
+                            alert('Hijab art posted!');
+                        } else {
+                            alert(data.error || 'Failed to post art.');
+                        }
+                    } catch {
+                        alert('Failed to post art.');
+                    }
+                };
+                reader.readAsDataURL(imgInput.files[0]);
+            };
+        }
+
+        async function fetchAndRenderHijabArts() {
+            try {
+                const res = await fetch('/api/hijab-arts');
+                const arts = await res.json();
+                renderHijabArtsGallery(arts);
+            } catch {
+                document.getElementById('artsGallery').innerHTML = '<p style="color:#bbb;text-align:center;">Failed to load arts.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchAndRenderHijabArts();
+            showHijabPostArtForm();
+        });
+        </script>
     </main>
-    <script src="arts.js"></script>
+    <script src="hijab-arts.js"></script>
 </body>
 </html>

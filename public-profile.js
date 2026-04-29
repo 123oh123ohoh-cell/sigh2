@@ -34,10 +34,34 @@ if (!username) {
             // Default avatar SVG (circle with user icon)
             const defaultAvatar = `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="54" fill="#e0e0e0" stroke="#fff" stroke-width="2"/><ellipse cx="55" cy="46" rx="26" ry="26" fill="#bdbdbd"/><ellipse cx="55" cy="85" rx="36" ry="20" fill="#bdbdbd"/></svg>`;
             let nameHtml = '';
+            // Premium badge (only for own profile, since we can't know others' premium from localStorage)
+            let premiumBadge = '';
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const token = localStorage.getItem('token');
+            let userPremiumTier = '';
+            if (loggedInUser && username === loggedInUser && token) {
+                try {
+                    // Synchronously fetch own premiumTier from backend
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'https://ownshub.onrender.com/api/profile', false);
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    xhr.send();
+                    if (xhr.status === 200) {
+                        const d = JSON.parse(xhr.responseText);
+                        userPremiumTier = d.premiumTier;
+                    }
+                } catch {}
+                if (userPremiumTier) {
+                    let color = '#ffd700';
+                    if (userPremiumTier === 'Silver') color = '#c0c0c0';
+                    if (userPremiumTier === 'Bronze') color = '#cd7f32';
+                    premiumBadge = `<span style=\"margin-left:8px;padding:2px 10px;border-radius:8px;background:${color};color:#181818;font-size:0.95em;font-weight:bold;vertical-align:middle;\">${userPremiumTier} Premium</span>`;
+                }
+            }
             if (username === 'own') {
-                nameHtml = `<span style="font-size:1.5em;font-weight:bold;background:linear-gradient(90deg,#ffb347 0%,#ff416c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${data.displayName || username}</span><br><span style="font-size:1em;font-weight:600;color:#ffb347;">Developer</span>`;
+                nameHtml = `<span style="font-size:1.5em;font-weight:bold;background:linear-gradient(90deg,#ffb347 0%,#ff416c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${data.displayName || username}</span><br><span style="font-size:1em;font-weight:600;color:#ffb347;">Developer</span> ${premiumBadge}`;
             } else {
-                nameHtml = `<div style="font-size:1.5em;font-weight:bold;">${data.displayName || username}</div>`;
+                nameHtml = `<div style="font-size:1.5em;font-weight:bold;">${data.displayName || username} ${premiumBadge}</div>`;
             }
             infoDiv.innerHTML = `
                 <div class="public-profile-summary">
