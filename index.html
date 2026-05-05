@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ow ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="lgo.svg">
 </head>
@@ -37,6 +38,7 @@
             <div class="dropdown-content" id="profileDropdownMenu">
                 <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
                 <a href="#" id="publicProfileLink" style="display:none;">View Public Profile</a>
+                <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
                 <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
                 <a href="login.html" id="dropdownLogin">Log In</a>
                 <a href="signup.html" id="dropdownSignup">Create Account</a>
@@ -56,6 +58,7 @@
                 const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
                 const profileAvatarIcon = document.getElementById('profileAvatarIcon');
                 const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                const settingsLink = document.getElementById('settingsLink');
                 if (loggedInUser && token) {
                     if (profileLink) profileLink.style.display = '';
                     const publicProfileLink = document.getElementById('publicProfileLink');
@@ -67,6 +70,7 @@
                         };
                     }
                     if (signoutLink) signoutLink.style.display = '';
+                    if (settingsLink) settingsLink.style.display = '';
                     if (dropdownLogin) dropdownLogin.style.display = 'none';
                     if (dropdownSignup) dropdownSignup.style.display = 'none';
                     if (chatHeaderBtn) chatHeaderBtn.style.display = '';
@@ -107,6 +111,7 @@
                     const publicProfileLink = document.getElementById('publicProfileLink');
                     if (publicProfileLink) publicProfileLink.style.display = 'none';
                     if (signoutLink) signoutLink.style.display = 'none';
+                    if (settingsLink) settingsLink.style.display = 'none';
                     if (dropdownLogin) dropdownLogin.style.display = '';
                     if (dropdownSignup) dropdownSignup.style.display = '';
                     if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
@@ -122,6 +127,24 @@
                     updateDropdownMenu();
                 }
             });
+        });
+        </script>
+        <!-- Donk Mode global logic -->
+        <script>
+        function setDonkMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('donk-mode');
+                localStorage.setItem('appearanceDonk', 'on');
+            } else {
+                document.body.classList.remove('donk-mode');
+                localStorage.setItem('appearanceDonk', 'off');
+            }
+        }
+        // On page load, apply Donk Mode if enabled
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('appearanceDonk') === 'on') {
+                setDonkMode(true);
+            }
         });
         </script>
     </header>
@@ -246,14 +269,6 @@
             <a href="#" class="footer-link">Safety</a>
             <a href="#" class="footer-link">Terms</a>
             <a href="#" class="footer-link">Privacy</a>
-            <a href="#" class="footer-link">Contact</a>
-        </div>
-        <p>&copy; 2024 ow ❤️. All rights reserved. Premium entertainment for everyone.</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
             <a href="#" class="footer-link">Contact</a>
         </div>
         <p>&copy; 2024 own's hub. All rights reserved. Premium entertainment for everyone.</p>

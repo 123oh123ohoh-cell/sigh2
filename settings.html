@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - own's hub</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="profile.css">
+        <link rel="stylesheet" href="settings.css">
+    <link rel="icon" type="image/png" href="logo2.png">
+</head>
+<body class="settings-page">
+    <header class="header">
+        <a href="index.html" class="logo">🔥 own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="login.html" class="nav-link" id="loginNav">Login</a>
+            <a href="signup.html" class="nav-link" id="signupNav">Create Account</a>
+            <a href="profile.html" class="nav-link" id="profileNav">Profile</a>
+            <a href="signout.html" class="nav-link" id="signoutNav">Sign Out</a>
+            <script>
+            // Responsive nav links for login state
+            document.addEventListener('DOMContentLoaded', function() {
+                const loggedInUser = localStorage.getItem('loggedInUser');
+                const loginNav = document.getElementById('loginNav');
+                const signupNav = document.getElementById('signupNav');
+                const profileNav = document.getElementById('profileNav');
+                const signoutNav = document.getElementById('signoutNav');
+                if (loggedInUser) {
+                    if (loginNav) loginNav.style.display = 'none';
+                    if (signupNav) signupNav.style.display = 'none';
+                    if (profileNav) profileNav.style.display = '';
+                    if (signoutNav) signoutNav.style.display = '';
+                } else {
+                    if (loginNav) loginNav.style.display = '';
+                    if (signupNav) signupNav.style.display = '';
+                    if (profileNav) profileNav.style.display = 'none';
+                    if (signoutNav) signoutNav.style.display = 'none';
+                }
+            });
+            </script>
+        </nav>
+    </header>
+    <main class="profile-main">
+        <div class="profile-container">
+            <h2 style="margin-bottom:0.5em;color:#d12a7a;">Settings</h2>
+            <div class="settings-layout">
+                <div class="settings-sidebar">
+                    <button class="settings-tab active" data-tab="account">Account</button>
+                    <button class="settings-tab" data-tab="notifications">Notifications</button>
+                    <button class="settings-tab" data-tab="appearance">Appearance</button>
+                    <button class="settings-tab" data-tab="security">Security</button>
+                </div>
+                <div class="settings-content">
+                    <div class="settings-panel" id="tab-account">
+                        <h3>Account</h3>
+                        <form id="accountForm" class="profile-form">
+                            <label>Display Name
+                                <input type="text" id="accountDisplayName" maxlength="32">
+                            </label>
+                            <label>Email
+                                <input type="email" id="accountEmail">
+                            </label>
+                            <button type="submit">Save Account</button>
+                        </form>
+                        <div id="accountSavedMsg" style="display:none;color:green;margin-top:12px;font-weight:bold;">Account saved!</div>
+                    </div>
+                    <div class="settings-panel" id="tab-notifications" style="display:none;">
+                        <h3>Notifications</h3>
+                        <form id="notificationsForm" class="profile-form">
+                            <label>Email Notifications
+                                <select id="emailNotifications">
+                                    <option value="on">On</option>
+                                    <option value="off">Off</option>
+                                </select>
+                            </label>
+                            <label>SMS Notifications
+                                <select id="smsNotifications">
+                                    <option value="on">On</option>
+                                    <option value="off">Off</option>
+                                </select>
+                            </label>
+                            <button type="submit">Save Notifications</button>
+                        </form>
+                        <div id="notificationsSavedMsg" style="display:none;color:green;margin-top:12px;font-weight:bold;">Notifications saved!</div>
+                    </div>
+                    <div class="settings-panel" id="tab-appearance" style="display:none;">
+                        <h3>Appearance</h3>
+                        <form id="appearanceForm" class="profile-form">
+                            <label>Theme
+                                <select id="themeSelect">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="donk">Donk</option>
+                                </select>
+                            </label>
+                            <div style="margin:18px 0 10px 0;">
+                                <span style="font-weight:500;display:block;margin-bottom:8px;">Accent Color</span>
+                                <div id="colorPalette" style="display:flex;gap:14px;flex-wrap:wrap;">
+                                    <span class="color-circle" data-color="#d12a7a" style="background:#d12a7a;"></span>
+                                    <span class="color-circle" data-color="#ffb347" style="background:#ffb347;"></span>
+                                    <span class="color-circle" data-color="#ffd700" style="background:#ffd700;"></span>
+                                    <span class="color-circle" data-color="#69b4ff" style="background:#69b4ff;"></span>
+                                    <span class="color-circle" data-color="#4caf50" style="background:#4caf50;"></span>
+                                    <span class="color-circle" data-color="#ff2222" style="background:#ff2222;"></span>
+                                    <span class="color-circle" data-color="#b347ff" style="background:#b347ff;"></span>
+                                    <span class="color-circle" data-color="#222" style="background:#222;"></span>
+                                </div>
+                            </div>
+                                <label style="display:flex;align-items:center;gap:12px;margin-top:10px;user-select:none;">
+                                    <span style="font-weight:500;">Donk Mode</span>
+                                    <span style="position:relative;display:inline-block;width:48px;height:26px;">
+                                        <input type="checkbox" id="donkToggle" style="opacity:0;width:0;height:0;">
+                                        <span id="donkSwitch" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ffd6e0;border-radius:18px;transition:.3s;"></span>
+                                        <span id="donkKnob" style="position:absolute;height:22px;width:22px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px #ffd6e0;"></span>
+                                    </span>
+                                </label>
+                            <button type="submit">Save Appearance</button>
+                        </form>
+                        <div id="appearanceSavedMsg" style="display:none;color:green;margin-top:12px;font-weight:bold;">Appearance saved!</div>
+                    </div>
+                    <div class="settings-panel" id="tab-security" style="display:none;">
+                        <h3>Security</h3>
+                        <form id="securityForm" class="profile-form">
+                            <label>Change Password
+                                <input type="password" id="newPassword" placeholder="New Password">
+                            </label>
+                            <button type="submit">Change Password</button>
+                        </form>
+                        <button type="button" id="deleteAccountBtn">Delete Account</button>
+                        <div id="securitySavedMsg" style="display:none;color:green;margin-top:12px;font-weight:bold;">Security updated!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+    // Tab switching logic
+    document.querySelectorAll('.settings-tab').forEach(function(tabBtn) {
+        tabBtn.addEventListener('click', function() {
+            document.querySelectorAll('.settings-tab').forEach(btn => btn.classList.remove('active'));
+            tabBtn.classList.add('active');
+            document.querySelectorAll('.settings-panel').forEach(panel => panel.style.display = 'none');
+            document.getElementById('tab-' + tabBtn.dataset.tab).style.display = '';
+        });
+    });
+
+    // Account form
+    document.getElementById('accountForm').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('accountSavedMsg').style.display = 'block';
+        setTimeout(function(){
+            document.getElementById('accountSavedMsg').style.display = 'none';
+        }, 2000);
+    };
+    // Notifications form
+    document.getElementById('notificationsForm').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('notificationsSavedMsg').style.display = 'block';
+        setTimeout(function(){
+            document.getElementById('notificationsSavedMsg').style.display = 'none';
+        }, 2000);
+    };
+    // Appearance form
+    function setDonkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('donk-mode');
+            if (!document.getElementById('donk-style')) {
+                const style = document.createElement('style');
+                style.id = 'donk-style';
+                style.innerHTML = `/* legacy donk mode fallback */`;
+                document.head.appendChild(style);
+            }
+            localStorage.setItem('appearanceDonk', 'on');
+        } else {
+            document.body.classList.remove('donk-mode');
+            const donkStyle = document.getElementById('donk-style');
+            if (donkStyle) donkStyle.remove();
+            localStorage.setItem('appearanceDonk', 'off');
+        }
+    }
+
+    document.getElementById('donkToggle').addEventListener('change', function(e) {
+        setDonkMode(e.target.checked);
+        // Animate switch
+        const switchBg = document.getElementById('donkSwitch');
+        const knob = document.getElementById('donkKnob');
+        if (e.target.checked) {
+            switchBg.style.background = '#ffd700';
+            knob.style.left = '24px';
+        } else {
+            switchBg.style.background = '#ffd6e0';
+            knob.style.left = '2px';
+        }
+    });
+
+    // Theme select persistence
+    document.getElementById('themeSelect').addEventListener('change', function(e) {
+        localStorage.setItem('appearanceTheme', e.target.value);
+        applyTheme(e.target.value);
+    });
+
+    function applyTheme(theme) {
+        // Remove any previous theme classes
+        document.body.classList.remove('theme-light', 'theme-dark');
+        if (theme === 'dark') {
+            document.body.classList.add('theme-dark');
+        } else {
+            document.body.classList.add('theme-light');
+        }
+    }
+
+    // Accent color palette logic
+    function setAccentColor(color) {
+        document.documentElement.style.setProperty('--accent-color', color);
+        localStorage.setItem('appearanceAccent', color);
+    }
+
+    function updateColorPaletteUI(selectedColor) {
+        document.querySelectorAll('.color-circle').forEach(function(circle) {
+            if (circle.getAttribute('data-color') === selectedColor) {
+                circle.classList.add('selected');
+            } else {
+                circle.classList.remove('selected');
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Donk Mode and Theme
+        const donkToggle = document.getElementById('donkToggle');
+        const switchBg = document.getElementById('donkSwitch');
+        const knob = document.getElementById('donkKnob');
+        if (donkToggle.checked) {
+            switchBg.style.background = '#ffd700';
+            knob.style.left = '24px';
+        } else {
+            switchBg.style.background = '#ffd6e0';
+            knob.style.left = '2px';
+        }
+        if (localStorage.getItem('appearanceDonk') === 'on') {
+            donkToggle.checked = true;
+            setDonkMode(true);
+            switchBg.style.background = '#ffd700';
+            knob.style.left = '24px';
+        }
+        const theme = localStorage.getItem('appearanceTheme') || 'light';
+        document.getElementById('themeSelect').value = theme;
+        applyTheme(theme);
+
+        // Accent color palette
+        const palette = document.getElementById('colorPalette');
+        if (palette) {
+            palette.addEventListener('click', function(e) {
+                if (e.target.classList.contains('color-circle')) {
+                    const color = e.target.getAttribute('data-color');
+                    setAccentColor(color);
+                    updateColorPaletteUI(color);
+                }
+            });
+            // Restore accent color from localStorage
+            const savedColor = localStorage.getItem('appearanceAccent') || '#d12a7a';
+            setAccentColor(savedColor);
+            updateColorPaletteUI(savedColor);
+        }
+    });
+
+    document.getElementById('appearanceForm').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('appearanceSavedMsg').style.display = 'block';
+        setTimeout(function(){
+            document.getElementById('appearanceSavedMsg').style.display = 'none';
+        }, 2000);
+    };
+    // Security form
+    document.getElementById('securityForm').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('securitySavedMsg').style.display = 'block';
+        setTimeout(function(){
+            document.getElementById('securitySavedMsg').style.display = 'none';
+        }, 2000);
+    };
+    // Delete account
+    document.getElementById('deleteAccountBtn').onclick = function() {
+        if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
+            // Add delete logic here
+            alert('Account deleted (demo only).');
+        }
+    };
+    </script>
+</body>
+</html>

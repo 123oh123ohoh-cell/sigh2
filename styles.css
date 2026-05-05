@@ -1165,3 +1165,106 @@ body {
     padding: 14px 6px;
   }
 }
+
+/* --- Donk Mode: Egg, Feminine, Cute/Sexy --- */
+body.donk-mode {
+    background: radial-gradient(ellipse at center, #ffb6d5 0%, #ff69b4 60%, #d72660 100%) fixed !important;
+}
+body.donk-mode .profile-container,
+body.donk-mode .settings-layout,
+body.donk-mode .settings-sidebar,
+body.donk-mode .settings-content,
+body.donk-mode .arts-gallery-page,
+body.donk-mode .arts-gallery,
+body.donk-mode .arts-card,
+body.donk-mode .post-art-section form,
+body.donk-mode .profile-form,
+body.donk-mode .main-content,
+body.donk-mode .card,
+body.donk-mode .panel,
+body.donk-mode .section {
+    background: linear-gradient(145deg, #fff0fa 60%, #ffb6d5 100%) !important;
+    border-radius: 40% 40% 50% 50%/60% 60% 40% 40%; /* egg/oval shape */
+    box-shadow: 0 8px 32px 8px rgba(255,105,180,0.22), 0 2px 0 #fff inset;
+    border: 2.5px solid #ff69b4;
+    padding: 18px 16px 22px 16px;
+}
+body.donk-mode .arts-card img,
+body.donk-mode .profile-avatar,
+body.donk-mode .egg-avatar {
+    border-radius: 50% 50% 40% 40%/60% 60% 40% 40%;
+    box-shadow: 0 2px 16px 2px rgba(255,182,213,0.25);
+    border: 3px solid #ff69b4;
+    background: #fff0fa;
+}
+body.donk-mode .settings-panel::after,
+body.donk-mode .arts-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 38px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.09) 100%);
+    border-radius: 40% 40% 0 0/60% 60% 0 0;
+    pointer-events: none;
+}
+body.donk-mode .settings-tab.active,
+body.donk-mode .settings-tab:hover,
+body.donk-mode .nav-link-active,
+body.donk-mode .btn-primary {
+    background: linear-gradient(90deg, #ff69b4 0%, #ffb6d5 100%) !important;
+    color: #fff !important;
+    font-weight: bold;
+    box-shadow: 0 2px 12px #ffb6d588;
+    border: 2px solid #ff69b4;
+    border-radius: 24px 24px 32px 32px;
+}
+body.donk-mode h1,
+body.donk-mode h2,
+body.donk-mode h3,
+body.donk-mode label {
+    color: #d72660 !important;
+    text-shadow: 0 2px 8px #fff0fa, 0 1px 0 #ffb6d5;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+    letter-spacing: 0.5px;
+}
+body.donk-mode .color-circle {
+    box-shadow: 0 4px 16px #ffb6d588, 0 1px 4px #fff8;
+    border: 3px solid #ffb6d5;
+    filter: drop-shadow(0 0 8px #ffd6f7);
+    transition: transform 0.18s;
+}
+body.donk-mode .color-circle.selected {
+    border: 3px solid #ff69b4;
+    outline: 2px solid #fff0fa;
+    box-shadow: 0 2px 18px #ff69b488;
+    transform: scale(1.12) rotate(-8deg);
+}
+body.donk-mode .profile-form button[type="submit"],
+body.donk-mode .btn-primary {
+    background: linear-gradient(90deg,#ff69b4 0%,#ffb6d5 100%);
+    color: #fff;
+    box-shadow: 0 2px 12px #ffb6d588;
+    border-radius: 24px 24px 32px 32px;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+    font-size: 1.1em;
+}
+body.donk-mode .profile-form button[type="submit"]:hover,
+body.donk-mode .btn-primary:hover {
+    background: linear-gradient(90deg,#d72660 10%,#ff69b4 60%,#ffb6d5 100%);
+    transform: scale(1.06);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap');
+
+body.donk-mode:not(.settings-page) {
+    font-family: 'Pacifico', 'Great Vibes', cursive, 'Comic Sans MS', 'Comic Sans', sans-serif;
+}
+body.donk-mode:not(.settings-page) h1,
+body.donk-mode:not(.settings-page) h2,
+body.donk-mode:not(.settings-page) h3,
+body.donk-mode:not(.settings-page) label,
+body.donk-mode:not(.settings-page) .nav-link,
+body.donk-mode:not(.settings-page) .settings-tab,
+body.donk-mode:not(.settings-page) .btn-primary {
+    font-family: 'Great Vibes', 'Pacifico', cursive, 'Comic Sans MS', 'Comic Sans', sans-serif !important;
+    letter-spacing: 0.5px;
+}
