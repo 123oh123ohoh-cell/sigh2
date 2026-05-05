@@ -140,10 +140,22 @@
                 localStorage.setItem('appearanceDonk', 'off');
             }
         }
-        // On page load, apply Donk Mode if enabled
+        function setMomMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('mom-mode');
+                localStorage.setItem('appearanceMom', 'on');
+            } else {
+                document.body.classList.remove('mom-mode');
+                localStorage.setItem('appearanceMom', 'off');
+            }
+        }
+        // On page load, apply Donk Mode or Mom Mode if enabled
         window.addEventListener('DOMContentLoaded', function() {
             if (localStorage.getItem('appearanceDonk') === 'on') {
                 setDonkMode(true);
+            }
+            if (localStorage.getItem('appearanceMom') === 'on') {
+                setMomMode(true);
             }
         });
         </script>
@@ -275,5 +287,7 @@
     </footer>
 
     <script src="script.js"></script>
+</main>
+
 </body>
 </html>

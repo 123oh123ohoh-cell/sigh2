@@ -1,3 +1,112 @@
+/* --- Mom Mode: Pink, Dark Pink, Brunette, Hearts --- */
+body.mom-mode {
+    background: radial-gradient(ellipse at center, #ffe0f0 0%, #ff69b4 60%, #a0522d 100%) fixed !important;
+}
+body.mom-mode .settings-layout,
+body.mom-mode .profile-container,
+body.mom-mode .settings-sidebar,
+body.mom-mode .settings-content {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+body.mom-mode .settings-panel,
+body.mom-mode .profile-form {
+    background: linear-gradient(145deg, #fff0fa 60%, #ffe0f0 100%) !important;
+    border-radius: 22px 22px 32px 32px;
+    box-shadow: 0 4px 24px 4px rgba(255,105,180,0.18), 0 1.5px 0 #fff inset;
+    border: 2.5px solid #a0522d;
+    padding: 18px 16px 22px 16px;
+}
+body.mom-mode .settings-panel::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 38px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.09) 100%);
+    border-radius: 22px 22px 0 0;
+    pointer-events: none;
+}
+body.mom-mode .settings-tab.active,
+body.mom-mode .settings-tab:hover {
+    background: linear-gradient(90deg, #ff69b4 0%, #a0522d 100%) !important;
+    color: #fff !important;
+    font-weight: bold;
+    box-shadow: 0 2px 12px #ffb6d588;
+    border: 2px solid #a0522d;
+}
+body.mom-mode h2,
+body.mom-mode h3,
+body.mom-mode label {
+    color: #a0522d !important;
+    text-shadow: 0 2px 8px #fff0fa, 0 1px 0 #ffb6d5;
+    position: relative;
+}
+body.mom-mode h2::after,
+body.mom-mode h3::after {
+    content: ' \2764'; /* heart */
+    color: #ff69b4;
+    margin-left: 8px;
+    font-size: 1.1em;
+    vertical-align: middle;
+}
+body.mom-mode .color-circle {
+    box-shadow: 0 4px 16px #ffb6d588, 0 1px 4px #fff8;
+    border: 3px solid #ffe0f0;
+    filter: drop-shadow(0 0 8px #ffd6f7);
+}
+body.mom-mode .color-circle.selected {
+    border: 3px solid #ff69b4;
+    outline: 2px solid #fff0fa;
+    box-shadow: 0 2px 18px #ff69b488;
+}
+body.mom-mode .profile-form button[type="submit"] {
+    background: linear-gradient(90deg,#ff69b4 0%,#a0522d 100%);
+    color: #fff;
+    box-shadow: 0 2px 12px #ffb6d588;
+    position: relative;
+}
+body.mom-mode .profile-form button[type="submit"]:after {
+    content: ' \2764';
+    color: #ff69b4;
+    margin-left: 8px;
+    font-size: 1.1em;
+    vertical-align: middle;
+}
+body.mom-mode .profile-form button[type="submit"]:hover {
+    background: linear-gradient(90deg,#a0522d 10%,#ff69b4 60%,#ffe0f0 100%);
+}
+body.mom-mode .settings-content::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 40px;
+    left: 60px;
+    width: 120px;
+    height: 60px;
+    background: radial-gradient(circle at 40% 40%, #fff8 0%, #fff0 80%);
+    border-radius: 50%;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 1;
+}
+body.mom-mode .nav-link, body.mom-mode .footer-link {
+    position: relative;
+}
+body.mom-mode .nav-link::after, body.mom-mode .footer-link::after {
+    content: ' \2764';
+    color: #ff69b4;
+    margin-left: 4px;
+    font-size: 1em;
+    vertical-align: middle;
+    opacity: 0.7;
+}
+body.mom-mode.settings-page .profile-container,
+body.mom-mode.settings-page .settings-layout,
+body.mom-mode.settings-page .settings-sidebar,
+body.mom-mode.settings-page .settings-content,
+body.mom-mode.settings-page .settings-panel,
+body.mom-mode.settings-page .profile-form {
+    all: unset;
+}
 /* Button style for edit profile */
 .btn {
     display: inline-block;

@@ -92,6 +92,7 @@
                                     <option value="light">Light</option>
                                     <option value="dark">Dark</option>
                                     <option value="donk">Donk</option>
+                                    <option value="mom">Mom</option>
                                 </select>
                             </label>
                             <div style="margin:18px 0 10px 0;">
@@ -113,6 +114,14 @@
                                         <input type="checkbox" id="donkToggle" style="opacity:0;width:0;height:0;">
                                         <span id="donkSwitch" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ffd6e0;border-radius:18px;transition:.3s;"></span>
                                         <span id="donkKnob" style="position:absolute;height:22px;width:22px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px #ffd6e0;"></span>
+                                    </span>
+                                </label>
+                                <label style="display:flex;align-items:center;gap:12px;margin-top:10px;user-select:none;">
+                                    <span style="font-weight:500;">Mom Mode</span>
+                                    <span style="position:relative;display:inline-block;width:48px;height:26px;">
+                                        <input type="checkbox" id="momToggle" style="opacity:0;width:0;height:0;">
+                                        <span id="momSwitch" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#e0ffe0;border-radius:18px;transition:.3s;"></span>
+                                        <span id="momKnob" style="position:absolute;height:22px;width:22px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px #e0ffe0;"></span>
                                     </span>
                                 </label>
                             <button type="submit">Save Appearance</button>
@@ -180,6 +189,26 @@
         }
     }
 
+    function setMomMode(enabled) {
+        if (enabled) {
+            document.body.classList.remove('donk-mode');
+            document.body.classList.add('mom-mode');
+            if (!document.getElementById('mom-style')) {
+                const style = document.createElement('style');
+                style.id = 'mom-style';
+                style.innerHTML = `/* legacy mom mode fallback */`;
+                document.head.appendChild(style);
+            }
+            localStorage.setItem('appearanceMom', 'on');
+        } else {
+            document.body.classList.remove('mom-mode');
+            const momStyle = document.getElementById('mom-style');
+            if (momStyle) momStyle.remove();
+            localStorage.setItem('appearanceMom', 'off');
+        }
+    }
+
+
     document.getElementById('donkToggle').addEventListener('change', function(e) {
         setDonkMode(e.target.checked);
         // Animate switch
@@ -191,6 +220,34 @@
         } else {
             switchBg.style.background = '#ffd6e0';
             knob.style.left = '2px';
+        }
+    });
+
+    const momToggle = document.getElementById('momToggle');
+    const momSwitchBg = document.getElementById('momSwitch');
+    const momKnob = document.getElementById('momKnob');
+    function updateMomSwitchUI(enabled) {
+        if (enabled) {
+            momSwitchBg.style.background = 'linear-gradient(90deg,#ff69b4 0%,#a0522d 100%)';
+            momKnob.style.left = '24px';
+            momKnob.style.background = '#ff69b4';
+            momKnob.style.boxShadow = '0 1px 8px #ff69b4cc';
+        } else {
+            momSwitchBg.style.background = '#ffe0f0';
+            momKnob.style.left = '2px';
+            momKnob.style.background = '#fff';
+            momKnob.style.boxShadow = '0 1px 4px #ffe0f0';
+        }
+    }
+    momToggle.addEventListener('change', function(e) {
+        setMomMode(e.target.checked);
+        updateMomSwitchUI(e.target.checked);
+    });
+    // Clicking the switch background toggles the checkbox (like Donk Mode)
+    momSwitchBg.addEventListener('click', function(e) {
+        if (e.target !== momToggle) {
+            momToggle.checked = !momToggle.checked;
+            momToggle.dispatchEvent(new Event('change'));
         }
     });
 
@@ -227,23 +284,39 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Apply Donk Mode or Mom Mode on page load
+        if (localStorage.getItem('appearanceDonk') === 'on') {
+            document.body.classList.add('donk-mode');
+        }
+        if (localStorage.getItem('appearanceMom') === 'on') {
+            document.body.classList.add('mom-mode');
+        }
         // Donk Mode and Theme
         const donkToggle = document.getElementById('donkToggle');
-        const switchBg = document.getElementById('donkSwitch');
-        const knob = document.getElementById('donkKnob');
+        const donkSwitchBg = document.getElementById('donkSwitch');
+        const donkKnob = document.getElementById('donkKnob');
         if (donkToggle.checked) {
-            switchBg.style.background = '#ffd700';
-            knob.style.left = '24px';
+            donkSwitchBg.style.background = '#ffd700';
+            donkKnob.style.left = '24px';
         } else {
-            switchBg.style.background = '#ffd6e0';
-            knob.style.left = '2px';
+            donkSwitchBg.style.background = '#ffd6e0';
+            donkKnob.style.left = '2px';
         }
         if (localStorage.getItem('appearanceDonk') === 'on') {
             donkToggle.checked = true;
             setDonkMode(true);
-            switchBg.style.background = '#ffd700';
-            knob.style.left = '24px';
+            donkSwitchBg.style.background = '#ffd700';
+            donkKnob.style.left = '24px';
         }
+
+        // Mom Mode
+        updateMomSwitchUI(momToggle.checked);
+        if (localStorage.getItem('appearanceMom') === 'on') {
+            momToggle.checked = true;
+            setMomMode(true);
+            updateMomSwitchUI(true);
+        }
+
         const theme = localStorage.getItem('appearanceTheme') || 'light';
         document.getElementById('themeSelect').value = theme;
         applyTheme(theme);

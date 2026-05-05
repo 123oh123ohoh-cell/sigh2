@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">🔥 own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="upload.html" class="nav-link active">Upload</a>
+        </nav>
+    </header>
+    <main class="profile-main">
+        <div class="profile-container" style="max-width:500px;margin-top:60px;">
+            <h2>Upload a Video</h2>
+            <form id="uploadForm" class="profile-form">
+                <label>Title
+                    <input type="text" id="videoTitle" maxlength="100" required>
+                </label>
+                <!-- Description field removed; will be set randomly in JS -->
+                <label>Category
+                    <select id="videoCategory" required>
+                        <option value="Live Now">Live Now</option>
+                        <option value="New Girls">New Girls</option>
+                        <option value="Mature">Mature</option>
+                        <option value="HD Shows">HD Shows</option>
+                        <option value="Private">Private</option>
+                        <option value="Latin">Latin</option>
+                        <option value="Couples">Couples</option>
+                        <option value="Asian">Asian</option>
+                        <option value="Ebony">Ebony</option>
+                    </select>
+                </label>
+                <label>Video Type
+                    <select id="videoType" required>
+                        <option value="youtube">YouTube</option>
+                        <option value="embed">Embed</option>
+                        <option value="pornhub">Pornhub</option>
+                    </select>
+                </label>
+                <div id="youtubeInputWrap">
+                    <label>YouTube Video ID
+                        <input type="text" id="youtubeId" maxlength="20" placeholder="e.g. xhF9cTUAw_Y">
+                    </label>
+                    <button type="button" id="previewYoutubeBtn" style="margin-top:6px;">View</button>
+                </div>
+                <div id="embedInputWrap" style="display:none">
+                    <label>Embed URL
+                        <input type="text" id="embedUrl" maxlength="300" placeholder="e.g. https://player.vimeo.com/video/123456 or any iframe src">
+                    </label>
+                    <button type="button" id="previewEmbedBtn" style="margin-top:6px;">View</button>
+                    <small>Paste any valid embed link (YouTube, Vimeo, Pornhub, etc.)</small>
+                </div>
+                <div id="pornhubInputWrap" style="display:none">
+                    <label>Pornhub Link
+                        <input type="text" id="pornhubUrl" maxlength="300" placeholder="e.g. https://www.pornhub.com/view_video.php?viewkey=...">
+                    </label>
+                    <button type="button" id="previewPornhubBtn" style="margin-top:6px;">View</button>
+                    <small>Paste a direct Pornhub video link (view_video.php?viewkey=...)</small>
+                </div>
+                <div id="previewWrap" style="display:none;margin:18px 0 0 0;text-align:center;">
+                    <b>Preview:</b><br>
+                    <iframe id="previewIframe" width="400" height="225" style="border:1px solid #ccc;border-radius:8px;" allowfullscreen></iframe>
+                </div>
+                <!-- Duration field removed; will be set automatically in JS -->
+                <button type="submit">Upload Video</button>
+            </form>
+            <div id="uploadMsg" style="display:none;margin-top:18px;font-weight:bold;"></div>
+            <div id="uploadedVideosList" style="margin-top:32px;"></div>
+        </div>
+    </main>
+    <script>
+    // Ensure DOM is loaded before attaching events
+    window.addEventListener('DOMContentLoaded', function() {
+        renderUploadedVideos();
+        // Render uploaded videos with delete buttons
+        function renderUploadedVideos() {
+                    const container = document.getElementById('uploadedVideosList');
+                    let uploaded = [];
+                    try {
+                        uploaded = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+                    } catch {}
+                    if (!uploaded.length) {
+                        container.innerHTML = '<b>No uploaded videos yet.</b>';
+                        return;
+                    }
+                    container.innerHTML = '<b>Your Uploaded Videos:</b><br>' + uploaded.map((v, idx) => `
+                        <div style="margin:10px 0;padding:8px;border:1px solid #ccc;border-radius:6px;display:flex;align-items:center;gap:12px;">
+                            <span style="flex:1;">${v.title} <span style="color:#888;font-size:0.9em;">(${v.duration})</span></span>
+                            <button type="button" data-del-idx="${idx}" style="background:#e66;color:#fff;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;">Delete</button>
+                        </div>
+                    `).join('');
+                    // Attach delete handlers
+                    Array.from(container.querySelectorAll('button[data-del-idx]')).forEach(btn => {
+                        btn.onclick = function() {
+                            const idx = parseInt(this.getAttribute('data-del-idx'));
+                            uploaded.splice(idx, 1);
+                            localStorage.setItem('uploadedVideos', JSON.stringify(uploaded));
+                            renderUploadedVideos();
+                        };
+                    });
+                }
+        // Video type switching logic
+        document.getElementById('videoType').addEventListener('change', function() {
+            document.getElementById('youtubeInputWrap').style.display = 'none';
+            document.getElementById('embedInputWrap').style.display = 'none';
+            document.getElementById('pornhubInputWrap').style.display = 'none';
+            if (this.value === 'youtube') {
+                document.getElementById('youtubeInputWrap').style.display = '';
+            } else if (this.value === 'embed') {
+                document.getElementById('embedInputWrap').style.display = '';
+            } else if (this.value === 'pornhub') {
+                document.getElementById('pornhubInputWrap').style.display = '';
+            }
+        });
+
+        // Preview logic for YouTube
+        document.getElementById('previewYoutubeBtn').onclick = function() {
+            const youtubeId = document.getElementById('youtubeId').value.trim();
+            if (!youtubeId) return;
+            const src = `https://www.youtube.com/embed/${youtubeId}`;
+            showPreview(src);
+        };
+        // Preview logic for embed
+        document.getElementById('previewEmbedBtn').onclick = function() {
+            let input = document.getElementById('embedUrl').value.trim();
+            if (!input) return;
+            let url = input;
+            // If input is an iframe HTML, extract the src attribute
+            if (input.startsWith('<iframe')) {
+                const match = input.match(/src=["']([^"']+)["']/i);
+                if (match && match[1]) {
+                    url = match[1];
+                } else {
+                    alert('Could not extract src from iframe.');
+                    return;
+                }
+            }
+            // Convert YouTube links to embed if needed
+            if (/youtube\.com|youtu\.be/.test(url)) {
+                if (/youtu\.be\//.test(url)) {
+                    const id = url.split('youtu.be/')[1].split(/[?&]/)[0];
+                    url = `https://www.youtube.com/embed/${id}`;
+                }
+                if (/watch\?v=/.test(url)) {
+                    const id = url.split('watch?v=')[1].split(/[?&]/)[0];
+                    url = `https://www.youtube.com/embed/${id}`;
+                }
+            }
+            showPreview(url);
+        };
+        // Pornhub link to embed and id
+        function pornhubUrlToEmbed(url) {
+            // https://www.pornhub.com/view_video.php?viewkey=69f3640a48553
+            const match = url.match(/[?&]viewkey=([a-zA-Z0-9]+)/);
+            if (match && match[1]) {
+                return {
+                    embed: `https://www.pornhub.com/embed/${match[1]}`,
+                    id: match[1]
+                };
+            }
+            return null;
+        }
+        // Preview logic for Pornhub
+        document.getElementById('previewPornhubBtn').onclick = function() {
+            let input = document.getElementById('pornhubUrl').value.trim();
+            if (!input) return;
+            const match = pornhubUrlToEmbed(input);
+            if (match) {
+                showPreview(match.embed);
+            } else {
+                alert('Invalid Pornhub link.');
+            }
+        };
+        function showPreview(src) {
+            const wrap = document.getElementById('previewWrap');
+            const iframe = document.getElementById('previewIframe');
+            iframe.src = src;
+            wrap.style.display = '';
+        }
+
+        // Save uploaded video to localStorage and redirect to index.html
+        document.getElementById('uploadForm').onsubmit = function(e) {
+            e.preventDefault();
+            const title = document.getElementById('videoTitle').value.trim();
+            const category = document.getElementById('videoCategory').value;
+            const videoType = document.getElementById('videoType').value;
+            const youtubeId = document.getElementById('youtubeId').value.trim();
+            const embedUrl = document.getElementById('embedUrl').value.trim();
+            const pornhubUrl = document.getElementById('pornhubUrl') ? document.getElementById('pornhubUrl').value.trim() : '';
+            if (videoType === 'youtube' && !youtubeId) return;
+            let embedSrc = embedUrl;
+            let pornhubId = '';
+            if (videoType === 'embed') {
+                if (!embedUrl) return;
+                // If user pasted iframe HTML, extract src
+                if (embedUrl.startsWith('<iframe')) {
+                    const match = embedUrl.match(/src=["']([^"']+)["']/i);
+                    if (match && match[1]) {
+                        embedSrc = match[1];
+                    }
+                }
+                // If it's a Pornhub view_video.php or embed link, extract the id
+                let match;
+                if ((match = embedSrc.match(/pornhub\.com\/view_video\.php\?viewkey=([a-zA-Z0-9]+)/))) {
+                    pornhubId = match[1];
+                    embedSrc = `https://www.pornhub.com/embed/${pornhubId}`;
+                } else if ((match = embedSrc.match(/pornhub\.com\/embed\/([a-zA-Z0-9]+)/))) {
+                    pornhubId = match[1];
+                }
+            } else if (videoType === 'pornhub') {
+                if (!pornhubUrl) return;
+                // Pornhub direct link: https://www.pornhub.com/view_video.php?viewkey=69f3640a48553
+                const match = pornhubUrlToEmbed(pornhubUrl);
+                if (match) {
+                    embedSrc = match.embed;
+                    pornhubId = match.id;
+                } else {
+                    alert('Invalid Pornhub link.');
+                    return;
+                }
+            }
+
+            // Get a random description from built-in videos
+            const defaultDescriptions = [
+                "Hot blonde bombshell Mia Rose in an exclusive private show. Watch her tease and please in this steamy session.",
+                "Seductive Latina Luna Star takes control in this interactive experience. Your requests become reality.",
+                "Experienced MILF Sophie Dee shows you what real pleasure feels like. Pure seduction and passion.",
+                "Wild and adventurous Abella Danger brings the heat in this intense rough play session.",
+                "Gorgeous Angela White gives you the ultimate sensual massage experience. Relax and enjoy.",
+                "Playful Riley Reid takes you on naughty adventures. Full of surprises and pleasure.",
+                "Timeless beauty Jenna Haze in a classic performance. Elegance meets passion.",
+                "All-natural beauty Lena Paul showcases her amazing curves in this intimate session.",
+                "Confident MILF Kendra Lust delivers an unforgettable experience. Pure pleasure guaranteed.",
+                "Sweet and innocent Eva Elfie fulfills your teen fantasies. Playful and passionate.",
+                "Powerful dominatrix Phoenix Marie takes control. Submit to her commands.",
+                "Huntress Brandi Love stalks her prey in this intense cougar session. Raw and wild."
+            ];
+            const description = defaultDescriptions[Math.floor(Math.random() * defaultDescriptions.length)];
+            // Pick a random duration from the built-in videos in script.js
+            const defaultDurations = [
+                "45 min", "2 hrs", "1 hr", "3 hrs", "2.5 hrs", "1.5 hrs", "2 hrs", "3.5 hrs"
+            ];
+            const duration = defaultDurations[Math.floor(Math.random() * defaultDurations.length)];
+
+            // Build thumbnail (fix: always define thumbnail)
+            let thumbnail = '';
+            let done = false;
+            function finishUpload(thumbnailUrl) {
+                const video = {
+                    id: Date.now(),
+                    title,
+                    youtubeId: videoType === 'youtube' ? youtubeId : '',
+                    embedUrl: videoType !== 'youtube' ? embedSrc : '',
+                    description,
+                    category,
+                    duration,
+                    rating: 5.0,
+                    views: 0,
+                    isLive: false,
+                    type: videoType,
+                    thumbnail: thumbnailUrl
+                };
+                let uploaded = [];
+                try {
+                    uploaded = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+                } catch {}
+                uploaded.push(video);
+                localStorage.setItem('uploadedVideos', JSON.stringify(uploaded));
+                document.getElementById('uploadMsg').style.display = 'block';
+                document.getElementById('uploadMsg').textContent = 'Video uploaded! Redirecting...';
+                renderUploadedVideos();
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1200);
+            }
+            if (videoType === 'youtube' && youtubeId) {
+                thumbnail = `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
+                finishUpload(thumbnail);
+                done = true;
+            } else if ((videoType === 'embed' || videoType === 'pornhub') && pornhubId) {
+                // Try Pornhub oEmbed API for thumbnail
+                fetch(`https://www.pornhub.com/oembed?url=https://www.pornhub.com/view_video.php?viewkey=${pornhubId}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data && data.thumbnail_url) {
+                            finishUpload(data.thumbnail_url);
+                        } else {
+                            finishUpload(`https://di.phncdn.com/videos/${pornhubId}/thumbs_15/(thumb)00001.jpg`);
+                        }
+                    })
+                    .catch(() => {
+                        finishUpload(`https://di.phncdn.com/videos/${pornhubId}/thumbs_15/(thumb)00001.jpg`);
+                    });
+                done = true;
+            } else if (videoType === 'embed') {
+                // Try to extract poster from iframe HTML if pasted
+                if (embedUrl.startsWith('<iframe')) {
+                    const posterMatch = embedUrl.match(/poster=["']([^"']+)['"]/i);
+                    if (posterMatch && posterMatch[1]) {
+                        thumbnail = posterMatch[1];
+                    }
+                }
+                // Otherwise, use a generic placeholder
+                if (!thumbnail) {
+                    thumbnail = 'https://via.placeholder.com/320x180?text=Embed';
+                }
+                finishUpload(thumbnail);
+                done = true;
+            }
+            if (done) return;
+
+            const video = {
+                id: Date.now(),
+                title,
+                youtubeId: videoType === 'youtube' ? youtubeId : '',
+                embedUrl: videoType !== 'youtube' ? embedSrc : '',
+                description,
+                category,
+                duration,
+                rating: 5.0,
+                views: 0,
+                isLive: false,
+                type: videoType,
+                thumbnail
+            };
+                    // Pornhub link to embed and id
+                    function pornhubUrlToEmbed(url) {
+                        // https://www.pornhub.com/view_video.php?viewkey=69f3640a48553
+                        const match = url.match(/[?&]viewkey=([a-zA-Z0-9]+)/);
+                        if (match && match[1]) {
+                            return {
+                                embed: `https://www.pornhub.com/embed/${match[1]}`,
+                                id: match[1]
+                            };
+                        }
+                        return null;
+                    }
+                    // Preview logic for Pornhub
+                    document.getElementById('previewPornhubBtn').onclick = function() {
+                        let input = document.getElementById('pornhubUrl').value.trim();
+                        if (!input) return;
+                        const match = pornhubUrlToEmbed(input);
+                        if (match) {
+                            showPreview(match.embed);
+                        } else {
+                            alert('Invalid Pornhub link.');
+                        }
+                    };
+            // Save to localStorage
+            let uploaded = [];
+            try {
+                uploaded = JSON.parse(localStorage.getItem('uploadedVideos') || '[]');
+            } catch {}
+            uploaded.push(video);
+            localStorage.setItem('uploadedVideos', JSON.stringify(uploaded));
+            document.getElementById('uploadMsg').style.display = 'block';
+            document.getElementById('uploadMsg').textContent = 'Video uploaded! Redirecting...';
+            renderUploadedVideos();
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1200);
+        };
+        // Preview logic for YouTube
+        document.getElementById('previewYoutubeBtn').onclick = function() {
+            const youtubeId = document.getElementById('youtubeId').value.trim();
+            if (!youtubeId) return;
+            const src = `https://www.youtube.com/embed/${youtubeId}`;
+            showPreview(src);
+        };
+        // Preview logic for embed
+        document.getElementById('previewEmbedBtn').onclick = function() {
+            let input = document.getElementById('embedUrl').value.trim();
+            if (!input) return;
+            let url = input;
+            // If input is an iframe HTML, extract the src attribute
+            if (input.startsWith('<iframe')) {
+                const match = input.match(/src=["']([^"']+)["']/i);
+                if (match && match[1]) {
+                    url = match[1];
+                } else {
+                    alert('Could not extract src from iframe.');
+                    return;
+                }
+            }
+            // Convert YouTube links to embed if needed
+            if (/youtube\.com|youtu\.be/.test(url)) {
+                if (/youtu\.be\//.test(url)) {
+                    const id = url.split('youtu.be/')[1].split(/[?&]/)[0];
+                    url = `https://www.youtube.com/embed/${id}`;
+                }
+                if (/watch\?v=/.test(url)) {
+                    const id = url.split('watch?v=')[1].split(/[?&]/)[0];
+                    url = `https://www.youtube.com/embed/${id}`;
+                }
+            }
+            showPreview(url);
+        };
+        function showPreview(src) {
+            const wrap = document.getElementById('previewWrap');
+            const iframe = document.getElementById('previewIframe');
+            iframe.src = src;
+            wrap.style.display = '';
+        }
+    });
+    </script>
+</body>
+</html>
