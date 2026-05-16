@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hijab Arts (hypnosis) - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo2.png">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #fff0fa 0%, #ffd6ec 40%, #ffb6d5 70%, #ff69b4 100%);
+            animation: hypnotic-bg 10s linear infinite alternate;
+        }
+        @keyframes hypnotic-bg {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-radial-gradient(circle at 50% 30%, #fff0fa 0px, #ffd6ec 20px, #ffb6d5 40px, #ff69b4 60px);
+            opacity: 0.13;
+            z-index: 0;
+            pointer-events: none;
+            animation: swirl 12s linear infinite;
+        }
+        @keyframes swirl {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 44px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: linear-gradient(145deg, #fff0fa 60%, #ffd6ec 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            padding: 28px 20px 36px 20px;
+            width: 230px;
+            box-shadow: 0 8px 32px 8px #ffb6d5, 0 1.5px 0 #fff inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 3px solid #ff69b4;
+            position: relative;
+            overflow: visible;
+        }
+        .arts-card .hypno {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: repeating-conic-gradient(from 0deg, #fff0fa 0deg 20deg, #ffb6d5 20deg 40deg, #ff69b4 40deg 60deg, #ffd6ec 60deg 80deg);
+            border-radius: 50%;
+            border: 2px solid #ff69b4;
+            animation: spin 2.5s linear infinite;
+            z-index: 3;
+            box-shadow: 0 0 16px #ffb6d5, 0 0 32px #ffd6ec;
+        }
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+        .arts-card img {
+            width: 160px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            background: #fff0fa;
+            box-shadow: 0 2px 24px 4px #fff, 0 2px 16px 2px #ffd6ec;
+            border: 3px solid #ffb6d5;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 16px #fff8) drop-shadow(0 4px 18px #ffb6d5);
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d72660;
+            font-size: 1.22em;
+            letter-spacing: 0.7px;
+            text-shadow: 0 1px 10px #fff0fa, 0 2px 14px #ffb6d5;
+        }
+        .arts-card .desc {
+            font-size: 1em;
+            color: #b3005e;
+            min-height: 32px;
+            text-align: center;
+            font-style: italic;
+        }
+        h2 {
+            color: #ff69b4;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 28px #ffd6ec, 0 1px 0 #fff0fa;
+            font-family: 'Pacifico', cursive, sans-serif;
+        }
+        .egg-icon {
+            display: inline-block;
+            width: 40px;
+            height: 56px;
+            background: radial-gradient(ellipse at 50% 60%, #fff 70%, #ffd6ec 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            margin-right: 14px;
+            vertical-align: middle;
+            box-shadow: 0 2px 14px #ffb6d5;
+            border: 2px solid #ffb6d5;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery { gap: 18px; }
+            .arts-card { width: 98vw; padding: 14px; }
+            .arts-card img { width: 80vw; height: 38vw; }
+        }
+        .arts-card.wet::before {
+            content: '';
+            position: absolute;
+            top: -18px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 60px;
+            background: radial-gradient(circle, #fff8 60%, #ffd6ec88 100%);
+            border-radius: 50%;
+            opacity: 0.7;
+            filter: blur(2px);
+            z-index: 2;
+            pointer-events: none;
+            animation: drip-wet 2.2s infinite linear;
+        }
+        @keyframes drip-wet {
+            0% { opacity: 0.7; }
+            80% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
+            </div>
+        </div>
+        <script>
+            // ...existing code for dropdown and profile...
+        </script>
+    </header>
+    <main class="arts-gallery-page">
+        <h2>Hijab Arts (hypnosis)</h2>
+        <div class="arts-gallery">
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg','Ovary Anatomy','The ovary is a key part of the female reproductive system, responsible for producing eggs and hormones.')"><div class="hypno"></div><img src="public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg" alt="Ovary Anatomy"><div class="title">Ovary Anatomy</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69decdf6db8a7d1ef0a59a50.jpg','Uterus Structure','The uterus is a muscular organ where a fertilized egg implants and grows during pregnancy.')"><div class="hypno"></div><img src="public/hijabarts/69decdf6db8a7d1ef0a59a50.jpg" alt="Uterus Structure"><div class="title">Uterus Structure</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69ded0b5db8a7d1ef0aaeb4f.jpg','Fallopian Tubes','The fallopian tubes connect the ovaries to the uterus and are the site of fertilization.')"><div class="hypno"></div><img src="public/hijabarts/69ded0b5db8a7d1ef0aaeb4f.jpg" alt="Fallopian Tubes"><div class="title">Fallopian Tubes</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69dfa9ffdb8a7d1ef04d28b1.jpg','Vagina','The vagina is a muscular canal that connects the external genitals to the uterus.')"><div class="hypno"></div><img src="public/hijabarts/69dfa9ffdb8a7d1ef04d28b1.jpg" alt="Vagina"><div class="title">Vagina</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69e07b86db8a7d1ef0e1649d.jpg','Cervix','The cervix is the lower part of the uterus that opens into the vagina, playing a role in childbirth and menstruation.')"><div class="hypno"></div><img src="public/hijabarts/69e07b86db8a7d1ef0e1649d.jpg" alt="Cervix"><div class="title">Cervix</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69e091e3db8a7d1ef0090cd9.jpg','Labia','The labia are folds of skin that protect the external female genitalia.')"><div class="hypno"></div><img src="public/hijabarts/69e091e3db8a7d1ef0090cd9.jpg" alt="Labia"><div class="title">Labia</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69e0924edb8a7d1ef009da19.jpg','Clitoris','The clitoris is a sensitive organ that plays a key role in female sexual pleasure.')"><div class="hypno"></div><img src="public/hijabarts/69e0924edb8a7d1ef009da19.jpg" alt="Clitoris"><div class="title">Clitoris</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69e8c2c0f453f2f497b436d5.jpg','Vulva','The vulva includes all the external parts of the female genitalia.')"><div class="hypno"></div><img src="public/hijabarts/69e8c2c0f453f2f497b436d5.jpg" alt="Vulva"><div class="title">Vulva</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69e9649f7d96736a341dbffc.jpg','Egg Cell','The egg cell, or ovum, is the female reproductive cell involved in fertilization.')"><div class="hypno"></div><img src="public/hijabarts/69e9649f7d96736a341dbffc.jpg" alt="Egg Cell"><div class="title">Egg Cell</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/69eb39517d96736a34b337ba.jpg','Endometrium','The endometrium is the inner lining of the uterus that thickens during the menstrual cycle.')"><div class="hypno"></div><img src="public/hijabarts/69eb39517d96736a34b337ba.jpg" alt="Endometrium"><div class="title">Endometrium</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/IMG_0862.png','Fimbriae','Fimbriae are finger-like projections at the end of the fallopian tubes that help guide the egg.')"><div class="hypno"></div><img src="public/hijabarts/IMG_0862.png" alt="Fimbriae"><div class="title">Fimbriae</div></div>
+            <div class="arts-card wet" onclick="showImageModal('public/hijabarts/IMG_0863.png','Mons Pubis','The mons pubis is the fatty tissue covering the pubic bone, part of the external genitalia.')"><div class="hypno"></div><img src="public/hijabarts/IMG_0863.png" alt="Mons Pubis"><div class="title">Mons Pubis</div></div>
+        </div>
+        <style>
+        .arts-card.wet::before {
+            content: '';
+            position: absolute;
+            top: -18px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 60px;
+            background: radial-gradient(circle, #fff8 60%, #ffd6ec88 100%);
+            border-radius: 50%;
+            opacity: 0.7;
+            filter: blur(2px);
+            z-index: 2;
+            pointer-events: none;
+            animation: drip-wet 2.2s infinite linear;
+        }
+        @keyframes drip-wet {
+            0% { opacity: 0.7; }
+            80% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+        </style>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:80vw;max-height:70vh;border-radius:24px;box-shadow:0 4px 32px #ff69b4;">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 12px #ff69b4;"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;text-shadow:0 1px 6px #ff69b4;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff69b4;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        </script>
+    </main>
+</body>
+</html>

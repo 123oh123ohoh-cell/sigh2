@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classic - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo2.png">
+    <style>
+        .profile-dropdown .dropdown-content { display: none; }
+        .profile-dropdown .dropdown-content.show,
+        .profile-dropdown.show .dropdown-content { display: block; }
+        body {
+            background: radial-gradient(ellipse at center, #ffb6d5 0%, #ff69b4 60%, #d72660 100%);
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255,182,213,0.7) 0%, rgba(255,105,180,0.3) 60%, rgba(215,38,96,0.2) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: linear-gradient(145deg, #fff0fa 60%, #ffb6d5 100%);
+            border-radius: 22px 22px 32px 32px;
+            padding: 18px 16px 22px 16px;
+            width: 240px;
+            box-shadow: 0 4px 24px 4px rgba(255,105,180,0.18), 0 1.5px 0 #fff inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2.5px solid #ff69b4;
+            position: relative;
+            overflow: hidden;
+        }
+        .arts-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 38px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.09) 100%);
+            border-radius: 22px 22px 0 0;
+            pointer-events: none;
+        }
+        .arts-card img {
+            width: 190px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 50% 50% 40% 40%/60% 60% 40% 40%;
+            background: #fff0fa;
+            box-shadow: 0 2px 16px 2px rgba(255,182,213,0.25);
+            border: 3px solid #ff69b4;
+            margin-bottom: 8px;
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d72660;
+            font-size: 1.18em;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 8px #fff0fa;
+        }
+        .arts-card .desc {
+            font-size: 1em;
+            color: #d72660;
+            min-height: 32px;
+            text-align: center;
+            font-style: italic;
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.2em;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 16px #ff69b4, 0 1px 0 #fff0fa;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery { gap: 12px; }
+            .arts-card { width: 98vw; padding: 8px; }
+            .arts-card img { width: 90vw; height: 40vw; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropdownBtn = document.getElementById('profileDropdownBtn');
+                const dropdownMenu = document.getElementById('profileDropdownMenu');
+                if (dropdownBtn && dropdownMenu) {
+                    dropdownBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdownMenu.classList.toggle('show');
+                    });
+                    document.addEventListener('click', function(e) {
+                        if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                        }
+                    });
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                async function updateDropdownMenu() {
+                    const loggedInUser = localStorage.getItem('loggedInUser');
+                    const token = localStorage.getItem('token');
+                    const profileLink = document.getElementById('profileLink');
+                    const signoutLink = document.getElementById('signoutLink');
+                    const dropdownLogin = document.getElementById('dropdownLogin');
+                    const dropdownSignup = document.getElementById('dropdownSignup');
+                    const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
+                    const profileAvatarIcon = document.getElementById('profileAvatarIcon');
+                    const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                    if (loggedInUser && token) {
+                        if (profileLink) profileLink.style.display = '';
+                        if (signoutLink) signoutLink.style.display = '';
+                        if (dropdownLogin) dropdownLogin.style.display = 'none';
+                        if (dropdownSignup) dropdownSignup.style.display = 'none';
+                        let premiumTier = '';
+                        let avatar = '';
+                        try {
+                            const res = await fetch('https://ownshub.onrender.com/api/profile', {
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            if (res.ok) {
+                                const data = await res.json();
+                                premiumTier = data.premiumTier;
+                                avatar = data.avatar;
+                            }
+                        } catch {}
+                        if (premiumBadgeHeader) {
+                            if (premiumTier) {
+                                let color = '#ffd700';
+                                if (premiumTier === 'Silver') color = '#c0c0c0';
+                                if (premiumTier === 'Bronze') color = '#cd7f32';
+                                premiumBadgeHeader.innerHTML = `<span style=\"padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;\">${premiumTier} Premium</span>`;
+                            } else {
+                                premiumBadgeHeader.innerHTML = '';
+                            }
+                        }
+                        if (profileAvatarIcon && avatar) {
+                            profileAvatarIcon.src = avatar;
+                            profileAvatarIcon.style.display = '';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
+                        } else {
+                            if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                        }
+                    } else {
+                        if (profileLink) profileLink.style.display = 'none';
+                        if (signoutLink) signoutLink.style.display = 'none';
+                        if (dropdownLogin) dropdownLogin.style.display = '';
+                        if (dropdownSignup) dropdownSignup.style.display = '';
+                        if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
+                        if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                    }
+                }
+                updateDropdownMenu();
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'loggedInUser') {
+                        updateDropdownMenu();
+                    }
+                });
+            });
+        </script>
+    </header>
+    <main class="arts-gallery-page">
+        <h2><span class="egg-icon"></span>Classic Gallery</h2>
+        <div class="arts-gallery">
+            <!-- Add your classic images here, similar to sex-arts.html -->
+        </div>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:80vw;max-height:70vh;border-radius:24px;box-shadow:0 4px 32px #ff69b4;">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 12px #ff69b4;"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;text-shadow:0 1px 6px #ff69b4;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff69b4;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        </script>
+    </main>
+</body>
+</html>
