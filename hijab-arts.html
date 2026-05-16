@@ -7,63 +7,133 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="logo2.png">
     <style>
+                .profile-dropdown .dropdown-content {
+                    display: none;
+                }
+                .profile-dropdown .dropdown-content.show,
+                .profile-dropdown.show .dropdown-content {
+                    display: block;
+                }
+        body {
+            background: radial-gradient(ellipse at center, #ffb6d5 0%, #ff69b4 60%, #d72660 100%);
+        }
         .arts-gallery-page {
             min-height: 90vh;
-            background: #181818;
+            background: transparent;
             padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255,182,213,0.7) 0%, rgba(255,105,180,0.3) 60%, rgba(215,38,96,0.2) 100%);
+            z-index: 0;
+            pointer-events: none;
         }
         .arts-gallery {
             display: flex;
             flex-wrap: wrap;
-            gap: 24px;
+            gap: 28px;
             justify-content: center;
             margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
         }
         .arts-card {
-            background: #222;
-            border-radius: 12px;
-            padding: 16px;
-            width: 220px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+            background: linear-gradient(145deg, #fff0fa 60%, #ffb6d5 100%);
+            border-radius: 22px 22px 32px 32px;
+            padding: 18px 16px 22px 16px;
+            width: 240px;
+            box-shadow: 0 4px 24px 4px rgba(255,105,180,0.18), 0 1.5px 0 #fff inset;
             display: flex;
             flex-direction: column;
             align-items: center;
+            border: 2.5px solid #ff69b4;
+            position: relative;
+            overflow: hidden;
+        }
+        .arts-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 38px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.09) 100%);
+            border-radius: 22px 22px 0 0;
+            pointer-events: none;
         }
         .arts-card img {
-            width: 180px;
-            height: 180px;
+            width: 190px;
+            height: 190px;
             object-fit: cover;
-            border-radius: 8px;
-            background: #333;
+            border-radius: 50% 50% 40% 40%/60% 60% 40% 40%;
+            background: #fff0fa;
+            box-shadow: 0 2px 16px 2px rgba(255,182,213,0.25);
+            border: 3px solid #ff69b4;
+            margin-bottom: 8px;
         }
         .arts-card .title {
             margin-top: 10px;
             font-weight: bold;
-            color: #ffb347;
+            color: #d72660;
+            font-size: 1.18em;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 8px #fff0fa;
         }
         .arts-card .author {
-            font-size: 0.98em;
-            color: #bbb;
+            font-size: 1em;
+            color: #ff69b4;
             margin: 4px 0 6px 0;
+            font-weight: 500;
         }
         .arts-card .desc {
-            font-size: 0.97em;
-            color: #eee;
+            font-size: 1em;
+            color: #d72660;
             min-height: 32px;
             text-align: center;
+            font-style: italic;
         }
         .arts-card .date {
-            font-size: 0.85em;
-            color: #888;
+            font-size: 0.9em;
+            color: #b3005e;
             margin-top: 6px;
         }
         .post-art-section {
-            margin-top: 24px;
+            margin-top: 28px;
             text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .post-art-section form {
+            background: linear-gradient(120deg, #fff0fa 60%, #ffb6d5 100%);
+            border-radius: 18px;
+            border: 2px solid #ff69b4;
+            box-shadow: 0 2px 16px 2px rgba(255,182,213,0.18);
+        }
+        .post-art-section input,
+        .post-art-section textarea {
+            background: #fff0fa;
+            border: 1.5px solid #ff69b4;
+            color: #d72660;
+        }
+        .post-art-section button {
+            background: linear-gradient(90deg,#ff69b4 0%,#ffb6d5 100%);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 1px 8px #ffb6d5;
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.2em;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 16px #ff69b4, 0 1px 0 #fff0fa;
         }
         @media (max-width: 600px) {
             .arts-gallery {
-                gap: 10px;
+                gap: 12px;
             }
             .arts-card {
                 width: 98vw;
@@ -82,7 +152,7 @@
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Home</a>
             <a href="arts.html" class="nav-link">Arts</a>
-            <a href="hijab-arts.html" class="nav-link nav-link-active">Hijab Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
         </nav>
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search models...">
@@ -101,6 +171,22 @@
             </div>
         </div>
         <script>
+                // Dropdown toggle logic
+                document.addEventListener('DOMContentLoaded', function() {
+                    const dropdownBtn = document.getElementById('profileDropdownBtn');
+                    const dropdownMenu = document.getElementById('profileDropdownMenu');
+                    if (dropdownBtn && dropdownMenu) {
+                        dropdownBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            dropdownMenu.classList.toggle('show');
+                        });
+                        document.addEventListener('click', function(e) {
+                            if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                                dropdownMenu.classList.remove('show');
+                            }
+                        });
+                    }
+                });
         document.addEventListener('DOMContentLoaded', function() {
             async function updateDropdownMenu() {
                 const loggedInUser = localStorage.getItem('loggedInUser');
@@ -170,77 +256,36 @@
     </header>
     <main class="arts-gallery-page">
         <h2 style="color:#ffb347;text-align:center;margin-bottom:24px;">Hijab Arts Gallery</h2>
-        <div id="artsGallery" class="arts-gallery"></div>
-        <div id="postArtContainer" class="post-art-section"></div>
+        <div class="arts-gallery">
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg','Ovary Anatomy','The ovary is a key part of the female reproductive system, responsible for producing eggs and hormones.')"><img src="public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg" alt="Ovary Anatomy"><div class="title">Ovary Anatomy</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69decdf6db8a7d1ef0a59a50.jpg','Uterus Structure','The uterus is a muscular organ where a fertilized egg implants and grows during pregnancy.')"><img src="public/hijabarts/69decdf6db8a7d1ef0a59a50.jpg" alt="Uterus Structure"><div class="title">Uterus Structure</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69ded0b5db8a7d1ef0aaeb4f.jpg','Fallopian Tubes','The fallopian tubes connect the ovaries to the uterus and are the site of fertilization.')"><img src="public/hijabarts/69ded0b5db8a7d1ef0aaeb4f.jpg" alt="Fallopian Tubes"><div class="title">Fallopian Tubes</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69dfa9ffdb8a7d1ef04d28b1.jpg','Vagina','The vagina is a muscular canal that connects the external genitals to the uterus.')"><img src="public/hijabarts/69dfa9ffdb8a7d1ef04d28b1.jpg" alt="Vagina"><div class="title">Vagina</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69e07b86db8a7d1ef0e1649d.jpg','Cervix','The cervix is the lower part of the uterus that opens into the vagina, playing a role in childbirth and menstruation.')"><img src="public/hijabarts/69e07b86db8a7d1ef0e1649d.jpg" alt="Cervix"><div class="title">Cervix</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69e091e3db8a7d1ef0090cd9.jpg','Labia','The labia are folds of skin that protect the external female genitalia.')"><img src="public/hijabarts/69e091e3db8a7d1ef0090cd9.jpg" alt="Labia"><div class="title">Labia</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69e0924edb8a7d1ef009da19.jpg','Clitoris','The clitoris is a sensitive organ that plays a key role in female sexual pleasure.')"><img src="public/hijabarts/69e0924edb8a7d1ef009da19.jpg" alt="Clitoris"><div class="title">Clitoris</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69e8c2c0f453f2f497b436d5.jpg','Vulva','The vulva includes all the external parts of the female genitalia.')"><img src="public/hijabarts/69e8c2c0f453f2f497b436d5.jpg" alt="Vulva"><div class="title">Vulva</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69e9649f7d96736a341dbffc.jpg','Egg Cell','The egg cell, or ovum, is the female reproductive cell involved in fertilization.')"><img src="public/hijabarts/69e9649f7d96736a341dbffc.jpg" alt="Egg Cell"><div class="title">Egg Cell</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/69eb39517d96736a34b337ba.jpg','Endometrium','The endometrium is the inner lining of the uterus that thickens during the menstrual cycle.')"><img src="public/hijabarts/69eb39517d96736a34b337ba.jpg" alt="Endometrium"><div class="title">Endometrium</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/IMG_0862.png','Fimbriae','Fimbriae are finger-like projections at the end of the fallopian tubes that help guide the egg.')"><img src="public/hijabarts/IMG_0862.png" alt="Fimbriae"><div class="title">Fimbriae</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/IMG_0863.png','Mons Pubis','The mons pubis is the fatty tissue covering the pubic bone, part of the external genitalia.')"><img src="public/hijabarts/IMG_0863.png" alt="Mons Pubis"><div class="title">Mons Pubis</div></div>
+        </div>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:80vw;max-height:70vh;border-radius:24px;box-shadow:0 4px 32px #ff69b4;">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 12px #ff69b4;"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;text-shadow:0 1px 6px #ff69b4;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff69b4;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
         <script>
-        function showHijabPostArtForm() {
-            const container = document.getElementById('postArtContainer');
-            if (!container) return;
-            const loggedInUser = localStorage.getItem('loggedInUser');
-            const token = localStorage.getItem('token');
-            if (!loggedInUser || !token) {
-                container.innerHTML = '<p style="color:#bbb;">Log in to post your hijab art!</p>';
-                return;
-            }
-            container.innerHTML = `
-                <form id="postHijabArtForm" style="background:#222;padding:18px 18px 12px 18px;border-radius:12px;display:inline-block;max-width:340px;">
-                    <div style="margin-bottom:10px;font-weight:bold;color:#ffb347;">Post Your Hijab Art</div>
-                    <input type="file" id="hijabArtImage" accept="image/*" required style="margin-bottom:10px;width:100%;">
-                    <input type="text" id="hijabArtTitle" placeholder="Title" maxlength="40" required style="margin-bottom:10px;width:100%;padding:6px 8px;">
-                    <textarea id="hijabArtDesc" placeholder="Description (optional)" maxlength="120" rows="2" style="margin-bottom:10px;width:100%;padding:6px 8px;"></textarea>
-                    <button type="submit" style="background:linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);color:#181818;padding:8px 24px;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Post Art</button>
-                </form>
-            `;
-            document.getElementById('postHijabArtForm').onsubmit = async function(e) {
-                e.preventDefault();
-                const imgInput = document.getElementById('hijabArtImage');
-                const title = document.getElementById('hijabArtTitle').value.trim();
-                const desc = document.getElementById('hijabArtDesc').value.trim();
-                if (!imgInput.files[0]) return alert('Please select an image.');
-                const reader = new FileReader();
-                reader.onload = async function(evt) {
-                    const image = evt.target.result;
-                    try {
-                        const res = await fetch('/api/hijab-arts', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'Bearer ' + token
-                            },
-                            body: JSON.stringify({ image, title, description: desc })
-                        });
-                        const data = await res.json();
-                        if (res.ok && data.id) {
-                            await fetchAndRenderHijabArts();
-                            document.getElementById('postHijabArtForm').reset();
-                            alert('Hijab art posted!');
-                        } else {
-                            alert(data.error || 'Failed to post art.');
-                        }
-                    } catch {
-                        alert('Failed to post art.');
-                    }
-                };
-                reader.readAsDataURL(imgInput.files[0]);
-            };
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
         }
-
-        async function fetchAndRenderHijabArts() {
-            try {
-                const res = await fetch('/api/hijab-arts');
-                const arts = await res.json();
-                renderHijabArtsGallery(arts);
-            } catch {
-                document.getElementById('artsGallery').innerHTML = '<p style="color:#bbb;text-align:center;">Failed to load arts.</p>';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchAndRenderHijabArts();
-            showHijabPostArtForm();
-        });
         </script>
     </main>
-    <script src="hijab-arts.js"></script>
 </body>
 </html>

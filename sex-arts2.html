@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sex Arts</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo2.png">
+    <style>
+        .profile-dropdown .dropdown-content { display: none; }
+        .profile-dropdown .dropdown-content.show,
+        .profile-dropdown.show .dropdown-content { display: block; }
+        body {
+            background: radial-gradient(ellipse at center, #ffb6d5 0%, #ff69b4 60%, #d72660 100%);
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255,182,213,0.7) 0%, rgba(255,105,180,0.3) 60%, rgba(215,38,96,0.2) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: linear-gradient(145deg, #fff0fa 60%, #ffb6d5 100%);
+            border-radius: 22px 22px 32px 32px;
+            padding: 18px 16px 22px 16px;
+            width: 240px;
+            box-shadow: 0 4px 24px 4px rgba(255,105,180,0.18), 0 1.5px 0 #fff inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2.5px solid #ff69b4;
+            position: relative;
+            overflow: hidden;
+        }
+        .arts-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 38px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.09) 100%);
+            border-radius: 22px 22px 0 0;
+            pointer-events: none;
+        }
+        .arts-card img {
+            width: 190px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 50% 50% 40% 40%/60% 60% 40% 40%;
+            background: #fff0fa;
+            box-shadow: 0 2px 16px 2px rgba(255,182,213,0.25);
+            border: 3px solid #ff69b4;
+            margin-bottom: 8px;
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d72660;
+            font-size: 1.18em;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 8px #fff0fa;
+        }
+        .arts-card .author {
+            font-size: 1em;
+            color: #ff69b4;
+            margin: 4px 0 6px 0;
+            font-weight: 500;
+        }
+        .arts-card .desc {
+            font-size: 1em;
+            color: #d72660;
+            min-height: 32px;
+            text-align: center;
+            font-style: italic;
+        }
+        .arts-card .date {
+            font-size: 0.9em;
+            color: #b3005e;
+            margin-top: 6px;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery { gap: 12px; }
+            .arts-card { width: 98vw; padding: 8px; }
+            .arts-card img { width: 90vw; height: 40vw; }
+        }
+        /* Modal styles */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(40,0,60,0.55); z-index: 1000; display: flex; align-items: center; justify-content: center;
+            animation: modal-fadein 0.3s;
+        }
+        .modal-bg {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(ellipse at center, #fff0fa 0%, #ffd6ec 60%, #ffb6d5 100%);
+            opacity: 0.85; z-index: 1;
+            filter: blur(2.5px) brightness(0.9);
+        }
+        .modal-content {
+            position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
+            background: rgba(255,255,255,0.13); border-radius: 22px; box-shadow: 0 8px 48px #ffb6d5cc;
+            padding: 32px 24px 24px 24px; min-width: 320px; min-height: 320px;
+            animation: modal-zoom 0.4s cubic-bezier(.4,2,.6,1);
+        }
+        .modal-hypno {
+            width: 90px; height: 90px; border-radius: 50%; margin-bottom: 18px;
+            background: repeating-conic-gradient(from 0deg, #fff0fa 0deg 20deg, #ffb6d5 20deg 40deg, #ff69b4 40deg 60deg, #ffd6ec 60deg 80deg);
+            border: 3px solid #ff69b4;
+            animation: spin 2.5s linear infinite;
+            box-shadow: 0 0 24px #ffb6d5, 0 0 48px #ffd6ec;
+        }
+        .modal-content img {
+            max-width: 60vw; max-height: 60vh; border-radius: 18px; box-shadow: 0 4px 32px #ffb6d5cc;
+            margin-bottom: 18px; border: 3px solid #ff69b4;
+            filter: drop-shadow(0 0 16px #fff8) drop-shadow(0 4px 18px #ffb6d5) blur(0.5px) brightness(1.08);
+            transition: filter 0.3s, transform 0.3s;
+            animation: modal-img-focus 1.2s cubic-bezier(.4,2,.6,1);
+        }
+        .modal-title {
+            color: #d72660; font-size: 1.3em; font-weight: bold; text-align: center; margin-bottom: 8px;
+            text-shadow: 0 1px 10px #fff0fa, 0 2px 14px #ffb6d5;
+        }
+        .modal-close {
+            position: absolute; top: 8px; right: 18px; font-size: 2.2em; background: none; border: none; color: #ff69b4; cursor: pointer; z-index: 3;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: #d72660; }
+        @keyframes modal-fadein { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modal-zoom { from { transform: scale(0.7); } to { transform: scale(1); } }
+        @keyframes modal-img-focus { 0% { filter: blur(8px) brightness(0.7); } 100% { filter: blur(0.5px) brightness(1.08); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logo2.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="hijab-arts.html" class="nav-link">Hijab Arts</a>
+            <a href="sex-arts2.html" class="nav-link nav-link-active">Sex Arts</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
+            </div>
+        </div>
+        <script>
+            // Dropdown toggle logic
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropdownBtn = document.getElementById('profileDropdownBtn');
+                const dropdownMenu = document.getElementById('profileDropdownMenu');
+                if (dropdownBtn && dropdownMenu) {
+                    dropdownBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdownMenu.classList.toggle('show');
+                    });
+                    document.addEventListener('click', function(e) {
+                        if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                        }
+                    });
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                async function updateDropdownMenu() {
+                    const loggedInUser = localStorage.getItem('loggedInUser');
+                    const token = localStorage.getItem('token');
+                    const profileLink = document.getElementById('profileLink');
+                    const signoutLink = document.getElementById('signoutLink');
+                    const dropdownLogin = document.getElementById('dropdownLogin');
+                    const dropdownSignup = document.getElementById('dropdownSignup');
+                    const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
+                    const profileAvatarIcon = document.getElementById('profileAvatarIcon');
+                    const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                    if (loggedInUser && token) {
+                        if (profileLink) profileLink.style.display = '';
+                        if (signoutLink) signoutLink.style.display = '';
+                        if (dropdownLogin) dropdownLogin.style.display = 'none';
+                        if (dropdownSignup) dropdownSignup.style.display = 'none';
+                        // Fetch premiumTier and avatar from backend
+                        let premiumTier = '';
+                        let avatar = '';
+                        try {
+                            const res = await fetch('https://ownshub.onrender.com/api/profile', {
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            if (res.ok) {
+                                const data = await res.json();
+                                premiumTier = data.premiumTier;
+                                avatar = data.avatar;
+                            }
+                        } catch {}
+                        if (premiumBadgeHeader) {
+                            if (premiumTier) {
+                                let color = '#ffd700';
+                                if (premiumTier === 'Silver') color = '#c0c0c0';
+                                if (premiumTier === 'Bronze') color = '#cd7f32';
+                                premiumBadgeHeader.innerHTML = `<span style="padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;">${premiumTier} Premium</span>`;
+                            } else {
+                                premiumBadgeHeader.innerHTML = '';
+                            }
+                        }
+                        // Set avatar icon
+                        if (profileAvatarIcon && avatar) {
+                            profileAvatarIcon.src = avatar;
+                            profileAvatarIcon.style.display = '';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
+                        } else {
+                            if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                        }
+                    } else {
+                        if (profileLink) profileLink.style.display = 'none';
+                        if (signoutLink) signoutLink.style.display = 'none';
+                        if (dropdownLogin) dropdownLogin.style.display = '';
+                        if (dropdownSignup) dropdownSignup.style.display = '';
+                        if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
+                        if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                    }
+                }
+                updateDropdownMenu();
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'loggedInUser') {
+                        updateDropdownMenu();
+                    }
+                });
+            });
+        </script>
+    </header>
+    <main class="arts-gallery-page">
+        <h2>Sex Arts</h2>
+        <div class="arts-gallery">
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0842.png" alt="Sex Arts 1" class="zoomable" onclick="showImageModal('imagetab/IMG_0842.png','Sex Arts 1')"><div class="title">Sex Arts 1</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0866.png" alt="Sex Arts 2" class="zoomable" onclick="showImageModal('imagetab/IMG_0866.png','Sex Arts 2')"><div class="title">Sex Arts 2</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0867.png" alt="Sex Arts 3" class="zoomable" onclick="showImageModal('imagetab/IMG_0867.png','Sex Arts 3')"><div class="title">Sex Arts 3</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0869.png" alt="Sex Arts 4" class="zoomable" onclick="showImageModal('imagetab/IMG_0869.png','Sex Arts 4')"><div class="title">Sex Arts 4</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0870.png" alt="Sex Arts 5" class="zoomable" onclick="showImageModal('imagetab/IMG_0870.png','Sex Arts 5')"><div class="title">Sex Arts 5</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0871.png" alt="Sex Arts 6" class="zoomable" onclick="showImageModal('imagetab/IMG_0871.png','Sex Arts 6')"><div class="title">Sex Arts 6</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0872.png" alt="Sex Arts 7" class="zoomable" onclick="showImageModal('imagetab/IMG_0872.png','Sex Arts 7')"><div class="title">Sex Arts 7</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0873.png" alt="Sex Arts 8" class="zoomable" onclick="showImageModal('imagetab/IMG_0873.png','Sex Arts 8')"><div class="title">Sex Arts 8</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0878.png" alt="Sex Arts 9" class="zoomable" onclick="showImageModal('imagetab/IMG_0878.png','Sex Arts 9')"><div class="title">Sex Arts 9</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0879.png" alt="Sex Arts 10" class="zoomable" onclick="showImageModal('imagetab/IMG_0879.png','Sex Arts 10')"><div class="title">Sex Arts 10</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0880.png" alt="Sex Arts 11" class="zoomable" onclick="showImageModal('imagetab/IMG_0880.png','Sex Arts 11')"><div class="title">Sex Arts 11</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0881.png" alt="Sex Arts 12" class="zoomable" onclick="showImageModal('imagetab/IMG_0881.png','Sex Arts 12')"><div class="title">Sex Arts 12</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0882.png" alt="Sex Arts 13" class="zoomable" onclick="showImageModal('imagetab/IMG_0882.png','Sex Arts 13')"><div class="title">Sex Arts 13</div></div>
+            <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0884.png" alt="Sex Arts 14" class="zoomable" onclick="showImageModal('imagetab/IMG_0884.png','Sex Arts 14')"><div class="title">Sex Arts 14</div></div>
+        </div>
+        <!-- Modal for zoom/focus/hypnosis -->
+        <div id="imageModal" class="modal" style="display:none;">
+            <div class="modal-bg"></div>
+            <div class="modal-content">
+                <div class="modal-hypno"></div>
+                <img id="modalImg" src="" alt="Zoomed Image">
+                <div id="modalTitle" class="modal-title"></div>
+                <button class="modal-close" onclick="closeImageModal()">&times;</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').textContent = title || '';
+            document.getElementById('imageModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this || e.target.classList.contains('modal-bg')) closeImageModal();
+        });
+        </script>
+    </main>
+</body>
+</html>

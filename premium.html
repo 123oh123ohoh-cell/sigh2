@@ -6,6 +6,13 @@
     <title>Premium Tiers</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+                .profile-dropdown .dropdown-content {
+                    display: none;
+                }
+                .profile-dropdown .dropdown-content.show,
+                .profile-dropdown.show .dropdown-content {
+                    display: block;
+                }
         .tiers-container { display: flex; justify-content: center; gap: 32px; margin-top: 60px; }
         .tier-card { background: #181818; border-radius: 16px; box-shadow: 0 2px 12px #0008; padding: 32px 24px; width: 220px; text-align: center; color: #fff; transition: transform 0.2s; cursor: pointer; }
         .tier-card:hover { transform: scale(1.05); box-shadow: 0 4px 24px #000a; }
@@ -13,6 +20,7 @@
         .tier-free-btn { margin-top: 18px; background: linear-gradient(90deg,#ffb347,#ffd700); color: #222; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1em; font-weight: bold; cursor: pointer; }
         .tier-free-btn:disabled { background: #aaa; color: #666; cursor: not-allowed; }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Header (copied from index.html for consistency) -->
@@ -36,12 +44,31 @@
             </button>
             <div class="dropdown-content" id="profileDropdownMenu">
                 <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="#" id="publicProfileLink" style="display:none;">View Public Profile</a>
+                <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
                 <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
                 <a href="login.html" id="dropdownLogin">Log In</a>
                 <a href="signup.html" id="dropdownSignup">Create Account</a>
             </div>
         </div>
         <script>
+                // Dropdown toggle logic (copied from index.html)
+                document.addEventListener('DOMContentLoaded', function() {
+                    const dropdownBtn = document.getElementById('profileDropdownBtn');
+                    const dropdownMenu = document.getElementById('profileDropdownMenu');
+                    if (dropdownBtn && dropdownMenu) {
+                        dropdownBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            dropdownMenu.classList.toggle('show');
+                        });
+                        document.addEventListener('click', function(e) {
+                            if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                                dropdownMenu.classList.remove('show');
+                            }
+                        });
+                    }
+                });
+        // Switch dropdown menu and chat button based on login state
         document.addEventListener('DOMContentLoaded', function() {
             async function updateDropdownMenu() {
                 const loggedInUser = localStorage.getItem('loggedInUser');
@@ -54,9 +81,19 @@
                 const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
                 const profileAvatarIcon = document.getElementById('profileAvatarIcon');
                 const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                const settingsLink = document.getElementById('settingsLink');
+                const publicProfileLink = document.getElementById('publicProfileLink');
                 if (loggedInUser && token) {
                     if (profileLink) profileLink.style.display = '';
+                    if (publicProfileLink) {
+                        publicProfileLink.style.display = '';
+                        publicProfileLink.onclick = function(e) {
+                            e.preventDefault();
+                            window.location.href = 'public-profile.html?user=' + encodeURIComponent(loggedInUser);
+                        };
+                    }
                     if (signoutLink) signoutLink.style.display = '';
+                    if (settingsLink) settingsLink.style.display = '';
                     if (dropdownLogin) dropdownLogin.style.display = 'none';
                     if (dropdownSignup) dropdownSignup.style.display = 'none';
                     if (chatHeaderBtn) chatHeaderBtn.style.display = '';
@@ -94,7 +131,9 @@
                     }
                 } else {
                     if (profileLink) profileLink.style.display = 'none';
+                    if (publicProfileLink) publicProfileLink.style.display = 'none';
                     if (signoutLink) signoutLink.style.display = 'none';
+                    if (settingsLink) settingsLink.style.display = 'none';
                     if (dropdownLogin) dropdownLogin.style.display = '';
                     if (dropdownSignup) dropdownSignup.style.display = '';
                     if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
@@ -164,6 +203,24 @@
         alert('Congratulations! You now have ' + tier + ' premium.');
         window.location.href = 'profile.html';
     }
+    </script>
+    <!-- Donk Mode global logic -->
+    <script>
+    function setDonkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('donk-mode');
+            localStorage.setItem('appearanceDonk', 'on');
+        } else {
+            document.body.classList.remove('donk-mode');
+            localStorage.setItem('appearanceDonk', 'off');
+        }
+    }
+    // On page load, apply Donk Mode if enabled
+    window.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem('appearanceDonk') === 'on') {
+            setDonkMode(true);
+        }
+    });
     </script>
 </body>
 </html>
