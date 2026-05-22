@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - own's hub</title>
         <link rel="stylesheet" href="styles.css">
+<script src="theme-mode.js"></script>
         <link rel="stylesheet" href="profile.css">
         <link rel="stylesheet" href="settings.css">
     <link rel="icon" type="image/png" href="logo2.png">
@@ -87,16 +88,21 @@
                     <div class="settings-panel" id="tab-appearance" style="display:none;">
                         <h3>Appearance</h3>
                         <form id="appearanceForm" class="profile-form">
-                            <label>Theme
-                                <select id="themeSelect">
-                                    <option value="light">Light</option>
-                                    <option value="dark">Dark</option>
-                                    <option value="donk">Donk</option>
-                                    <option value="mom">Mom</option>
-                                </select>
-                            </label>
-                            <div style="margin:18px 0 10px 0;">
-                                <span style="font-weight:500;display:block;margin-bottom:8px;">Accent Color</span>
+                            <div class="appearance-block">
+                                <span class="appearance-label">Theme Mode</span>
+                                <div class="mode-toggle" role="group" aria-label="Theme mode">
+                                    <button type="button" class="mode-btn theme-mode-btn" id="lightModeBtn" data-mode="light" aria-label="Light mode">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Ccircle cx='12' cy='12' r='4.5' stroke='%23000000' stroke-width='2'/%3E%3Cpath d='M12 1.8v2.7M12 19.5v2.7M4.22 4.22l1.9 1.9M17.88 17.88l1.9 1.9M1.8 12h2.7M19.5 12h2.7M4.22 19.78l1.9-1.9M17.88 6.12l1.9-1.9' stroke='%23000000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" alt="">
+                                        <span>Light</span>
+                                    </button>
+                                    <button type="button" class="mode-btn theme-mode-btn" id="darkModeBtn" data-mode="dark" aria-label="Dark mode">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M20.2 14.3A8.7 8.7 0 1 1 9.7 3.8a7.3 7.3 0 1 0 10.5 10.5Z' fill='%23000000'/%3E%3C/svg%3E" alt="">
+                                        <span>Dark</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="appearance-block" style="margin-top:14px;">
+                                <span class="appearance-label">Accent Color</span>
                                 <div id="colorPalette" style="display:flex;gap:14px;flex-wrap:wrap;">
                                     <span class="color-circle" data-color="#d12a7a" style="background:#d12a7a;"></span>
                                     <span class="color-circle" data-color="#ffb347" style="background:#ffb347;"></span>
@@ -108,22 +114,17 @@
                                     <span class="color-circle" data-color="#222" style="background:#222;"></span>
                                 </div>
                             </div>
-                                <label style="display:flex;align-items:center;gap:12px;margin-top:10px;user-select:none;">
-                                    <span style="font-weight:500;">Donk Mode</span>
-                                    <span style="position:relative;display:inline-block;width:48px;height:26px;">
-                                        <input type="checkbox" id="donkToggle" style="opacity:0;width:0;height:0;">
-                                        <span id="donkSwitch" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ffd6e0;border-radius:18px;transition:.3s;"></span>
-                                        <span id="donkKnob" style="position:absolute;height:22px;width:22px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px #ffd6e0;"></span>
-                                    </span>
-                                </label>
-                                <label style="display:flex;align-items:center;gap:12px;margin-top:10px;user-select:none;">
-                                    <span style="font-weight:500;">Mom Mode</span>
-                                    <span style="position:relative;display:inline-block;width:48px;height:26px;">
-                                        <input type="checkbox" id="momToggle" style="opacity:0;width:0;height:0;">
-                                        <span id="momSwitch" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#e0ffe0;border-radius:18px;transition:.3s;"></span>
-                                        <span id="momKnob" style="position:absolute;height:22px;width:22px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px #e0ffe0;"></span>
-                                    </span>
-                                </label>
+                            <div class="appearance-block" style="margin-top:14px;">
+                                <span class="appearance-label">Special Modes</span>
+                                <div class="mode-toggle" role="group" aria-label="Special modes">
+                                    <button type="button" class="mode-btn special-mode-btn" id="donkModeBtn" data-special="donk" aria-label="Donk mode">
+                                        <span>Donk</span>
+                                    </button>
+                                    <button type="button" class="mode-btn special-mode-btn" id="momModeBtn" data-special="mom" aria-label="Mom mode">
+                                        <span>Mom</span>
+                                    </button>
+                                </div>
+                            </div>
                             <button type="submit">Save Appearance</button>
                         </form>
                         <div id="appearanceSavedMsg" style="display:none;color:green;margin-top:12px;font-weight:bold;">Appearance saved!</div>
@@ -171,106 +172,74 @@
         }, 2000);
     };
     // Appearance form
-    function setDonkMode(enabled) {
-        if (enabled) {
-            document.body.classList.add('donk-mode');
-            if (!document.getElementById('donk-style')) {
-                const style = document.createElement('style');
-                style.id = 'donk-style';
-                style.innerHTML = `/* legacy donk mode fallback */`;
-                document.head.appendChild(style);
+    const appearanceState = {
+        mode: 'dark',
+        accent: '#d12a7a',
+        donkEnabled: false,
+        momEnabled: false
+    };
+
+    function updateModeButtons(mode) {
+        document.querySelectorAll('.theme-mode-btn').forEach(function(btn) {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+    }
+
+    function updateSpecialButtons() {
+        const donkBtn = document.getElementById('donkModeBtn');
+        const momBtn = document.getElementById('momModeBtn');
+        if (donkBtn) {
+            donkBtn.classList.toggle('active', appearanceState.donkEnabled);
+            donkBtn.setAttribute('aria-pressed', appearanceState.donkEnabled ? 'true' : 'false');
+            donkBtn.setAttribute('data-state', appearanceState.donkEnabled ? 'on' : 'off');
+        }
+        if (momBtn) {
+            momBtn.classList.toggle('active', appearanceState.momEnabled);
+            momBtn.setAttribute('aria-pressed', appearanceState.momEnabled ? 'true' : 'false');
+            momBtn.setAttribute('data-state', appearanceState.momEnabled ? 'on' : 'off');
+        }
+    }
+
+    function setMode(mode, persist) {
+        const validModes = ['light', 'dark'];
+        const normalized = validModes.includes(mode) ? mode : 'dark';
+        appearanceState.mode = normalized;
+        updateModeButtons(normalized);
+        if (persist !== false) {
+            localStorage.setItem('appearanceTheme', normalized);
+        }
+        if (typeof window.applySavedAppearance === 'function') {
+            window.applySavedAppearance();
+        }
+    }
+
+    function toggleSpecialMode(modeName, persist) {
+        if (modeName === 'donk') {
+            appearanceState.donkEnabled = !appearanceState.donkEnabled;
+            if (persist !== false) {
+                localStorage.setItem('appearanceDonk', appearanceState.donkEnabled ? 'on' : 'off');
             }
-            localStorage.setItem('appearanceDonk', 'on');
-        } else {
-            document.body.classList.remove('donk-mode');
-            const donkStyle = document.getElementById('donk-style');
-            if (donkStyle) donkStyle.remove();
-            localStorage.setItem('appearanceDonk', 'off');
         }
-    }
-
-    function setMomMode(enabled) {
-        if (enabled) {
-            document.body.classList.remove('donk-mode');
-            document.body.classList.add('mom-mode');
-            if (!document.getElementById('mom-style')) {
-                const style = document.createElement('style');
-                style.id = 'mom-style';
-                style.innerHTML = `/* legacy mom mode fallback */`;
-                document.head.appendChild(style);
+        if (modeName === 'mom') {
+            appearanceState.momEnabled = !appearanceState.momEnabled;
+            if (persist !== false) {
+                localStorage.setItem('appearanceMom', appearanceState.momEnabled ? 'on' : 'off');
             }
-            localStorage.setItem('appearanceMom', 'on');
-        } else {
-            document.body.classList.remove('mom-mode');
-            const momStyle = document.getElementById('mom-style');
-            if (momStyle) momStyle.remove();
-            localStorage.setItem('appearanceMom', 'off');
+        }
+        updateSpecialButtons();
+        if (typeof window.applySavedAppearance === 'function') {
+            window.applySavedAppearance();
         }
     }
 
-
-    document.getElementById('donkToggle').addEventListener('change', function(e) {
-        setDonkMode(e.target.checked);
-        // Animate switch
-        const switchBg = document.getElementById('donkSwitch');
-        const knob = document.getElementById('donkKnob');
-        if (e.target.checked) {
-            switchBg.style.background = '#ffd700';
-            knob.style.left = '24px';
-        } else {
-            switchBg.style.background = '#ffd6e0';
-            knob.style.left = '2px';
+    function setAccentColor(color, persist) {
+        appearanceState.accent = color;
+        if (persist !== false) {
+            localStorage.setItem('appearanceAccent', color);
         }
-    });
-
-    const momToggle = document.getElementById('momToggle');
-    const momSwitchBg = document.getElementById('momSwitch');
-    const momKnob = document.getElementById('momKnob');
-    function updateMomSwitchUI(enabled) {
-        if (enabled) {
-            momSwitchBg.style.background = 'linear-gradient(90deg,#ff69b4 0%,#a0522d 100%)';
-            momKnob.style.left = '24px';
-            momKnob.style.background = '#ff69b4';
-            momKnob.style.boxShadow = '0 1px 8px #ff69b4cc';
-        } else {
-            momSwitchBg.style.background = '#ffe0f0';
-            momKnob.style.left = '2px';
-            momKnob.style.background = '#fff';
-            momKnob.style.boxShadow = '0 1px 4px #ffe0f0';
+        if (typeof window.applySavedAppearance === 'function') {
+            window.applySavedAppearance();
         }
-    }
-    momToggle.addEventListener('change', function(e) {
-        setMomMode(e.target.checked);
-        updateMomSwitchUI(e.target.checked);
-    });
-    // Clicking the switch background toggles the checkbox (like Donk Mode)
-    momSwitchBg.addEventListener('click', function(e) {
-        if (e.target !== momToggle) {
-            momToggle.checked = !momToggle.checked;
-            momToggle.dispatchEvent(new Event('change'));
-        }
-    });
-
-    // Theme select persistence
-    document.getElementById('themeSelect').addEventListener('change', function(e) {
-        localStorage.setItem('appearanceTheme', e.target.value);
-        applyTheme(e.target.value);
-    });
-
-    function applyTheme(theme) {
-        // Remove any previous theme classes
-        document.body.classList.remove('theme-light', 'theme-dark');
-        if (theme === 'dark') {
-            document.body.classList.add('theme-dark');
-        } else {
-            document.body.classList.add('theme-light');
-        }
-    }
-
-    // Accent color palette logic
-    function setAccentColor(color) {
-        document.documentElement.style.setProperty('--accent-color', color);
-        localStorage.setItem('appearanceAccent', color);
     }
 
     function updateColorPaletteUI(selectedColor) {
@@ -283,43 +252,44 @@
         });
     }
 
+    document.getElementById('lightModeBtn').addEventListener('click', function() {
+        setMode('light');
+    });
+
+    document.getElementById('darkModeBtn').addEventListener('click', function() {
+        setMode('dark');
+    });
+
+    document.getElementById('donkModeBtn').addEventListener('click', function() {
+        toggleSpecialMode('donk');
+    });
+
+    document.getElementById('momModeBtn').addEventListener('click', function() {
+        toggleSpecialMode('mom');
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Apply Donk Mode or Mom Mode on page load
-        if (localStorage.getItem('appearanceDonk') === 'on') {
-            document.body.classList.add('donk-mode');
+        const savedTheme = (localStorage.getItem('appearanceTheme') || '').toLowerCase();
+        const legacyDonk = localStorage.getItem('appearanceDonk') === 'on';
+        const legacyMom = localStorage.getItem('appearanceMom') === 'on';
+        let initialTheme = 'dark';
+        if (['light', 'dark'].includes(savedTheme)) {
+            initialTheme = savedTheme;
         }
-        if (localStorage.getItem('appearanceMom') === 'on') {
-            document.body.classList.add('mom-mode');
+        // Migrate legacy single-theme values to toggle flags.
+        if (savedTheme === 'donk') {
+            appearanceState.donkEnabled = true;
+            localStorage.setItem('appearanceDonk', 'on');
+            localStorage.setItem('appearanceTheme', 'dark');
+        } else if (savedTheme === 'mom') {
+            appearanceState.momEnabled = true;
+            localStorage.setItem('appearanceMom', 'on');
+            localStorage.setItem('appearanceTheme', 'dark');
         }
-        // Donk Mode and Theme
-        const donkToggle = document.getElementById('donkToggle');
-        const donkSwitchBg = document.getElementById('donkSwitch');
-        const donkKnob = document.getElementById('donkKnob');
-        if (donkToggle.checked) {
-            donkSwitchBg.style.background = '#ffd700';
-            donkKnob.style.left = '24px';
-        } else {
-            donkSwitchBg.style.background = '#ffd6e0';
-            donkKnob.style.left = '2px';
-        }
-        if (localStorage.getItem('appearanceDonk') === 'on') {
-            donkToggle.checked = true;
-            setDonkMode(true);
-            donkSwitchBg.style.background = '#ffd700';
-            donkKnob.style.left = '24px';
-        }
-
-        // Mom Mode
-        updateMomSwitchUI(momToggle.checked);
-        if (localStorage.getItem('appearanceMom') === 'on') {
-            momToggle.checked = true;
-            setMomMode(true);
-            updateMomSwitchUI(true);
-        }
-
-        const theme = localStorage.getItem('appearanceTheme') || 'light';
-        document.getElementById('themeSelect').value = theme;
-        applyTheme(theme);
+        setMode(initialTheme, false);
+        appearanceState.donkEnabled = appearanceState.donkEnabled || legacyDonk;
+        appearanceState.momEnabled = appearanceState.momEnabled || legacyMom;
+        updateSpecialButtons();
 
         // Accent color palette
         const palette = document.getElementById('colorPalette');
@@ -333,7 +303,7 @@
             });
             // Restore accent color from localStorage
             const savedColor = localStorage.getItem('appearanceAccent') || '#d12a7a';
-            setAccentColor(savedColor);
+            setAccentColor(savedColor, false);
             updateColorPaletteUI(savedColor);
         }
     });

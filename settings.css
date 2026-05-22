@@ -1,3 +1,124 @@
+/* --- Unified appearance controls and accent-aware settings styling --- */
+body.settings-page {
+    background:
+        radial-gradient(1200px 600px at 12% -8%, var(--accent-soft, rgba(209, 42, 122, 0.2)), transparent 60%),
+        radial-gradient(900px 540px at 95% 8%, var(--accent-soft, rgba(209, 42, 122, 0.14)), transparent 60%),
+        var(--dark-bg);
+}
+
+.settings-page .settings-layout {
+    background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 42px rgba(0, 0, 0, 0.22);
+}
+
+.settings-page .settings-sidebar {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent-color) 16%, var(--card-bg)), var(--card-bg));
+    border-right: 1px solid var(--border-color);
+}
+
+.settings-page .settings-tab {
+    color: var(--text-gray);
+}
+
+.settings-page .settings-tab.active,
+.settings-page .settings-tab:hover {
+    color: #fff;
+    background: linear-gradient(95deg, var(--accent-color), var(--accent-dark));
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--accent-color) 40%, transparent);
+}
+
+.appearance-block {
+    display: block;
+}
+
+.appearance-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: var(--text-gray);
+    letter-spacing: 0.02em;
+}
+
+.mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.mode-btn {
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--card-bg) 90%, transparent);
+    color: var(--text-light);
+    min-height: 64px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 700;
+    transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.mode-btn img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+body.theme-dark .mode-btn img {
+    filter: invert(1);
+}
+
+.mode-btn:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent-color) 55%, var(--border-color));
+}
+
+.mode-btn.active {
+    color: #fff;
+    border-color: transparent;
+    background: linear-gradient(125deg, var(--accent-color), var(--accent-dark));
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--accent-color) 45%, transparent);
+}
+
+.mode-btn.active img {
+    filter: invert(1);
+}
+
+.special-mode-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.special-mode-btn.active {
+    border-color: #ffffff !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 70%, #ffffff), 0 12px 28px color-mix(in srgb, var(--accent-color) 55%, transparent);
+}
+
+.special-mode-btn.active::after {
+    content: 'ON';
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    border-radius: 999px;
+    padding: 2px 7px;
+}
+
+.settings-page .profile-form button[type="submit"] {
+    background: linear-gradient(110deg, var(--accent-color), var(--accent-dark));
+}
+
+.settings-page .profile-form button[type="submit"]:hover {
+    filter: brightness(1.06);
+}
 /* --- Settings Layout --- */
 .profile-container {
     max-width: 1100px;
@@ -241,4 +362,50 @@ body.donk-mode.settings-page .settings-content,
 body.donk-mode.settings-page .settings-panel,
 body.donk-mode.settings-page .profile-form {
     all: unset;
+}
+
+/* Final settings theme overrides */
+body.settings-page {
+    background:
+        radial-gradient(1200px 600px at 12% -8%, var(--accent-soft, rgba(209, 42, 122, 0.2)), transparent 60%),
+        radial-gradient(900px 540px at 95% 8%, var(--accent-soft, rgba(209, 42, 122, 0.14)), transparent 60%),
+        var(--dark-bg) !important;
+}
+
+body.settings-page .settings-layout {
+    background: color-mix(in srgb, var(--card-bg) 92%, transparent) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 14px 42px rgba(0, 0, 0, 0.22) !important;
+}
+
+body.settings-page .settings-sidebar {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent-color) 16%, var(--card-bg)), var(--card-bg)) !important;
+    border-right: 1px solid var(--border-color) !important;
+}
+
+body.settings-page .settings-tab {
+    color: var(--text-gray) !important;
+}
+
+body.settings-page .settings-tab.active,
+body.settings-page .settings-tab:hover {
+    color: #fff !important;
+    background: linear-gradient(95deg, var(--accent-color), var(--accent-dark)) !important;
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--accent-color) 40%, transparent) !important;
+}
+
+body.settings-page .settings-panel h3,
+body.settings-page .profile-form label {
+    color: var(--text-gray) !important;
+}
+
+body.settings-page .profile-form input,
+body.settings-page .profile-form select {
+    border: 1px solid var(--border-color) !important;
+    background: var(--darker-bg) !important;
+    color: var(--text-light) !important;
+}
+
+body.settings-page .profile-form button[type="submit"] {
+    background: linear-gradient(110deg, var(--accent-color), var(--accent-dark)) !important;
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+<script src="theme-mode.js"></script>
     <link rel="icon" type="image/svg+xml" href="lgo.svg">
 </head>
 <body>
@@ -129,33 +130,11 @@
             });
         });
         </script>
-        <!-- Donk Mode global logic -->
+        <!-- Legacy appearance migration: defer to global theme-mode.js -->
         <script>
-        function setDonkMode(enabled) {
-            if (enabled) {
-                document.body.classList.add('donk-mode');
-                localStorage.setItem('appearanceDonk', 'on');
-            } else {
-                document.body.classList.remove('donk-mode');
-                localStorage.setItem('appearanceDonk', 'off');
-            }
-        }
-        function setMomMode(enabled) {
-            if (enabled) {
-                document.body.classList.add('mom-mode');
-                localStorage.setItem('appearanceMom', 'on');
-            } else {
-                document.body.classList.remove('mom-mode');
-                localStorage.setItem('appearanceMom', 'off');
-            }
-        }
-        // On page load, apply Donk Mode or Mom Mode if enabled
         window.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('appearanceDonk') === 'on') {
-                setDonkMode(true);
-            }
-            if (localStorage.getItem('appearanceMom') === 'on') {
-                setMomMode(true);
+            if (typeof window.applySavedAppearance === 'function') {
+                window.applySavedAppearance();
             }
         });
         </script>
@@ -165,7 +144,7 @@
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <h1 class="hero-title">Live Hot Shows</h1>
+                <h1 class="hero-title" style="background:linear-gradient(90deg,#ff7ecb 0%,#ff4d6d 45%,#ff1f4b 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:0 4px 18px rgba(255,45,117,0.28);letter-spacing:0.02em;">Live Hot Shows</h1>
                 <p class="hero-subtitle">Connect with thousands of beautiful models in real-time. Premium HD shows, private sessions, and exclusive content.</p>
                 <div class="hero-buttons">
                     <button class="btn-primary" onclick="openPlayer(1)">🔥 Start Watching</button>

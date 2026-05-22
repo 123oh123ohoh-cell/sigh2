@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Tiers</title>
     <link rel="stylesheet" href="styles.css">
+<script src="theme-mode.js"></script>
     <style>
                 .profile-dropdown .dropdown-content {
                     display: none;
@@ -204,21 +205,11 @@
         window.location.href = 'profile.html';
     }
     </script>
-    <!-- Donk Mode global logic -->
+    <!-- Legacy appearance migration: defer to global theme-mode.js -->
     <script>
-    function setDonkMode(enabled) {
-        if (enabled) {
-            document.body.classList.add('donk-mode');
-            localStorage.setItem('appearanceDonk', 'on');
-        } else {
-            document.body.classList.remove('donk-mode');
-            localStorage.setItem('appearanceDonk', 'off');
-        }
-    }
-    // On page load, apply Donk Mode if enabled
     window.addEventListener('DOMContentLoaded', function() {
-        if (localStorage.getItem('appearanceDonk') === 'on') {
-            setDonkMode(true);
+        if (typeof window.applySavedAppearance === 'function') {
+            window.applySavedAppearance();
         }
     });
     </script>

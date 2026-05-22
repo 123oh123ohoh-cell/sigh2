@@ -31,4 +31,16 @@ document.addEventListener('DOMContentLoaded', function () {
         sweat.style.animationDuration = (2.5 + Math.random() * 2.5) + 's';
         sweatContainer.appendChild(sweat);
     }
+
+    // Add flashing effect to all .hypno elements
+    setTimeout(() => {
+        document.querySelectorAll('.hypno').forEach(el => {
+            el.classList.add('flashing');
+        });
+    }, 100);
+
+    // Add a flashing overlay to the body for extra effect
+    const flashOverlay = document.createElement('div');
+    flashOverlay.className = 'hypno-flash-overlay';
+    document.body.appendChild(flashOverlay);
 });

@@ -441,12 +441,30 @@ body.mom-mode.settings-page .profile-form {
     --gradient: linear-gradient(135deg, #df1717, #ff4444);
 }
 
+html.theme-light {
+    --primary-red: #e43f5a;
+    --dark-bg: #f9f2f5;
+    --darker-bg: #fff8fb;
+    --card-bg: #ffffff;
+    --text-light: #2a1a22;
+    --text-gray: #5a4150;
+    --text-dark: #826375;
+    --border-color: #f0d6e2;
+    --live-badge: #e43f5a;
+    --hover-bg: #fff0f7;
+    --gradient: linear-gradient(135deg, #ff6a88, #ff3f61);
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--dark-bg);
     color: var(--text-light);
     overflow-x: hidden;
     line-height: 1.4;
+}
+
+body.theme-light {
+    color-scheme: light;
 }
 
 /* Header */
@@ -466,9 +484,17 @@ body {
     transition: all 0.3s ease;
 }
 
+body.theme-light .header {
+    background: rgba(255, 247, 251, 0.95);
+}
+
 .header.scrolled {
     background: var(--dark-bg);
     box-shadow: 0 2px 20px rgba(0,0,0,0.8);
+}
+
+body.theme-light .header.scrolled {
+    box-shadow: 0 2px 20px rgba(203, 93, 131, 0.18);
 }
 
 .logo {

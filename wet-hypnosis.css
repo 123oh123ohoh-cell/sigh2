@@ -1,3 +1,29 @@
+.hypno.flashing {
+    animation: spin 2.5s linear infinite, hypno-flash 0.4s steps(2, end) infinite;
+    box-shadow: 0 0 32px 8px #fff, 0 0 64px 16px #ff69b4;
+}
+
+@keyframes hypno-flash {
+    0% { filter: brightness(1.5) contrast(2); }
+    50% { filter: brightness(0.7) contrast(1); }
+    100% { filter: brightness(1.5) contrast(2); }
+}
+
+.hypno-flash-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at 50% 50%, #fff6 0%, #ffb6d5cc 60%, transparent 100%);
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    animation: overlay-flash 0.5s steps(2, end) infinite;
+}
+
+@keyframes overlay-flash {
+    0% { opacity: 0.15; }
+    50% { opacity: 0.45; }
+    100% { opacity: 0.15; }
+}
 /* Card sweat drops emerging from skin */
 
 /* Ovum/anatomical sweat drops for reproductive system effect */
