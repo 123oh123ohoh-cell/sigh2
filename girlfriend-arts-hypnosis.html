@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Girlfriend Arts (hypnosis) - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme-mode.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #fff6fb 0%, #ffdff1 42%, #ffb8df 72%, #ff7fc8 100%);
+            animation: hypnotic-bg 10s linear infinite alternate;
+        }
+        @keyframes hypnotic-bg {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-radial-gradient(circle at 50% 30%, #fff7fd 0px, #ffd9f0 20px, #ffb8df 40px, #ff7fc8 60px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+            animation: swirl 12s linear infinite;
+        }
+        @keyframes swirl {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: linear-gradient(145deg, #fff7fd 60%, #ffd9f0 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            padding: 26px 18px 30px 18px;
+            width: 230px;
+            box-shadow: 0 10px 30px 8px rgba(255, 110, 190, 0.24), 0 1.5px 0 #fff inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 3px solid #ff9ed7;
+            position: relative;
+            overflow: visible;
+            cursor: pointer;
+        }
+        .arts-card .hypno {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: repeating-conic-gradient(from 0deg, #fff7fd 0deg 20deg, #ffd9f0 20deg 40deg, #ffb8df 40deg 60deg, #ff7fc8 60deg 80deg);
+            border-radius: 50%;
+            border: 2px solid #ff5cb8;
+            animation: spin 2.5s linear infinite;
+            z-index: 3;
+            box-shadow: 0 0 16px #ffb8df, 0 0 28px #ffd9f0;
+        }
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+        .arts-card img {
+            width: 160px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            border: 3px solid #ffa7da;
+            margin-bottom: 8px;
+            box-shadow: 0 3px 18px rgba(255, 110, 190, 0.25);
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d4008f;
+            font-size: 1.14em;
+            text-align: center;
+        }
+        .arts-card::before,
+        .arts-card::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            width: 18px;
+            height: 14px;
+            background: #ff7fc8;
+            border: 2px solid #ff5cb8;
+            border-radius: 90%;
+            z-index: 2;
+        }
+        .arts-card::before {
+            left: 50%;
+            transform: translateX(-100%) rotate(-14deg);
+        }
+        .arts-card::after {
+            left: 50%;
+            transform: translateX(0) rotate(14deg);
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.45em;
+            letter-spacing: 1.6px;
+            text-shadow: 0 4px 26px rgba(212, 0, 143, 0.55);
+            font-family: 'Great Vibes', 'Pacifico', cursive, sans-serif;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery { gap: 18px; }
+            .arts-card { width: 95vw; padding: 14px; }
+            .arts-card img { width: 82vw; height: 44vw; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+    </header>
+    <main class="arts-gallery-page">
+        <h2>Girlfriend Arts (hypnosis)</h2>
+        <div class="arts-gallery">
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl1.jpg','Girl 1','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl1.jpg" alt="Girl 1"><div class="title">Girl 1</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl1.webp','Girl 2','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl1.webp" alt="Girl 2"><div class="title">Girl 2</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl3.jpg','Girl 3','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl3.jpg" alt="Girl 3"><div class="title">Girl 3</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl4.jpeg','Girl 4','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl4.jpeg" alt="Girl 4"><div class="title">Girl 4</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl5.webp','Girl 5','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl5.webp" alt="Girl 5"><div class="title">Girl 5</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl6.webp','Girl 6','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl6.webp" alt="Girl 6"><div class="title">Girl 6</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl7.jpg','Girl 7','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl7.jpg" alt="Girl 7"><div class="title">Girl 7</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl8.jpg','Girl 8','Girlfriend focus visuals.')"><div class="hypno"></div><img src="girlfriend/girl8.jpg" alt="Girl 8"><div class="title">Girl 8</div></div>
+        </div>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:60vw;max-height:60vh;border-radius:18px;box-shadow:0 4px 32px rgba(255,110,190,0.55);">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 10px rgba(255,110,190,0.8);"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff5cb8;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        </script>
+    </main>
+</body>
+</html>
+
+
