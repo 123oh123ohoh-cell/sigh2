@@ -53,6 +53,10 @@ if (loginForm) {
 
 // Profile dropdown logic
 document.addEventListener('DOMContentLoaded', function() {
+    // theme-mode.js wires this dropdown on pages where it is loaded.
+    if (typeof window.applySavedAppearance === 'function') {
+        return;
+    }
     const dropdown = document.querySelector('.profile-dropdown');
     const btn = document.getElementById('profileDropdownBtn');
     if (dropdown && btn) {

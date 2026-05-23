@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cum Arts (hypnosis) - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme-mode.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #fff0fa 0%, #ffd6ec 40%, #ffb6d5 70%, #ff69b4 100%);
+            animation: hypnotic-bg 10s linear infinite alternate;
+        }
+        @keyframes hypnotic-bg {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-radial-gradient(circle at 50% 30%, #fff0fa 0px, #ffd6ec 20px, #ffb6d5 40px, #ff69b4 60px);
+            opacity: 0.13;
+            z-index: 0;
+            pointer-events: none;
+            animation: swirl 12s linear infinite;
+        }
+        @keyframes swirl {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 44px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: linear-gradient(145deg, #fff0fa 60%, #ffd6ec 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            padding: 28px 20px 36px 20px;
+            width: 230px;
+            box-shadow: 0 8px 32px 8px #ffb6d5, 0 1.5px 0 #fff inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 3px solid #ff69b4;
+            position: relative;
+            overflow: visible;
+        }
+        .arts-card .hypno {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: repeating-conic-gradient(from 0deg, #fff0fa 0deg 20deg, #ffb6d5 20deg 40deg, #ff69b4 40deg 60deg, #ffd6ec 60deg 80deg);
+            border-radius: 50%;
+            border: 2px solid #ff69b4;
+            animation: spin 2.5s linear infinite;
+            z-index: 3;
+            box-shadow: 0 0 16px #ffb6d5, 0 0 32px #ffd6ec;
+        }
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+        .arts-card img {
+            width: 160px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            background: #fff0fa;
+            box-shadow: 0 2px 24px 4px #fff, 0 2px 16px 2px #ffd6ec;
+            border: 3px solid #ffb6d5;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 16px #fff8) drop-shadow(0 4px 18px #ffb6d5);
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d72660;
+            font-size: 1.22em;
+            letter-spacing: 0.7px;
+            text-shadow: 0 1px 10px #fff0fa, 0 2px 14px #ffb6d5;
+        }
+        .arts-card .desc {
+            font-size: 1em;
+            color: #b3005e;
+            min-height: 32px;
+            text-align: center;
+            font-style: italic;
+        }
+        h2 {
+            color: #ff69b4;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 28px #ffd6ec, 0 1px 0 #fff0fa;
+            font-family: 'Pacifico', cursive, sans-serif;
+        }
+        .egg-icon {
+            display: inline-block;
+            width: 40px;
+            height: 56px;
+            background: radial-gradient(ellipse at 50% 60%, #fff 70%, #ffd6ec 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            margin-right: 14px;
+            vertical-align: middle;
+            box-shadow: 0 2px 14px #ffb6d5;
+            border: 2px solid #ffb6d5;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery { gap: 18px; }
+            .arts-card { width: 98vw; padding: 14px; }
+            .arts-card img { width: 80vw; height: 38vw; }
+        }
+        .arts-card.wet::before {
+            content: '';
+            position: absolute;
+            top: -18px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 60px;
+            background: radial-gradient(circle, #fff8 60%, #ffd6ec88 100%);
+            border-radius: 50%;
+            opacity: 0.7;
+            filter: blur(2px);
+            z-index: 2;
+            pointer-events: none;
+            animation: drip-wet 2.2s infinite linear;
+        }
+        @keyframes drip-wet {
+            0% { opacity: 0.7; }
+            80% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropdownBtn = document.getElementById('profileDropdownBtn');
+                const dropdownMenu = document.getElementById('profileDropdownMenu');
+                if (dropdownBtn && dropdownMenu) {
+                    dropdownBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdownMenu.classList.toggle('show');
+                    });
+                    document.addEventListener('click', function(e) {
+                        if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                        }
+                    });
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                async function updateDropdownMenu() {
+                    const loggedInUser = localStorage.getItem('loggedInUser');
+                    const token = localStorage.getItem('token');
+                    const profileLink = document.getElementById('profileLink');
+                    const signoutLink = document.getElementById('signoutLink');
+                    const dropdownLogin = document.getElementById('dropdownLogin');
+                    const dropdownSignup = document.getElementById('dropdownSignup');
+                    const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
+                    const profileAvatarIcon = document.getElementById('profileAvatarIcon');
+                    const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                    if (loggedInUser && token) {
+                        if (profileLink) profileLink.style.display = '';
+                        if (signoutLink) signoutLink.style.display = '';
+                        if (dropdownLogin) dropdownLogin.style.display = 'none';
+                        if (dropdownSignup) dropdownSignup.style.display = 'none';
+                        let premiumTier = '';
+                        let avatar = '';
+                        try {
+                            const res = await fetch('https://ownshub.onrender.com/api/profile', {
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            if (res.ok) {
+                                const data = await res.json();
+                                premiumTier = data.premiumTier;
+                                avatar = data.avatar;
+                            }
+                        } catch {}
+                        if (premiumBadgeHeader) {
+                            if (premiumTier) {
+                                let color = '#ffd700';
+                                if (premiumTier === 'Silver') color = '#c0c0c0';
+                                if (premiumTier === 'Bronze') color = '#cd7f32';
+                                premiumBadgeHeader.innerHTML = `<span style="padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;">${premiumTier} Premium</span>`;
+                            } else {
+                                premiumBadgeHeader.innerHTML = '';
+                            }
+                        }
+                        if (profileAvatarIcon && avatar) {
+                            profileAvatarIcon.src = avatar;
+                            profileAvatarIcon.style.display = '';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
+                        } else {
+                            if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                        }
+                    } else {
+                        if (profileLink) profileLink.style.display = 'none';
+                        if (signoutLink) signoutLink.style.display = 'none';
+                        if (dropdownLogin) dropdownLogin.style.display = '';
+                        if (dropdownSignup) dropdownSignup.style.display = '';
+                        if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
+                        if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                    }
+                }
+                updateDropdownMenu();
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'loggedInUser') {
+                        updateDropdownMenu();
+                    }
+                });
+            });
+        </script>
+    </header>
+    <main class="arts-gallery-page">
+        <h2><span class="egg-icon"></span>Cum Arts (hypnosis)</h2>
+        <div class="arts-gallery">
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0887.webp','Drippy Egg 1','Feminine energy, new beginnings.')"><div class="hypno"></div><img src="cum/IMG_0887.webp" alt="Drippy Egg 1"><div class="title">Drippy Egg 1</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0888.jpeg','Drippy Egg 2','Symbol of fertility and life.')"><div class="hypno"></div><img src="cum/IMG_0888.jpeg" alt="Drippy Egg 2"><div class="title">Drippy Egg 2</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0889.jpeg','Drippy Egg 3','Wet, glossy, and full of potential.')"><div class="hypno"></div><img src="cum/IMG_0889.jpeg" alt="Drippy Egg 3"><div class="title">Drippy Egg 3</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0896.webp','Drippy Egg 4','Inspired by the ovary and the feminine form.')"><div class="hypno"></div><img src="cum/IMG_0896.webp" alt="Drippy Egg 4"><div class="title">Drippy Egg 4</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0897.jpeg','Drippy Egg 5','Celebrating the beauty of creation.')"><div class="hypno"></div><img src="cum/IMG_0897.jpeg" alt="Drippy Egg 5"><div class="title">Drippy Egg 5</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0898.webp','Drippy Egg 6','Glossy, wet, and full of life.')"><div class="hypno"></div><img src="cum/IMG_0898.webp" alt="Drippy Egg 6"><div class="title">Drippy Egg 6</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0899.jpeg','Drippy Egg 7','Eggs and ovaries, feminine power.')"><div class="hypno"></div><img src="cum/IMG_0899.jpeg" alt="Drippy Egg 7"><div class="title">Drippy Egg 7</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0900.jpeg','Drippy Egg 8','Wet, round, and radiant.')"><div class="hypno"></div><img src="cum/IMG_0900.jpeg" alt="Drippy Egg 8"><div class="title">Drippy Egg 8</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0901.webp','Drippy Egg 9','Glossy ovum, new life.')"><div class="hypno"></div><img src="cum/IMG_0901.webp" alt="Drippy Egg 9"><div class="title">Drippy Egg 9</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0902.webp','Drippy Egg 10','Feminine, wet, and creative.')"><div class="hypno"></div><img src="cum/IMG_0902.webp" alt="Drippy Egg 10"><div class="title">Drippy Egg 10</div></div>
+            <div class="arts-card wet" onclick="showImageModal('cum/IMG_0903.jpeg','Drippy Egg 11','Egg, ovary, and the start of life.')"><div class="hypno"></div><img src="cum/IMG_0903.jpeg" alt="Drippy Egg 11"><div class="title">Drippy Egg 11</div></div>
+        </div>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:60vw;max-height:60vh;border-radius:18px;box-shadow:0 4px 32px #ffb6d5cc;">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 12px #ff69b4;"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;text-shadow:0 1px 6px #ff69b4;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff69b4;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        </script>
+    </main>
+</body>
+</html>
+
+
+

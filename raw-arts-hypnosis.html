@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raw Arts (hypnosis) - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme-mode.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #fff4f0 0%, #ffd9cc 45%, #ffb8a3 75%, #ff8a65 100%);
+            animation: hypnotic-bg 10s linear infinite alternate;
+        }
+        @keyframes hypnotic-bg {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-radial-gradient(circle at 50% 30%, #fff6f2 0px, #ffd9cc 20px, #ffb8a3 40px, #ff8a65 60px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+            animation: swirl 12s linear infinite;
+        }
+        @keyframes swirl {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: linear-gradient(145deg, #fff7f3 60%, #ffe4db 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            padding: 26px 18px 30px 18px;
+            width: 230px;
+            box-shadow: 0 8px 30px 8px rgba(255, 138, 101, 0.24), 0 1.5px 0 #fff inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 3px solid #ff9f80;
+            position: relative;
+            overflow: visible;
+            cursor: pointer;
+        }
+        .arts-card .hypno {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: repeating-conic-gradient(from 0deg, #fff6f2 0deg 20deg, #ffd9cc 20deg 40deg, #ffb8a3 40deg 60deg, #ff8a65 60deg 80deg);
+            border-radius: 50%;
+            border: 2px solid #ff8a65;
+            animation: spin 2.5s linear infinite;
+            z-index: 3;
+            box-shadow: 0 0 16px #ffb8a3, 0 0 28px #ffd9cc;
+        }
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+        .arts-card img {
+            width: 160px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            border: 3px solid #ffb39b;
+            margin-bottom: 8px;
+            box-shadow: 0 3px 18px rgba(255, 138, 101, 0.25);
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #cf4f29;
+            font-size: 1.14em;
+            text-align: center;
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.45em;
+            letter-spacing: 1.6px;
+            text-shadow: 0 4px 26px rgba(207, 79, 41, 0.65);
+            font-family: 'Pacifico', cursive, sans-serif;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery { gap: 18px; }
+            .arts-card { width: 95vw; padding: 14px; }
+            .arts-card img { width: 82vw; height: 44vw; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+    </header>
+    <main class="arts-gallery-page">
+        <h2>Raw Arts (hypnosis)</h2>
+        <div class="arts-gallery">
+            <div class="arts-card" onclick="showImageModal('raw/(m=bKW1KNV)(mh=VQSsKwmRtJrkt1Dk)52229511a.jpg','Raw Hypnosis 1','Raw focus visuals.')"><div class="hypno"></div><img src="raw/(m=bKW1KNV)(mh=VQSsKwmRtJrkt1Dk)52229511a.jpg" alt="Raw Hypnosis 1"><div class="title">Raw Hypnosis 1</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/(m=eaSaaTbWx)(mh=3_MGbrsmDlmjsHu1)12.jpg','Raw Hypnosis 2','Raw focus visuals.')"><div class="hypno"></div><img src="raw/(m=eaSaaTbWx)(mh=3_MGbrsmDlmjsHu1)12.jpg" alt="Raw Hypnosis 2"><div class="title">Raw Hypnosis 2</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/(m=eGM68f)(mh=YwQcCAOWDJQsa4FU)0.jpg','Raw Hypnosis 3','Raw focus visuals.')"><div class="hypno"></div><img src="raw/(m=eGM68f)(mh=YwQcCAOWDJQsa4FU)0.jpg" alt="Raw Hypnosis 3"><div class="title">Raw Hypnosis 3</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/1913348.jpg','Raw Hypnosis 4','Raw focus visuals.')"><div class="hypno"></div><img src="raw/1913348.jpg" alt="Raw Hypnosis 4"><div class="title">Raw Hypnosis 4</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/3.jpg','Raw Hypnosis 5','Raw focus visuals.')"><div class="hypno"></div><img src="raw/3.jpg" alt="Raw Hypnosis 5"><div class="title">Raw Hypnosis 5</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/7.jpg','Raw Hypnosis 6','Raw focus visuals.')"><div class="hypno"></div><img src="raw/7.jpg" alt="Raw Hypnosis 6"><div class="title">Raw Hypnosis 6</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/78.jpg','Raw Hypnosis 7','Raw focus visuals.')"><div class="hypno"></div><img src="raw/78.jpg" alt="Raw Hypnosis 7"><div class="title">Raw Hypnosis 7</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/have-some-hard-action-with-lisey-sweet-3b711ee4f3.jpg','Raw Hypnosis 8','Raw focus visuals.')"><div class="hypno"></div><img src="raw/have-some-hard-action-with-lisey-sweet-3b711ee4f3.jpg" alt="Raw Hypnosis 8"><div class="title">Raw Hypnosis 8</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/preview.jpg','Raw Hypnosis 9','Raw focus visuals.')"><div class="hypno"></div><img src="raw/preview.jpg" alt="Raw Hypnosis 9"><div class="title">Raw Hypnosis 9</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/preview_lq.mp4.webp','Raw Hypnosis 10','Raw focus visuals.')"><div class="hypno"></div><img src="raw/preview_lq.mp4.webp" alt="Raw Hypnosis 10"><div class="title">Raw Hypnosis 10</div></div>
+            <div class="arts-card" onclick="showImageModal('raw/rs_fit_1280_720.avif','Raw Hypnosis 11','Raw focus visuals.')"><div class="hypno"></div><img src="raw/rs_fit_1280_720.avif" alt="Raw Hypnosis 11"><div class="title">Raw Hypnosis 11</div></div>
+        </div>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:60vw;max-height:60vh;border-radius:18px;box-shadow:0 4px 32px rgba(255,138,101,0.55);">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 10px rgba(255,138,101,0.8);"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff8a65;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        </script>
+    </main>
+</body>
+</html>

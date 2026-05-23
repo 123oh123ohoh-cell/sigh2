@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cum / Cum Baby Collections - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+<script src="theme-mode.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #ffb6d5 0%, #ff69b4 60%, #d72660 100%);
+        }
+        .collections-page {
+            min-height: 90vh;
+            padding: 80px 0 24px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .collections-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        .collection-card {
+            background: linear-gradient(145deg, #fff0fa 60%, #ffb6d5 100%);
+            border-radius: 22px 22px 32px 32px;
+            padding: 28px 32px 32px 32px;
+            width: 260px;
+            box-shadow: 0 4px 24px 4px rgba(255,105,180,0.18), 0 1.5px 0 #fff inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2.5px solid #ff69b4;
+            text-align: center;
+            text-decoration: none;
+            color: #d72660;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.12s, box-shadow 0.12s;
+        }
+        .collection-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 32px 8px #ffb6d5;
+            color: #b3005e;
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.2em;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 16px #ff69b4, 0 1px 0 #fff0fa;
+        }
+        @media (max-width: 600px) {
+            .collections-list { gap: 14px; }
+            .collection-card { width: 98vw; padding: 12px; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropdownBtn = document.getElementById('profileDropdownBtn');
+                const dropdownMenu = document.getElementById('profileDropdownMenu');
+                if (dropdownBtn && dropdownMenu) {
+                    dropdownBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdownMenu.classList.toggle('show');
+                    });
+                    document.addEventListener('click', function(e) {
+                        if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                            dropdownMenu.classList.remove('show');
+                        }
+                    });
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                async function updateDropdownMenu() {
+                    const loggedInUser = localStorage.getItem('loggedInUser');
+                    const token = localStorage.getItem('token');
+                    const profileLink = document.getElementById('profileLink');
+                    const signoutLink = document.getElementById('signoutLink');
+                    const dropdownLogin = document.getElementById('dropdownLogin');
+                    const dropdownSignup = document.getElementById('dropdownSignup');
+                    const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
+                    const profileAvatarIcon = document.getElementById('profileAvatarIcon');
+                    const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                    if (loggedInUser && token) {
+                        if (profileLink) profileLink.style.display = '';
+                        if (signoutLink) signoutLink.style.display = '';
+                        if (dropdownLogin) dropdownLogin.style.display = 'none';
+                        if (dropdownSignup) dropdownSignup.style.display = 'none';
+                        let premiumTier = '';
+                        let avatar = '';
+                        try {
+                            const res = await fetch('https://ownshub.onrender.com/api/profile', {
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            if (res.ok) {
+                                const data = await res.json();
+                                premiumTier = data.premiumTier;
+                                avatar = data.avatar;
+                            }
+                        } catch {}
+                        if (premiumBadgeHeader) {
+                            if (premiumTier) {
+                                let color = '#ffd700';
+                                if (premiumTier === 'Silver') color = '#c0c0c0';
+                                if (premiumTier === 'Bronze') color = '#cd7f32';
+                                premiumBadgeHeader.innerHTML = `<span style="padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;">${premiumTier} Premium</span>`;
+                            } else {
+                                premiumBadgeHeader.innerHTML = '';
+                            }
+                        }
+                        if (profileAvatarIcon && avatar) {
+                            profileAvatarIcon.src = avatar;
+                            profileAvatarIcon.style.display = '';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
+                        } else {
+                            if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                            if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                        }
+                    } else {
+                        if (profileLink) profileLink.style.display = 'none';
+                        if (signoutLink) signoutLink.style.display = 'none';
+                        if (dropdownLogin) dropdownLogin.style.display = '';
+                        if (dropdownSignup) dropdownSignup.style.display = '';
+                        if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
+                        if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                    }
+                }
+                updateDropdownMenu();
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'loggedInUser') {
+                        updateDropdownMenu();
+                    }
+                });
+            });
+        </script>
+    </header>
+    <main class="collections-page">
+        <h2>Cum / Cum Baby Collections</h2>
+        <div class="collections-list">
+            <a href="cum-baby.html" class="collection-card">Cum Baby</a>
+            <a href="cum-arts-hypnosis.html" class="collection-card">Cum Arts (hypnosis)</a>
+        </div>
+    </main>
+</body>
+</html>
+
+
+

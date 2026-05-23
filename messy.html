@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cum Arts Hypnosis</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme-mode.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #fff0fa 0%, #ffd6ec 40%, #ffb6d5 70%, #ff69b4 100%);
+            animation: hypnotic-bg 10s linear infinite alternate;
+        }
+        @keyframes hypnotic-bg {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 44px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: linear-gradient(145deg, #fff0fa 60%, #ffd6ec 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .arts-card img {
+            max-width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .arts-card .title {
+            margin-top: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .arts-card .desc {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+    </header>
+    <main class="arts-gallery-page">
+        <h2>Cum Arts Hypnosis</h2>
+        <div class="arts-gallery">
+            <div class="arts-card" onclick="showImageModal('cum/IMG_0887.webp','Drippy Egg 1','Feminine energy, new beginnings.')">
+                <img src="cum/IMG_0887.webp" alt="Drippy Egg 1">
+                <div class="title">Drippy Egg 1</div>
+                <div class="desc">Feminine energy, new beginnings.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('cum/IMG_0888.jpeg','Drippy Egg 2','Symbol of fertility and life.')">
+                <img src="cum/IMG_0888.jpeg" alt="Drippy Egg 2">
+                <div class="title">Drippy Egg 2</div>
+                <div class="desc">Symbol of fertility and life.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('cum/IMG_0889.jpeg','Drippy Egg 3','Wet, glossy, and full of potential.')">
+                <img src="cum/IMG_0889.jpeg" alt="Drippy Egg 3">
+                <div class="title">Drippy Egg 3</div>
+                <div class="desc">Wet, glossy, and full of potential.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('cum/IMG_0896.webp','Drippy Egg 4','Inspired by the ovary and the feminine form.')">
+                <img src="cum/IMG_0896.webp" alt="Drippy Egg 4">
+                <div class="title">Drippy Egg 4</div>
+                <div class="desc">Inspired by the ovary and the feminine form.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('cum/IMG_0897.jpeg','Drippy Egg 5','Celebrating the beauty of creation.')">
+                <img src="cum/IMG_0897.jpeg" alt="Drippy Egg 5">
+                <div class="title">Drippy Egg 5</div>
+                <div class="desc">Celebrating the beauty of creation.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('cum/IMG_0898.webp','Drippy Egg 6','Glossy, wet, and full of life.')">
+                <img src="cum/IMG_0898.webp" alt="Drippy Egg 6">
+                <div class="title">Drippy Egg 6</div>
+                <div class="desc">Glossy, wet, and full of life.</div>
+            </div>
+            <div class="arts-card">
+                <img src="public/cum/IMG_001.png" alt="Cum Art 1" class="zoomable" onclick="showImageModal('public/cum/IMG_001.png','Cum Art 1')">
+                <div class="title">Cum Art 1</div>
+            </div>
+            <div class="arts-card">
+                <img src="public/cum/IMG_002.png" alt="Cum Art 2" class="zoomable" onclick="showImageModal('public/cum/IMG_002.png','Cum Art 2')">
+                <div class="title">Cum Art 2</div>
+            </div>
+            <div class="arts-card">
+                <img src="public/cum/IMG_003.png" alt="Cum Art 3" class="zoomable" onclick="showImageModal('public/cum/IMG_003.png','Cum Art 3')">
+                <div class="title">Cum Art 3</div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

@@ -1,5 +1,9 @@
 /* --- Unified appearance controls and accent-aware settings styling --- */
 body.settings-page {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    font-size: 1.08em;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
     background:
         radial-gradient(1200px 600px at 12% -8%, var(--accent-soft, rgba(209, 42, 122, 0.2)), transparent 60%),
         radial-gradient(900px 540px at 95% 8%, var(--accent-soft, rgba(209, 42, 122, 0.14)), transparent 60%),
@@ -152,7 +156,7 @@ body.theme-dark .mode-btn img {
     outline: none;
     padding: 18px 32px;
     font-size: 1.13em;
-    font-family: inherit;
+    /* font-family override removed for consistency */
     color: #d12a7a;
     text-align: left;
     cursor: pointer;
@@ -292,6 +296,10 @@ body.donk-mode .settings-content {
 }
 body.donk-mode .settings-panel,
 body.donk-mode .profile-form {
+    /* font-family override removed for consistency */
+    font-size: 1.08em;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
     background: linear-gradient(145deg, #fff0fa 60%, #ffb6d5 100%) !important;
     border-radius: 22px 22px 32px 32px;
     box-shadow: 0 4px 24px 4px rgba(255,105,180,0.18), 0 1.5px 0 #fff inset;
@@ -317,6 +325,9 @@ body.donk-mode .settings-tab:hover {
 body.donk-mode h2,
 body.donk-mode h3,
 body.donk-mode label {
+    /* font-family override removed for consistency */
+    font-weight: 700;
+    letter-spacing: 0.02em;
     color: #d72660 !important;
     text-shadow: 0 2px 8px #fff0fa, 0 1px 0 #ffb6d5;
 }

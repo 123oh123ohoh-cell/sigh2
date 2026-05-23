@@ -421,6 +421,17 @@ body.mom-mode.settings-page .profile-form {
 .auth-container a:hover {
     color: #ff4444;
 }
+
+/* Disable spinner wheels in image viewer modals globally */
+#imageModal .modal-hypno,
+#imageModal .hypno-spiral,
+#imageModal .hypno,
+.modal .modal-hypno,
+.modal .hypno-spiral,
+.modal .hypno {
+    display: none !important;
+    animation: none !important;
+}
 * {
     margin: 0;
     padding: 0;
@@ -456,7 +467,7 @@ html.theme-light {
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
     background-color: var(--dark-bg);
     color: var(--text-light);
     overflow-x: hidden;
@@ -507,6 +518,14 @@ body.theme-light .header.scrolled {
     cursor: pointer;
     text-decoration: none;
     letter-spacing: 1px;
+}
+.logo img {
+    content: url("logos_and_profileicons/logo6.png");
+    height: 48px;
+    width: 48px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
 }
 
 .nav-links {
@@ -1358,7 +1377,7 @@ body.donk-mode h3,
 body.donk-mode label {
     color: #d72660 !important;
     text-shadow: 0 2px 8px #fff0fa, 0 1px 0 #ffb6d5;
-    font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+    /* font-family override removed for consistency */
     letter-spacing: 0.5px;
 }
 body.donk-mode .color-circle {
@@ -1379,7 +1398,7 @@ body.donk-mode .btn-primary {
     color: #fff;
     box-shadow: 0 2px 12px #ffb6d588;
     border-radius: 24px 24px 32px 32px;
-    font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+    /* font-family override removed for consistency */
     font-size: 1.1em;
 }
 body.donk-mode .profile-form button[type="submit"]:hover,
@@ -1391,7 +1410,7 @@ body.donk-mode .btn-primary:hover {
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap');
 
 body.donk-mode:not(.settings-page) {
-    font-family: 'Pacifico', 'Great Vibes', cursive, 'Comic Sans MS', 'Comic Sans', sans-serif;
+    /* font-family override removed for consistency */
 }
 body.donk-mode:not(.settings-page) h1,
 body.donk-mode:not(.settings-page) h2,
@@ -1400,6 +1419,6 @@ body.donk-mode:not(.settings-page) label,
 body.donk-mode:not(.settings-page) .nav-link,
 body.donk-mode:not(.settings-page) .settings-tab,
 body.donk-mode:not(.settings-page) .btn-primary {
-    font-family: 'Great Vibes', 'Pacifico', cursive, 'Comic Sans MS', 'Comic Sans', sans-serif !important;
+    /* font-family override removed for consistency */
     letter-spacing: 0.5px;
 }
