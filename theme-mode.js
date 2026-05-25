@@ -141,6 +141,104 @@
         }
     }
 
+    function shouldShowSectionBackButton(fileName) {
+        if (!fileName) {
+            return false;
+        }
+        return fileName.indexOf('collections') !== -1 || fileName.indexOf('arts') !== -1 || fileName.indexOf('vagina') !== -1 || fileName.indexOf('hypnosis') !== -1 || fileName.indexOf('raw') !== -1 || fileName.indexOf('cum') !== -1 || fileName.indexOf('baby') !== -1 || /-2\.html$/.test(fileName);
+    }
+
+    function getSectionFallbackTarget(fileName) {
+        if (fileName === 'collections.html' || fileName === 'collections-2.html') {
+            return 'index.html';
+        }
+        if (fileName === 'arts.html') {
+            return 'index.html';
+        }
+        if (fileName.indexOf('arts') !== -1) {
+            return 'collections.html';
+        }
+        if (fileName.indexOf('vagina') !== -1) {
+            return 'vagina-collections.html';
+        }
+        if (fileName.indexOf('hypnosis') !== -1) {
+            return 'collections.html';
+        }
+        if (fileName.indexOf('raw') !== -1) {
+            return 'raw-collections.html';
+        }
+        if (fileName.indexOf('cum') !== -1 || fileName.indexOf('baby') !== -1) {
+            return 'cum-collections.html';
+        }
+        if (/-2\.html$/.test(fileName)) {
+            return 'collections.html';
+        }
+        return 'collections.html';
+    }
+
+    function positionCollectionsBackButton(button) {
+        if (!button) {
+            return;
+        }
+        var header = document.querySelector('.header');
+        if (!header) {
+            button.style.top = '84px';
+            return;
+        }
+        var rect = header.getBoundingClientRect();
+        var top = Math.max(56, Math.round(rect.bottom + 10));
+        button.style.top = top + 'px';
+    }
+
+    function ensureSectionBackButton() {
+        var path = String((window.location && window.location.pathname) || '').toLowerCase();
+        var fileName = path.split('/').pop();
+        if (!shouldShowSectionBackButton(fileName)) {
+            return;
+        }
+
+        var existing = document.getElementById('collectionsBackBtn');
+        if (existing) {
+            existing.classList.toggle('is-vagina-page', fileName.indexOf('vagina') !== -1);
+            existing.classList.toggle('is-baby2-page', /-2\.html$/.test(fileName));
+            positionCollectionsBackButton(existing);
+            return;
+        }
+
+        var button = document.createElement('button');
+        button.id = 'collectionsBackBtn';
+        button.className = 'collections-back-btn';
+        if (fileName.indexOf('vagina') !== -1) {
+            button.classList.add('is-vagina-page');
+        }
+        if (/-2\.html$/.test(fileName)) {
+            button.classList.add('is-baby2-page');
+        }
+        button.type = 'button';
+        button.textContent = '\u2190 Back';
+        button.setAttribute('aria-label', 'Go back to previous page');
+        button.addEventListener('click', function () {
+            if (window.history.length > 1) {
+                window.history.back();
+                return;
+            }
+            window.location.href = getSectionFallbackTarget(fileName);
+        });
+
+        document.body.appendChild(button);
+        positionCollectionsBackButton(button);
+
+        if (!window._collectionsBackBtnPosWired) {
+            window._collectionsBackBtnPosWired = true;
+            window.addEventListener('resize', function () {
+                positionCollectionsBackButton(document.getElementById('collectionsBackBtn'));
+            });
+            window.addEventListener('orientationchange', function () {
+                positionCollectionsBackButton(document.getElementById('collectionsBackBtn'));
+            });
+        }
+    }
+
     function normalizeTheme(theme) {
         var normalized = String(theme || '').toLowerCase();
         if (normalized === 'light' || normalized === 'dark') {
@@ -599,12 +697,14 @@
             syncOwBranding();
             wireMobileLogoNavToggle();
             applyDeviceMode();
+            ensureSectionBackButton();
         });
     } else {
         syncGlobalProfileHeader();
         syncOwBranding();
         wireMobileLogoNavToggle();
         applyDeviceMode();
+        ensureSectionBackButton();
     }
 
     window.addEventListener('storage', function (event) {

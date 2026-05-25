@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vagina Collections - own's hub</title>
+    <title>Vagina Hypnosis - own's hub</title>
     <link rel="stylesheet" href="styles.css">
     <script src="theme-mode.js"></script>
     <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
     <style>
         body {
             background: radial-gradient(ellipse at center, #fff6fb 0%, #ffdff1 42%, #ffb8df 72%, #ff7fc8 100%);
+            animation: hypnotic-bg 10s linear infinite alternate;
+        }
+        @keyframes hypnotic-bg {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
         .arts-gallery-page {
             min-height: 90vh;
@@ -17,7 +22,20 @@
             padding: 80px 0 24px 0;
             position: relative;
         }
-        /* Copy the ovary/egg/reproductive organ frame styles from girlfriend-2.html */
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-radial-gradient(circle at 50% 30%, #fff7fd 0px, #ffd9f0 18px, #ffb8df 36px, #ff7fc8 54px);
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+            animation: swirl 12s linear infinite;
+        }
+        @keyframes swirl {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         .arts-gallery {
             display: flex;
             flex-wrap: wrap;
@@ -45,6 +63,24 @@
             outline: 5px solid #ffb8df;
             outline-offset: 0px;
             transition: box-shadow 0.3s, outline 0.3s;
+        }
+        .arts-card .hypno {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: repeating-conic-gradient(from 0deg, #fff7fd 0deg 20deg, #ffd9f0 20deg 40deg, #ffb8df 40deg 60deg, #ff7fc8 60deg 80deg);
+            border-radius: 50%;
+            border: 2px solid #ff5cb8;
+            animation: spin 2.5s linear infinite;
+            z-index: 3;
+            box-shadow: 0 0 16px #ffb8df, 0 0 28px #ffd9f0;
+        }
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
         }
         .arts-card:hover {
             box-shadow: 0 24px 64px 24px #ff7fc888, 0 8px 0 #fff inset, 0 0 48px 16px #ffb8df99;
@@ -82,11 +118,19 @@
         h2 {
             color: #fff;
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 12px;
             font-size: 2.4em;
             letter-spacing: 2px;
             text-shadow: 0 4px 24px rgba(212, 0, 143, 0.5), 0 1px 0 #fff4f0;
             font-family: 'Great Vibes', 'Pacifico', cursive, sans-serif;
+        }
+        .hypnosis-intro {
+            text-align: center;
+            color: #9a0061;
+            font-size: 1.02em;
+            margin: 0 18px 24px;
+            text-shadow: 0 1px 0 #fff7fd;
+            letter-spacing: 0.2px;
         }
         .hypnosis-link {
             display: inline-block;
@@ -137,6 +181,10 @@
             margin-bottom: 16px;
             letter-spacing: 0.8px;
         }
+        body.mobile-mode .hypnosis-intro {
+            font-size: 0.94rem;
+            margin: 0 10px 16px;
+        }
         body.mobile-mode .hypnosis-link {
             width: min(94vw, 340px);
             text-align: center;
@@ -180,14 +228,15 @@
         </nav>
     </header>
     <main class="arts-gallery-page">
-        <h2>Vagina Collections</h2>
+        <h2>Vagina Hypnosis</h2>
+        <p class="hypnosis-intro">Focus softly at the center, breathe slowly, and let each frame pull you deeper.</p>
         <div style="text-align:center;">
-            <a href="vagina-hypnosis.html" class="hypnosis-link">Vagina Hypnosis</a>
+            <a href="collections-2.html" class="hypnosis-link">Back To Collections</a>
         </div>
         <div class="arts-gallery">
-            <div class="arts-card" onclick="showImageModal('public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg','Hijab Vagina','A feminine, ovary-inspired collection with hijab themes.')"><img src="public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg" alt="Hijab Vagina"><div class="title">Hijab Vagina</div><div class="desc">A feminine, ovary-inspired collection with hijab themes.</div></div>
-            <div class="arts-card" onclick="showImageModal('public/imagetab/IMG_0842.png','Japan Vagina','A collection inspired by Japanese aesthetics and feminine forms.')"><img src="public/imagetab/IMG_0842.png" alt="Japan Vagina"><div class="title">Japan Vagina</div><div class="desc">A collection inspired by Japanese aesthetics and feminine forms.</div></div>
-            <div class="arts-card" onclick="showImageModal('girlfriend/girl1.jpg','Girlfriend Vagina','A soft, nurturing, and ovary-themed girlfriend collection.')"><img src="girlfriend/girl1.jpg" alt="Girlfriend Vagina"><div class="title">Girlfriend Vagina</div><div class="desc">A soft, nurturing, and ovary-themed girlfriend collection.</div></div>
+            <div class="arts-card" onclick="showImageModal('public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg','Hijab Vagina','Settle your breathing and follow the center pulse.')"><div class="hypno"></div><img src="public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg" alt="Hijab Vagina"><div class="title">Hijab Vagina</div><div class="desc">Settle your breathing and follow the center pulse.</div></div>
+            <div class="arts-card" onclick="showImageModal('public/imagetab/IMG_0842.png','Japan Vagina','Let the tones blur the edges of your thoughts.')"><div class="hypno"></div><img src="public/imagetab/IMG_0842.png" alt="Japan Vagina"><div class="title">Japan Vagina</div><div class="desc">Let the tones blur the edges of your thoughts.</div></div>
+            <div class="arts-card" onclick="showImageModal('girlfriend/girl1.jpg','Girlfriend Vagina','Hold your gaze steady and drift deeper.')"><div class="hypno"></div><img src="girlfriend/girl1.jpg" alt="Girlfriend Vagina"><div class="title">Girlfriend Vagina</div><div class="desc">Hold your gaze steady and drift deeper.</div></div>
         </div>
         <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
             <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">

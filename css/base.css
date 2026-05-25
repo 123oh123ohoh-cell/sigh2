@@ -433,6 +433,54 @@ body.mom-mode.settings-page .profile-form {
     animation: none !important;
 }
 
+.collections-back-btn {
+    position: fixed;
+    left: 12px;
+    top: 84px;
+    z-index: 1600;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.58);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 8px 14px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.32);
+}
+
+.collections-back-btn:hover {
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.collections-back-btn.is-vagina-page {
+    font-size: 0.83rem;
+    padding: 6px 10px;
+}
+
+.collections-back-btn.is-baby2-page {
+    font-size: 0.84rem;
+    padding: 6px 10px;
+}
+
+body.mobile-mode .collections-back-btn {
+    left: 10px;
+    font-size: 0.9rem;
+    padding: 7px 12px;
+}
+
+body.mobile-mode .collections-back-btn.is-vagina-page {
+    font-size: 0.78rem;
+    padding: 5px 9px;
+}
+
+body.mobile-mode .collections-back-btn.is-baby2-page {
+    font-size: 0.8rem;
+    padding: 5px 9px;
+}
+
 /* Keep art modal images very large while preserving room for text and controls. */
 #imageModal,
 .modal {
@@ -444,23 +492,54 @@ body.mom-mode.settings-page .profile-form {
 .modal > div {
     margin: auto !important;
     max-width: min(96vw, 1200px);
+    position: relative;
 }
 
 #imageModal #modalImg,
 .modal #modalImg {
-    max-width: 92vw !important;
-    max-height: 72vh !important;
     width: auto !important;
+    max-width: min(94vw, 1200px) !important;
+    max-height: 74vh !important;
     height: auto !important;
     object-fit: contain;
+    image-rendering: auto;
 }
 
 @media (max-width: 768px) {
     #imageModal #modalImg,
     .modal #modalImg {
-        max-width: 90vw !important;
-        max-height: 62vh !important;
+        width: auto !important;
+        max-width: 94vw !important;
+        max-height: 64vh !important;
     }
+}
+
+/* Normalize inline Close buttons to a top-right X in image modals. */
+#imageModal button[onclick*="imageModal"],
+.modal button[onclick*="imageModal"] {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid rgba(255,255,255,0.55) !important;
+    border-radius: 999px !important;
+    background: rgba(0,0,0,0.45) !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+    cursor: pointer;
+    z-index: 10002;
+}
+
+#imageModal button[onclick*="imageModal"]::before,
+.modal button[onclick*="imageModal"]::before {
+    content: "\00d7";
+    color: #ffffff;
+    font-size: 30px;
+    line-height: 42px;
 }
 * {
     margin: 0;

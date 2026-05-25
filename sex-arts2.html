@@ -95,21 +95,29 @@
             margin-top: 6px;
         }
         @media (max-width: 600px) {
-            .arts-gallery { gap: 12px; }
-            .arts-card { width: 98vw; padding: 8px; }
-            .arts-card img { width: 90vw; height: 40vw; }
+            .arts-gallery {
+                gap: 12px;
+            }
+            .arts-card {
+                width: 98vw;
+                padding: 8px;
+            }
+            .arts-card img {
+                width: 90vw;
+                height: 40vw;
+            }
         }
         /* Modal styles */
         .modal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(40,0,60,0.55); z-index: 1000; display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 105, 180, 0.35); z-index: 1000; display: flex; align-items: center; justify-content: center;
             animation: modal-fadein 0.3s;
         }
         .modal-bg {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(ellipse at center, #fff0fa 0%, #ffd6ec 60%, #ffb6d5 100%);
-            opacity: 0.85; z-index: 1;
-            filter: blur(2.5px) brightness(0.9);
+            background: radial-gradient(ellipse at center, #ffe8f6 0%, #ffcce6 52%, #ff9fd0 100%);
+            opacity: 0.92; z-index: 1;
+            filter: blur(2px) brightness(0.96);
         }
         .modal-content {
             position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
@@ -162,8 +170,7 @@
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Home</a>
             <a href="arts.html" class="nav-link">Arts</a>
-            <a href="hijab-arts.html" class="nav-link">Hijab Arts</a>
-            <a href="sex-arts2.html" class="nav-link nav-link-active">Sex Arts</a>
+            <a href="collections-2.html" class="nav-link nav-link-active">Collections</a>
         </nav>
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search models...">
@@ -283,15 +290,12 @@
             <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0882.png" alt="Sex Arts 13" class="zoomable" onclick="showImageModal('imagetab/IMG_0882.png','Sex Arts 13')"><div class="title">Sex Arts 13</div></div>
             <div class="arts-card"><div class="hypno"></div><div class="sweat"><div class="sweat-drop pink"></div><div class="sweat-drop beige"></div></div><div class="skin-sweat-drop left"></div><div class="skin-sweat-drop right"></div><img src="imagetab/IMG_0884.png" alt="Sex Arts 14" class="zoomable" onclick="showImageModal('imagetab/IMG_0884.png','Sex Arts 14')"><div class="title">Sex Arts 14</div></div>
         </div>
-        <!-- Modal for zoom/focus/hypnosis -->
-        <div id="imageModal" class="modal" style="display:none;">
-            <div class="modal-bg"></div>
-            <div class="modal-content">
-                <div class="modal-hypno"></div>
-                <img id="modalImg" src="" alt="Zoomed Image">
-                <div id="modalTitle" class="modal-title"></div>
-                <div id="modalDesc" class="modal-desc"></div>
-                <button class="modal-close" onclick="closeImageModal()">&times;</button>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:60vw;max-height:60vh;border-radius:18px;box-shadow:0 4px 32px #ffb6d5cc;">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 12px #ff69b4;"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;text-shadow:0 1px 6px #ff69b4;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff69b4;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
             </div>
         </div>
         <script>
@@ -318,21 +322,10 @@
 
         function showImageModal(src, title, desc) {
             document.getElementById('modalImg').src = src;
-            document.getElementById('modalTitle').textContent = title || '';
-            document.getElementById('modalDesc').textContent = desc || getJapanArtDescription(title);
+            document.getElementById('modalTitle').innerText = title || '';
+            document.getElementById('modalDesc').innerText = desc || getJapanArtDescription(title);
             document.getElementById('imageModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
         }
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
-            document.body.style.overflow = '';
-        }
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeImageModal();
-        });
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-            if (e.target === this || e.target.classList.contains('modal-bg')) closeImageModal();
-        });
         </script>
     </main>
 </body>
