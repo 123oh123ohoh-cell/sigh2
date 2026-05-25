@@ -17,7 +17,8 @@ const DEFAULT_PROFILE_AVATAR = 'logos_and_profileicons/defaultpfp.webp';
 if (!username) {
     infoDiv.innerHTML = '<p>No user specified.</p>';
 } else {
-    profileTitle.textContent = `@${username}`;
+    profileTitle.textContent = '';
+    profileTitle.style.display = 'none';
     fetch(`https://ownshub.onrender.com/api/profile?user=${encodeURIComponent(username)}`)
         .then(res => res.json())
         .then(data => {
@@ -33,6 +34,7 @@ if (!username) {
             }
             let pronouns = data.pronouns === 'custom' ? data.customPronouns : data.pronouns;
             const defaultAvatar = `<img class='public-profile-avatar' src='${DEFAULT_PROFILE_AVATAR}' alt='Avatar'>`;
+            const handleHtml = `<div class="public-profile-handle">@${username}</div>`;
             let nameHtml = '';
             // Premium badge (only for own profile, since we can't know others' premium from localStorage)
             let premiumBadge = '';
@@ -59,9 +61,9 @@ if (!username) {
                 }
             }
             if (username === 'own') {
-                nameHtml = `<span style="font-size:1.5em;font-weight:bold;background:linear-gradient(90deg,#ffb347 0%,#ff416c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${data.displayName || username}</span><br><span style="font-size:1em;font-weight:600;color:#ffb347;">Developer</span> ${premiumBadge}`;
+                nameHtml = `<span style="font-size:1.5em;font-weight:bold;background:linear-gradient(90deg,#ffb347 0%,#ff416c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${data.displayName || username}</span>${handleHtml}<span style="font-size:1em;font-weight:600;color:#ffb347;">Developer</span> ${premiumBadge}`;
             } else {
-                nameHtml = `<div style="font-size:1.5em;font-weight:bold;">${data.displayName || username} ${premiumBadge}</div>`;
+                nameHtml = `<div style="font-size:1.5em;font-weight:bold;">${data.displayName || username} ${premiumBadge}</div>${handleHtml}`;
             }
             infoDiv.innerHTML = `
                 <div class="public-profile-summary">
@@ -166,6 +168,7 @@ if (!username) {
                     ${defaultAvatar}
                     <div class="public-profile-info">
                         <div style="font-size:1.5em;font-weight:bold;">${username}</div>
+                        <div class="public-profile-handle">@${username}</div>
                         <div style="font-size:1.08em;color:#bbb;margin-top:2px;"><span style='opacity:0.7;'>No pronouns set</span></div>
                     </div>
                     <div class="public-profile-bio"><span style='opacity:0.7;'>No bio yet</span></div>

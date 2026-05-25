@@ -71,6 +71,14 @@
   margin-bottom: 8px;
 }
 
+.public-profile-handle {
+  font-size: 0.88rem;
+  color: #b8a8b2;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
 .public-profile-bio {
   color: #fff;
   font-size: 1rem;
