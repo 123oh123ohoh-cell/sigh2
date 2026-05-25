@@ -156,6 +156,8 @@ body.mobile-mode .nav-link {
 }
 
 body.mobile-mode .nav-link.mobile-nav-current,
+body.mobile-mode .nav-link.nav-link-current,
+body.mobile-mode .nav-link.nav-link-active[aria-current='page'],
 body.mobile-mode .nav-link.mobile-nav-tap-active,
 body.mobile-mode .nav-link:active {
     background: var(--accent, #d12a7a);

@@ -1024,6 +1024,14 @@ body.theme-light .logo img {
     color: var(--text-light);
 }
 
+.nav-link.nav-link-current,
+.nav-link.nav-link-active[aria-current='page'] {
+    color: var(--text-light);
+    background: var(--hover-bg);
+    border-radius: 8px;
+    padding: 7px 10px;
+}
+
 .nav-link::after {
     content: '';
     position: absolute;

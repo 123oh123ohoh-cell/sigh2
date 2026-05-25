@@ -77,6 +77,32 @@
         });
     }
 
+    function wireLogoPressOriginalColorPreview() {
+        var logos = document.querySelectorAll('.header .logo');
+        logos.forEach(function (logo) {
+            if (!logo || logo.dataset.logoPressPreviewWired === '1') {
+                return;
+            }
+            logo.dataset.logoPressPreviewWired = '1';
+
+            function restoreOriginalLogoColor() {
+                var image = logo.querySelector('img');
+                if (image) {
+                    image.style.filter = '';
+                }
+            }
+
+            logo.addEventListener('pointerdown', restoreOriginalLogoColor);
+            logo.addEventListener('mousedown', restoreOriginalLogoColor);
+            logo.addEventListener('touchstart', restoreOriginalLogoColor, { passive: true });
+            logo.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    restoreOriginalLogoColor();
+                }
+            });
+        });
+    }
+
     function normalizeNavTarget(value) {
         var href = String(value || '').trim().toLowerCase();
         if (!href || href === '/' || href === './') {
@@ -99,10 +125,23 @@
             return;
         }
         var current = normalizeNavTarget(window.location && window.location.pathname);
-        var links = nav.querySelectorAll('a.nav-link');
+        var links = Array.prototype.slice.call(nav.querySelectorAll('a.nav-link'));
+        var homeOnlyLink = null;
+
+        if (current === 'index.html') {
+            homeOnlyLink = links.find(function (link) {
+                var text = String(link.textContent || '').trim().toLowerCase();
+                return text === 'home';
+            }) || links.find(function (link) {
+                return normalizeNavTarget(link.getAttribute('href')) === 'index.html';
+            }) || null;
+        }
+
         links.forEach(function (link) {
             var target = normalizeNavTarget(link.getAttribute('href'));
-            var isCurrent = target === current;
+            var isCurrent = homeOnlyLink ? (link === homeOnlyLink) : (target === current);
+            link.classList.toggle('nav-link-current', isCurrent);
+            link.classList.toggle('nav-link-active', isCurrent);
             link.classList.toggle('mobile-nav-current', isCurrent);
             link.setAttribute('aria-current', isCurrent ? 'page' : 'false');
         });
@@ -111,6 +150,7 @@
 
     function wireMobileLogoNavToggle() {
         ensureHomeLinkInNavBars();
+        wireLogoPressOriginalColorPreview();
         // Upload link injection removed; now only in index.html
         var headers = document.querySelectorAll('.header');
         headers.forEach(function (header, index) {
