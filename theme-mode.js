@@ -125,6 +125,18 @@
             return;
         }
         var current = normalizeNavTarget(window.location && window.location.pathname);
+        var matchTarget = current;
+
+        // Treat all arts-related pages as the Arts section for nav highlighting.
+        if (current.indexOf('arts') !== -1) {
+            matchTarget = 'arts.html';
+        }
+
+        // Treat premium page as the Premium section for nav highlighting.
+        if (current.indexOf('premium') !== -1) {
+            matchTarget = 'premium.html';
+        }
+
         var links = Array.prototype.slice.call(nav.querySelectorAll('a.nav-link'));
         var homeOnlyLink = null;
 
@@ -139,7 +151,7 @@
 
         links.forEach(function (link) {
             var target = normalizeNavTarget(link.getAttribute('href'));
-            var isCurrent = homeOnlyLink ? (link === homeOnlyLink) : (target === current);
+            var isCurrent = homeOnlyLink ? (link === homeOnlyLink) : (target === matchTarget);
             link.classList.toggle('nav-link-current', isCurrent);
             link.classList.toggle('nav-link-active', isCurrent);
             link.classList.toggle('mobile-nav-current', isCurrent);
