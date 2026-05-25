@@ -113,9 +113,18 @@
                 }
                 event.preventDefault();
                 restoreOriginalLogoColor();
+                var targetUrl;
+                try {
+                    targetUrl = new URL(href, window.location.href);
+                } catch (e) {
+                    targetUrl = null;
+                }
+                if (targetUrl && targetUrl.pathname === window.location.pathname && targetUrl.search === window.location.search && targetUrl.hash === window.location.hash) {
+                    return;
+                }
                 window.setTimeout(function () {
                     window.location.href = href;
-                }, 70);
+                }, 220);
             });
             logo.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter' || event.key === ' ') {
