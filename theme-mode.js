@@ -7,6 +7,27 @@
         return Math.min(max, Math.max(min, value));
     }
 
+    function detectMobileClient() {
+        var hasTouch = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+        var smallViewport = window.innerWidth <= 900;
+        var ua = navigator.userAgent || '';
+        var uaMobile = /Android|iPhone|iPad|iPod|Windows Phone|Opera Mini|IEMobile/i.test(ua);
+        var uaDataMobile = !!(navigator.userAgentData && navigator.userAgentData.mobile);
+        return uaMobile || uaDataMobile || (smallViewport && hasTouch);
+    }
+
+    function applyDeviceMode() {
+        var body = document.body;
+        if (!body) {
+            return;
+        }
+        var isMobile = detectMobileClient();
+        body.classList.toggle('mobile-mode', isMobile);
+        body.classList.toggle('desktop-mode', !isMobile);
+        body.setAttribute('data-device', isMobile ? 'mobile' : 'desktop');
+        document.documentElement.style.setProperty('--app-vh', (window.innerHeight * 0.01) + 'px');
+    }
+
     function normalizeTheme(theme) {
         var normalized = String(theme || '').toLowerCase();
         if (normalized === 'light' || normalized === 'dark') {
@@ -449,10 +470,12 @@
             applySavedAppearance();
             syncGlobalProfileHeader();
             syncOwBranding();
+            applyDeviceMode();
         });
     } else {
         syncGlobalProfileHeader();
         syncOwBranding();
+        applyDeviceMode();
     }
 
     window.addEventListener('storage', function (event) {
@@ -470,15 +493,25 @@
         }
     });
 
+    window.addEventListener('resize', applyDeviceMode);
+    window.addEventListener('orientationchange', applyDeviceMode);
+
     window.applySavedAppearance = applySavedAppearance;
     window.setAppearanceMode = setAppearanceMode;
     window.setAppearanceAccent = setAppearanceAccent;
     window.syncGlobalProfileHeader = syncGlobalProfileHeader;
+    window.applyDeviceMode = applyDeviceMode;
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
     const logoText = document.querySelector('.logo .cute-logo span:nth-child(2)');
     const logoIcon = document.querySelector('.logo .cute-logo span:nth-child(1) svg');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    if (!logoText || !logoIcon) {
+        updateLogoTheme(currentTheme);
+        return;
+    }
 
     function applyThemeToLogo(theme) {
         if (theme === 'dark') {
@@ -506,7 +539,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (typeof window.applySavedAppearance === 'function') {
-        const currentTheme = localStorage.getItem('theme') || 'light';
         applyThemeToLogo(currentTheme);
 
         window.applySavedAppearance = function() {

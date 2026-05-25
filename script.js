@@ -1,5 +1,25 @@
 // --- User Auth & Comments Logic ---
 
+function detectLoginDevice() {
+    const ua = navigator.userAgent || '';
+    // iPadOS 13+ can report as MacIntel, so include a touch-point fallback.
+    const isIPad = /iPad/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isMobilePhone = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    const isTablet = /Tablet|PlayBook|Silk/i.test(ua) || isIPad;
+
+    let deviceType = 'desktop';
+    if (isIPad) deviceType = 'ipad';
+    else if (isTablet) deviceType = 'tablet';
+    else if (isMobilePhone) deviceType = 'mobile';
+
+    return {
+        deviceType,
+        isIPad,
+        isMobile: isMobilePhone,
+        userAgent: ua
+    };
+}
+
 // User registration (backend)
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
@@ -33,16 +53,20 @@ if (loginForm) {
         e.preventDefault();
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
+        const loginDevice = detectLoginDevice();
         try {
             const res = await fetch('https://ownshub.onrender.com/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, password, loginDevice })
             });
             const data = await res.json();
             if (!res.ok) return alert(data.error || 'Login failed');
             localStorage.setItem('token', data.token);
             localStorage.setItem('loggedInUser', data.username);
+            localStorage.setItem('lastLoginDevice', loginDevice.deviceType);
+            localStorage.setItem('lastLoginIsIPad', String(loginDevice.isIPad));
+            localStorage.setItem('lastLoginIsMobile', String(loginDevice.isMobile));
             alert('Login successful!');
             window.location.href = 'index.html';
         } catch (err) {

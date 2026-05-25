@@ -478,6 +478,81 @@ body.theme-light {
     color-scheme: light;
 }
 
+/* Global mobile mode (enabled by theme-mode.js when phone usage is detected) */
+body.mobile-mode {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+body.mobile-mode .header {
+    padding: 10px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.mobile-mode .logo {
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+body.mobile-mode .logo img {
+    height: 34px;
+    width: 34px;
+    margin-right: 8px;
+}
+
+body.mobile-mode .nav-links {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+body.mobile-mode .nav-link {
+    flex: 1 1 calc(33.333% - 8px);
+    min-width: 88px;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--hover-bg);
+}
+
+body.mobile-mode .main-content,
+body.mobile-mode .section,
+body.mobile-mode .categories,
+body.mobile-mode .profile-container,
+body.mobile-mode .settings-layout,
+body.mobile-mode .chat-container {
+    width: min(100%, 100vw);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.mobile-mode .main-content,
+body.mobile-mode .section,
+body.mobile-mode .categories {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+
+body.mobile-mode img,
+body.mobile-mode video,
+body.mobile-mode canvas,
+body.mobile-mode iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+body.mobile-mode input,
+body.mobile-mode textarea,
+body.mobile-mode select,
+body.mobile-mode button {
+    font-size: 16px;
+}
+
 /* Header */
 .header {
     position: fixed;
