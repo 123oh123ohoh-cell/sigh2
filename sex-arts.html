@@ -282,6 +282,7 @@
                 <div class="modal-hypno"></div>
                 <img id="modalImg" src="" alt="Zoomed Image">
                 <div id="modalTitle" class="modal-title"></div>
+                <div id="modalDesc" class="modal-desc"></div>
                 <button class="modal-close" onclick="closeImageModal()">&times;</button>
             </div>
         </div>
@@ -321,6 +322,15 @@
             color: #d72660; font-size: 1.3em; font-weight: bold; text-align: center; margin-bottom: 8px;
             text-shadow: 0 1px 10px #fff0fa, 0 2px 14px #ffb6d5;
         }
+        .modal-desc {
+            color: #d72660;
+            font-size: 1em;
+            text-align: center;
+            max-width: min(86vw, 720px);
+            line-height: 1.45;
+            margin-bottom: 12px;
+            text-shadow: 0 1px 8px #fff0fa;
+        }
         .modal-close {
             position: absolute; top: 8px; right: 18px; font-size: 2.2em; background: none; border: none; color: #ff69b4; cursor: pointer; z-index: 3;
             transition: color 0.2s;
@@ -332,9 +342,31 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         </style>
         <script>
-        function showImageModal(src, title) {
+        const JAPAN_ART_DESCRIPTIONS = {
+            'Sex Arts 1': 'Ovary Anatomy, feminine energy.',
+            'Sex Arts 2': 'Uterus Structure, new beginnings.',
+            'Sex Arts 3': 'Fallopian Tubes, fertility and life.',
+            'Sex Arts 4': 'Vagina, glossy and full of potential.',
+            'Sex Arts 5': 'Cervix, inspired by the feminine form.',
+            'Sex Arts 6': 'Labia, celebrating the beauty of creation.',
+            'Sex Arts 7': 'Clitoris, glossy, wet, and full of life.',
+            'Sex Arts 8': 'Vulva, feminine power.',
+            'Sex Arts 9': 'Egg Cell, wet, round, and radiant.',
+            'Sex Arts 10': 'Endometrium, glossy ovum, new life.',
+            'Sex Arts 11': 'Fimbriae, feminine, wet, and creative.',
+            'Sex Arts 12': 'Mons Pubis, egg, ovary, and the start of life.',
+            'Sex Arts 13': 'Bartholins Glands, nurturing and fluid.',
+            'Sex Arts 14': 'Perineum, the bridge of life.'
+        };
+
+        function getJapanArtDescription(title) {
+            return JAPAN_ART_DESCRIPTIONS[title] || 'Japan arts collection preview.';
+        }
+
+        function showImageModal(src, title, desc) {
             document.getElementById('modalImg').src = src;
             document.getElementById('modalTitle').textContent = title || '';
+            document.getElementById('modalDesc').textContent = desc || getJapanArtDescription(title);
             document.getElementById('imageModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
