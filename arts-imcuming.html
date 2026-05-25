@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arts Gallery - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+<script src="theme-mode.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: #181818;
+            padding: 80px 0 24px 0; /* Add top padding to prevent content from being hidden behind header */
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .arts-card {
+            background: #222;
+            border-radius: 12px;
+            padding: 16px;
+            width: 220px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .arts-card img {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #333;
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #ffb347;
+        }
+        .arts-card .author {
+            font-size: 0.98em;
+            color: #bbb;
+            margin: 4px 0 6px 0;
+        }
+        .arts-card .desc {
+            font-size: 0.97em;
+            color: #eee;
+            min-height: 32px;
+            text-align: center;
+        }
+        .arts-card .date {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 6px;
+        }
+        .post-art-section {
+            margin-top: 24px;
+            text-align: center;
+        }
+        .post-art-form {
+            background: #222;
+            padding: 18px 18px 12px 18px;
+            border-radius: 12px;
+            display: inline-block;
+            max-width: 340px;
+        }
+        .post-art-form input[type="file"],
+        .post-art-form input[type="text"],
+        .post-art-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #181818;
+            color: #fff;
+        }
+        .post-art-form button {
+            background: linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);
+            color: #181818;
+            padding: 8px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .post-art-form-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffb347;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery {
+                gap: 10px;
+            }
+            .arts-card {
+                width: 98vw;
+                padding: 8px;
+            }
+            .arts-card img {
+                width: 90vw;
+                height: 40vw;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link nav-link-active">Arts</a>
+            <a href="hijab-arts.html" class="nav-link">Hijab Arts</a>
+            <a href="sex-arts.html" class="nav-link">Japan Arts</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
+            </div>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            async function updateDropdownMenu() {
+                const loggedInUser = localStorage.getItem('loggedInUser');
+                const token = localStorage.getItem('token');
+                const profileLink = document.getElementById('profileLink');
+                const signoutLink = document.getElementById('signoutLink');
+                const dropdownLogin = document.getElementById('dropdownLogin');
+                const dropdownSignup = document.getElementById('dropdownSignup');
+                const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
+                const profileAvatarIcon = document.getElementById('profileAvatarIcon');
+                const profileAvatarFallback = document.getElementById('profileAvatarFallback');
+                if (loggedInUser && token) {
+                    if (profileLink) profileLink.style.display = '';
+                    if (signoutLink) signoutLink.style.display = '';
+                    if (dropdownLogin) dropdownLogin.style.display = 'none';
+                    if (dropdownSignup) dropdownSignup.style.display = 'none';
+                    // Fetch premiumTier and avatar from backend
+                    let premiumTier = '';
+                    let avatar = '';
+                    try {
+                        const res = await fetch('https://ownshub.onrender.com/api/profile', {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            premiumTier = data.premiumTier;
+                            avatar = data.avatar;
+                        }
+                    } catch {}
+                    if (premiumBadgeHeader) {
+                        if (premiumTier) {
+                            let color = '#ffd700';
+                            if (premiumTier === 'Silver') color = '#c0c0c0';
+                            if (premiumTier === 'Bronze') color = '#cd7f32';
+                            premiumBadgeHeader.innerHTML = `<span style=\"padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;\">${premiumTier} Premium</span>`;
+                        } else {
+                            premiumBadgeHeader.innerHTML = '';
+                        }
+                    }
+                    // Set avatar icon
+                    if (profileAvatarIcon && avatar) {
+                        profileAvatarIcon.src = avatar;
+                        profileAvatarIcon.style.display = '';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
+                    } else {
+                        if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                        if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                    }
+                } else {
+                    if (profileLink) profileLink.style.display = 'none';
+                    if (signoutLink) signoutLink.style.display = 'none';
+                    if (dropdownLogin) dropdownLogin.style.display = '';
+                    if (dropdownSignup) dropdownSignup.style.display = '';
+                    if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
+                    if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
+                    if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                }
+            }
+            updateDropdownMenu();
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'loggedInUser') {
+                    updateDropdownMenu();
+                }
+            });
+            // Dropdown toggle logic
+            const dropdownBtn = document.getElementById('profileDropdownBtn');
+            const dropdownMenu = document.getElementById('profileDropdownMenu');
+            if (dropdownBtn && dropdownMenu) {
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            }
+            });
+        </script>
+    </header>
+    <main class="arts-gallery-page">
+        <h2 style="color:#ffb347;text-align:center;margin-bottom:24px;">Arts Gallery</h2>
+        <div id="artsGallery" class="arts-gallery"></div>
+        <div id="postArtContainer" class="post-art-section"></div>
+    </main>
+    <script src="arts.js"></script>
+</body>
+</html>
+
+

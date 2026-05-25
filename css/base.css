@@ -516,30 +516,379 @@ body.mobile-mode .collections-back-btn.is-baby2-page {
 
 /* Normalize inline Close buttons to a top-right X in image modals. */
 #imageModal button[onclick*="imageModal"],
-.modal button[onclick*="imageModal"] {
+.modal button[onclick*="imageModal"],
+.modal-close {
     position: absolute !important;
     top: 10px !important;
     right: 10px !important;
-    width: 42px !important;
-    height: 42px !important;
+    width: 44px !important;
+    height: 44px !important;
     margin: 0 !important;
     padding: 0 !important;
-    border: 1px solid rgba(255,255,255,0.55) !important;
+    border: 2px solid rgba(255,255,255,0.9) !important;
     border-radius: 999px !important;
-    background: rgba(0,0,0,0.45) !important;
-    color: transparent !important;
+    background: radial-gradient(circle at 30% 30%, #ffd7f0 0%, #ff9ad1 38%, #ff5cae 100%) !important;
+    color: #ffffff !important;
     font-size: 0 !important;
     line-height: 1 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     z-index: 10002;
+    box-shadow: 0 6px 16px rgba(255, 95, 175, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.2) inset;
+    transition: transform 0.18s ease, box-shadow 0.22s ease, filter 0.22s ease;
+    animation: modalClosePulse 2.1s ease-in-out infinite;
 }
 
 #imageModal button[onclick*="imageModal"]::before,
 .modal button[onclick*="imageModal"]::before {
     content: "\00d7";
     color: #ffffff;
-    font-size: 30px;
-    line-height: 42px;
+    font-size: 31px;
+    font-weight: 800;
+    line-height: 1;
+    transform: translateY(-1px);
+    text-shadow: 0 2px 4px rgba(138, 20, 83, 0.35);
+}
+
+.modal-close {
+    color: #ffffff !important;
+    font-size: 31px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    padding-bottom: 2px !important;
+    text-shadow: 0 2px 4px rgba(138, 20, 83, 0.35);
+}
+
+#imageModal button[onclick*="imageModal"]:hover,
+.modal button[onclick*="imageModal"]:hover,
+.modal-close:hover {
+    transform: scale(1.08) rotate(5deg);
+    box-shadow: 0 10px 20px rgba(255, 95, 175, 0.55), 0 0 0 2px rgba(255, 255, 255, 0.3) inset;
+    filter: saturate(1.1);
+}
+
+#imageModal button[onclick*="imageModal"]:active,
+.modal button[onclick*="imageModal"]:active,
+.modal-close:active {
+    transform: scale(0.96);
+}
+
+#imageModal button[onclick*="imageModal"]:focus-visible,
+.modal button[onclick*="imageModal"]:focus-visible,
+.modal-close:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+@keyframes modalClosePulse {
+    0%, 100% {
+        box-shadow: 0 6px 16px rgba(255, 95, 175, 0.42), 0 0 0 2px rgba(255, 255, 255, 0.2) inset;
+    }
+    50% {
+        box-shadow: 0 8px 20px rgba(255, 95, 175, 0.58), 0 0 0 3px rgba(255, 255, 255, 0.26) inset;
+    }
+}
+
+/* Raw pages: use the main orange palette for image-viewer close buttons. */
+body.raw-page #imageModal button[onclick*="imageModal"],
+body.raw-page .modal button[onclick*="imageModal"],
+body.raw-page .modal-close {
+    background: radial-gradient(circle at 30% 30%, #ffe2d8 0%, #ffb596 40%, #ff8a65 100%) !important;
+    box-shadow: 0 6px 16px rgba(255, 138, 101, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.2) inset;
+}
+
+body.raw-page #imageModal button[onclick*="imageModal"]:hover,
+body.raw-page .modal button[onclick*="imageModal"]:hover,
+body.raw-page .modal-close:hover {
+    box-shadow: 0 10px 20px rgba(255, 138, 101, 0.58), 0 0 0 2px rgba(255, 255, 255, 0.3) inset;
+}
+
+body.raw-page #imageModal button[onclick*="imageModal"]::before,
+body.raw-page .modal button[onclick*="imageModal"]::before,
+body.raw-page .modal-close {
+    background: linear-gradient(180deg, #ffd9ef 0%, #ff9bd0 52%, #ff66b8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent !important;
+    text-shadow: 0 2px 4px rgba(176, 42, 111, 0.35);
+}
+
+/* Vagina2 pages: animated textured background using floating gallery images. */
+body.vagina2-texture-active {
+    position: relative;
+    background: #ffd7ea !important;
+}
+
+.vagina2-bg-texture {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    mix-blend-mode: normal;
+}
+
+.vagina2-bg-grid {
+    position: absolute;
+    inset: -18vh -18vw;
+    opacity: 0.16;
+    background-image: url('vagina/2492938.png'), url('vagina/6205268.png'), url('vagina/8441522.png');
+    background-repeat: repeat;
+    background-size: 240px 240px, 220px 220px, 280px 280px;
+    background-position: 0 0, 95px 125px, 185px 45px;
+    filter: saturate(1.03) contrast(1.01);
+    will-change: transform;
+}
+
+.vagina2-bg-grid.layer-a {
+    opacity: 0.24;
+    animation: vagina2GridShiftA 42s linear infinite, vagina2PulseA 8s ease-in-out infinite;
+}
+
+.vagina2-bg-grid.layer-b {
+    opacity: 0.2;
+    transform: scale(1.07);
+    animation: vagina2GridShiftB 58s linear infinite, vagina2PulseB 11s ease-in-out infinite;
+}
+
+.vagina2-bg-movers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.vagina2-bg-mover {
+    position: absolute;
+    top: -20vh;
+    left: var(--lane-x, 50vw);
+    width: var(--mover-size, 92px);
+    height: var(--mover-size, 92px);
+    object-fit: cover;
+    border-radius: 12px;
+    opacity: 0.28;
+    filter: saturate(1.05);
+    box-shadow: 0 4px 14px rgba(160, 40, 98, 0.2);
+    will-change: transform, opacity;
+    animation: vagina2Fall var(--mover-duration, 22s) linear var(--mover-delay, 0s) infinite;
+}
+
+.vagina2-bg-texture::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 18% 78%, rgba(255, 194, 226, 0.24) 0%, rgba(255, 194, 226, 0) 45%),
+                radial-gradient(circle at 88% 18%, rgba(255, 143, 194, 0.2) 0%, rgba(255, 143, 194, 0) 42%);
+    animation: vagina2VeilPulse 10s ease-in-out infinite;
+}
+
+body.vagina2-texture-active .header,
+body.vagina2-texture-active main,
+body.vagina2-texture-active #collectionsBackBtn {
+    position: relative;
+    z-index: 1;
+}
+
+body.vagina2-texture-active .arts-gallery-page::before {
+    opacity: 0.32;
+}
+
+@keyframes vagina2GridShiftA {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-14vw, -12vh, 0);
+    }
+}
+
+@keyframes vagina2GridShiftB {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1.07);
+    }
+    100% {
+        transform: translate3d(-10vw, -8vh, 0) scale(1.07);
+    }
+}
+
+@keyframes vagina2Fall {
+    0% {
+        transform: translate3d(0, -18vh, 0) rotate(-3deg);
+        opacity: 0;
+    }
+    12% {
+        opacity: 0.2;
+    }
+    88% {
+        opacity: 0.2;
+    }
+    100% {
+        transform: translate3d(var(--drift, 8px), 122vh, 0) rotate(6deg);
+        opacity: 0;
+    }
+}
+
+@keyframes vagina2PulseA {
+    0%, 100% { opacity: 0.22; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes vagina2PulseB {
+    0%, 100% { opacity: 0.18; }
+    50% { opacity: 0.25; }
+}
+
+@keyframes vagina2VeilPulse {
+    0%, 100% { opacity: 0.72; }
+    50% { opacity: 0.9; }
+}
+
+body.imcuming-fireworks-active {
+    position: relative;
+}
+
+body.imcuming-fireworks-active .header,
+body.imcuming-fireworks-active main {
+    position: relative;
+    z-index: 1;
+}
+
+body.imcuming-fireworks-active #collectionsBackBtn {
+    z-index: 1600;
+}
+
+.imcuming-fireworks {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.imcuming-firework {
+    position: absolute;
+    left: var(--x, 50vw);
+    top: 110vh;
+    width: var(--size, 72px);
+    height: var(--size, 72px);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(255,255,255,0.95) 0 14%, transparent 15%),
+        radial-gradient(circle, rgba(255,255,255,0.82) 0 34%, transparent 36%),
+        radial-gradient(circle, rgba(255,255,255,0.52) 0 58%, transparent 62%);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.52));
+    opacity: 0;
+    transform: translate3d(-50%, 0, 0) scale(0.2);
+    animation: imcumingFireworkLaunch var(--duration, 4.2s) ease-out var(--delay, 0s) infinite;
+    will-change: transform, opacity;
+}
+
+.imcuming-firework::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    width: 4px;
+    height: 22vh;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.06));
+    filter: blur(0.3px);
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.imcuming-firework::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 14px;
+    border-radius: 58% 42% 63% 37% / 52% 36% 64% 48%;
+    transform: translate3d(-50%, -50%, 0) scale(0.2);
+    background: radial-gradient(circle at 40% 42%, rgba(255, 255, 255, 0.98) 0 42%, rgba(255, 255, 255, 0.15) 100%);
+    opacity: 0;
+    animation: imcumingMilkSplat var(--duration, 4.2s) ease-out var(--delay, 0s) infinite;
+}
+
+.imcuming-milk-drop {
+    position: absolute;
+    left: var(--x, 50vw);
+    top: var(--peak, 35vh);
+    width: var(--drop-size, 12px);
+    height: calc(var(--drop-size, 12px) * 1.28);
+    border-radius: 50% 50% 58% 42% / 48% 45% 55% 52%;
+    background: radial-gradient(circle at 38% 34%, rgba(255, 255, 255, 0.98) 0 42%, rgba(255, 255, 255, 0.22) 100%);
+    transform: translate3d(-50%, 0, 0) scale(0.45);
+    opacity: 0;
+    pointer-events: none;
+    animation: imcumingMilkDrop var(--duration, 4.2s) cubic-bezier(0.18, 0.56, 0.24, 1) var(--delay, 0s) infinite;
+    will-change: transform, opacity;
+}
+
+@keyframes imcumingFireworkLaunch {
+    0% {
+        top: 110vh;
+        opacity: 0;
+        transform: translate3d(-50%, 0, 0) scale(0.22);
+    }
+    20% {
+        top: calc(var(--peak, 35vh) + 18vh);
+        opacity: 0.95;
+        transform: translate3d(-50%, 0, 0) scale(0.28);
+    }
+    34% {
+        top: var(--peak, 35vh);
+        opacity: 0.92;
+        transform: translate3d(-50%, 0, 0) scale(1);
+    }
+    48% {
+        top: var(--peak, 35vh);
+        opacity: 0.8;
+        transform: translate3d(-50%, 0, 0) scale(1.35);
+    }
+    100% {
+        top: var(--peak, 35vh);
+        opacity: 0;
+        transform: translate3d(-50%, 0, 0) scale(1.75);
+    }
+}
+
+@keyframes imcumingMilkSplat {
+    0%, 30% {
+        opacity: 0;
+        transform: translate3d(-50%, -50%, 0) scale(0.2);
+    }
+    38% {
+        opacity: 0.96;
+        transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+    55% {
+        opacity: 0.6;
+        transform: translate3d(-50%, -50%, 0) scale(1.85);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(-50%, -50%, 0) scale(2.4);
+    }
+}
+
+@keyframes imcumingMilkDrop {
+    0%, 32% {
+        opacity: 0;
+        transform: translate3d(-50%, 0, 0) scale(0.4);
+    }
+    40% {
+        opacity: 0.95;
+        transform: translate3d(calc(-50% + (var(--dx, 0vw) * 0.1)), 0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(calc(-50% + var(--dx, 0vw)), var(--fall, 24vh), 0) scale(0.82);
+    }
 }
 * {
     margin: 0;

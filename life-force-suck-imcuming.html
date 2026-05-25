@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Force Suck Imcuming - own's hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="theme-mode.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        .profile-dropdown .dropdown-content { display: none; }
+        .profile-dropdown .dropdown-content.show,
+        .profile-dropdown.show .dropdown-content { display: block; }
+        body {
+            background: radial-gradient(ellipse at center, #fff6fb 0%, #ffdff1 42%, #ffb8df 72%, #ff7fc8 100%);
+        }
+        .arts-gallery-page {
+            min-height: 90vh;
+            background: transparent;
+            padding: 80px 0 24px 0;
+            position: relative;
+        }
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 18%, rgba(255,255,255,0.55) 0 16px, transparent 17px),
+                radial-gradient(circle at 86% 18%, rgba(255,255,255,0.45) 0 14px, transparent 15px),
+                radial-gradient(circle at 70% 82%, rgba(255,255,255,0.4) 0 12px, transparent 13px),
+                radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.76) 0%, rgba(255,184,223,0.34) 40%, rgba(255,127,200,0.18) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .arts-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 34px;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        .arts-card {
+            background: radial-gradient(ellipse at 50% 60%, #fff6fb 60%, #ffdff1 100%),
+                        repeating-linear-gradient(135deg, #ffb8df22 0 8px, transparent 8px 16px),
+                        radial-gradient(ellipse at 60% 80%, #ffb8df44 0 30%, transparent 70%);
+            border-radius: 65% 65% 90% 90%/90% 90% 100% 100%;
+            padding: 32px 26px 44px 26px;
+            width: 238px;
+            box-shadow: 0 16px 44px 14px rgba(255, 110, 190, 0.32), 0 4px 0 #fff inset, 0 0 32px 8px #ffb8df55;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 5px double #ff69b4;
+            position: relative;
+            overflow: visible;
+            cursor: pointer;
+            outline: 5px solid #ffb8df;
+            outline-offset: 0px;
+            transition: box-shadow 0.3s, outline 0.3s;
+        }
+        .arts-card::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 10px;
+            width: 80px;
+            height: 120px;
+            background: radial-gradient(ellipse at 50% 60%, #ffb8df55 60%, transparent 100%);
+            border-radius: 50% 60% 80% 100%/80% 100% 100% 100%;
+            transform: translateX(-50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .arts-card:hover {
+            box-shadow: 0 24px 64px 24px #ff7fc888, 0 8px 0 #fff inset, 0 0 48px 16px #ffb8df99;
+            outline: 6px solid #ff69b4;
+        }
+        .arts-card::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            width: 18px;
+            height: 14px;
+            background: #ff7fc8;
+            border: 2px solid #ff5cb8;
+            border-radius: 90%;
+            transform: translateX(-100%) rotate(-14deg);
+            z-index: 3;
+        }
+        .arts-card::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            width: 18px;
+            height: 14px;
+            background: #ff7fc8;
+            border: 2px solid #ff5cb8;
+            border-radius: 90%;
+            transform: translateX(0) rotate(14deg);
+            z-index: 3;
+        }
+        .arts-card .drip {
+            position: absolute;
+            width: 22px;
+            height: 38px;
+            background: linear-gradient(180deg, #fff 60%, #ffa7da 100%);
+            border-radius: 50% 50% 60% 60%/60% 60% 100% 100%;
+            left: 50%;
+            top: 90%;
+            transform: translateX(-50%);
+            opacity: 0.7;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(255, 110, 190, 0.45);
+            animation: drip-fall 2.5s infinite linear;
+        }
+        @keyframes drip-fall {
+            0% { top: 90%; opacity: 0.7; }
+            80% { top: 120%; opacity: 0.5; }
+            100% { top: 120%; opacity: 0; }
+        }
+        .arts-card img {
+            width: 158px;
+            height: 192px;
+            object-fit: cover;
+            border-radius: 70% 70% 100% 100%/100% 100% 100% 100%;
+            background: radial-gradient(ellipse at 50% 60%, #fff6fb 80%, #ffdff1 100%),
+                        repeating-linear-gradient(120deg, #ffb8df33 0 10px, transparent 10px 20px);
+            box-shadow: 0 8px 36px 12px #fff, 0 8px 24px 8px #ffb8df88, 0 0 32px 8px #ffb8df55;
+            border: 5px double #ff69b4;
+            margin-bottom: 12px;
+            outline: 4px solid #ffb8df;
+            outline-offset: 0px;
+            position: relative;
+        }
+        .arts-card img::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 60px;
+            height: 90px;
+            background: radial-gradient(ellipse at 50% 60%, #ffb8df33 60%, transparent 100%);
+            border-radius: 50% 60% 80% 100%/80% 100% 100% 100%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d4008f;
+            font-size: 1.12em;
+            letter-spacing: 0.4px;
+            text-align: center;
+        }
+        .arts-card .desc {
+            font-size: 0.96em;
+            color: #ab006d;
+            min-height: 30px;
+            text-align: center;
+            font-style: italic;
+        }
+        h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.4em;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 24px rgba(212, 0, 143, 0.5), 0 1px 0 #fff4f0;
+            font-family: 'Great Vibes', 'Pacifico', cursive, sans-serif;
+        }
+        @media (max-width: 600px) {
+            .arts-gallery { gap: 14px; }
+            .arts-card { width: 98vw; padding: 12px; }
+            .arts-card img { width: 80vw; height: 42vw; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+            <a href="collections.html" class="nav-link nav-link-active">Collections</a>
+        </nav>
+    </header>
+    <main class="arts-gallery-page">
+        <h2>Life Force Suck Imcuming Gallery</h2>
+        <div class="arts-gallery">
+            <div class="arts-card" onclick="showImageModal('lifesuck/1i.jpg','Ovary Kiss','A gentle kiss, inspired by the softness and roundness of an egg, celebrating feminine energy.')"><img src="lifesuck/1i.jpg" alt="Ovary Kiss"><div class="title">Ovary Kiss</div><div class="desc">A gentle kiss, inspired by the softness and roundness of an egg, celebrating feminine energy.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/12i.jpg','Egg Hug','A warm hug, encircling like an ovary, full of nurturing feminine embrace.')"><img src="lifesuck/12i.jpg" alt="Egg Hug"><div class="title">Egg Hug</div><div class="desc">A warm hug, encircling like an ovary, full of nurturing feminine embrace.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/3880330-insatiable-brunette-office-slut-sophia-leone-latin-hottie-sophia-leone-fucks-her-real-estate-ag.jpg','Eggshell Cuddle','A soft cuddle, delicate as an eggshell, radiating feminine warmth and care.')"><img src="lifesuck/3880330-insatiable-brunette-office-slut-sophia-leone-latin-hottie-sophia-leone-fucks-her-real-estate-ag.jpg" alt="Eggshell Cuddle"><div class="title">Eggshell Cuddle</div><div class="desc">A soft cuddle, delicate as an eggshell, radiating feminine warmth and care.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/6242477-733hot55-12c7.jpg','Ovum Hands','Hands held together, symbolizing unity and the creative power of the ovum.')"><img src="lifesuck/6242477-733hot55-12c7.jpg" alt="Ovum Hands"><div class="title">Ovum Hands</div><div class="desc">Hands held together, symbolizing unity and the creative power of the ovum.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/80153253_013_25e5.jpg','Feminine Touch','A gentle forehead touch, soft and nurturing, like the promise of a new egg.')"><img src="lifesuck/80153253_013_25e5.jpg" alt="Feminine Touch"><div class="title">Feminine Touch</div><div class="desc">A gentle forehead touch, soft and nurturing, like the promise of a new egg.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/i.jpg','Ovary Snuggle','A snuggle inspired by the curves and comfort of the ovary, full of feminine spirit.')"><img src="lifesuck/i.jpg" alt="Ovary Snuggle"><div class="title">Ovary Snuggle</div><div class="desc">A snuggle inspired by the curves and comfort of the ovary, full of feminine spirit.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/i.webp','Egg Cheek Kiss','A sweet cheek kiss, gentle as an egg, radiating feminine affection.')"><img src="lifesuck/i.webp" alt="Egg Cheek Kiss"><div class="title">Egg Cheek Kiss</div><div class="desc">A sweet cheek kiss, gentle as an egg, radiating feminine affection.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/i22.jpg','Egg Embrace','A warm embrace, inspired by the protective shell of an egg, symbolizing feminine care.')"><img src="lifesuck/i22.jpg" alt="Egg Embrace"><div class="title">Egg Embrace</div><div class="desc">A warm embrace, inspired by the protective shell of an egg, symbolizing feminine care.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/IMG_0903.jpeg','Egg Bloom','A blooming moment of feminine vitality, glowing with tender life force.')"><img src="lifesuck/IMG_0903.jpeg" alt="Egg Bloom"><div class="title">Egg Bloom</div><div class="desc">A blooming moment of feminine vitality, glowing with tender life force.</div><div class="drip"></div></div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/246867237_alexia_anders_illicit_exam_-_alexia_anders_2_pt.jpg','Ovum Glow','A warm ovum glow, pulsing with soft feminine energy and nurturing warmth.')"><img src="lifesuck/246867237_alexia_anders_illicit_exam_-_alexia_anders_2_pt.jpg" alt="Ovum Glow"><div class="title">Ovum Glow</div><div class="desc">A warm ovum glow, pulsing with soft feminine energy and nurturing warmth.</div><div class="drip"></div></div>
+        </div>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:60vw;max-height:60vh;border-radius:18px;box-shadow:0 4px 32px rgba(255,110,190,0.55);">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 10px rgba(255,110,190,0.8);"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff5cb8;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        </script>
+    </main>
+</body>
+</html>
+
+
+
+
+

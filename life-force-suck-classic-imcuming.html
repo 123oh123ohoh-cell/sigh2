@@ -3,49 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Force Suck Collections - own's hub</title>
+    <title>Life Force Suck Classic - own's hub</title>
     <link rel="stylesheet" href="styles.css">
 <script src="theme-mode.js"></script>
     <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
     <style>
+        .profile-dropdown .dropdown-content { display: none; }
+        .profile-dropdown .dropdown-content.show,
+        .profile-dropdown.show .dropdown-content { display: block; }
         body {
             background: radial-gradient(ellipse at center, #ffb6d5 0%, #ff69b4 60%, #d72660 100%);
         }
-        .collections-page {
+        .arts-gallery-page {
             min-height: 90vh;
+            background: transparent;
             padding: 80px 0 24px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            position: relative;
         }
-        .collections-list {
+        .arts-gallery-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255,182,213,0.7) 0%, rgba(255,105,180,0.3) 60%, rgba(215,38,96,0.2) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .arts-gallery {
             display: flex;
             flex-wrap: wrap;
-            gap: 32px;
+            gap: 28px;
             justify-content: center;
-            margin-top: 32px;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
         }
-        .collection-card {
+        .arts-card {
             background: linear-gradient(145deg, #fff0fa 60%, #ffb6d5 100%);
             border-radius: 22px 22px 32px 32px;
-            padding: 28px 32px 32px 32px;
-            width: 260px;
+            padding: 18px 16px 22px 16px;
+            width: 240px;
             box-shadow: 0 4px 24px 4px rgba(255,105,180,0.18), 0 1.5px 0 #fff inset;
             display: flex;
             flex-direction: column;
             align-items: center;
             border: 2.5px solid #ff69b4;
-            text-align: center;
-            text-decoration: none;
-            color: #d72660;
-            font-size: 1.2em;
-            font-weight: bold;
-            transition: transform 0.12s, box-shadow 0.12s;
+            position: relative;
+            overflow: hidden;
         }
-        .collection-card:hover {
-            transform: translateY(-6px) scale(1.03);
-            box-shadow: 0 8px 32px 8px #ffb6d5;
-            color: #b3005e;
+        .arts-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 38px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.09) 100%);
+            border-radius: 22px 22px 0 0;
+            pointer-events: none;
+        }
+        .arts-card img {
+            width: 190px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 50% 50% 40% 40%/60% 60% 40% 40%;
+            background: #fff0fa;
+            box-shadow: 0 2px 16px 2px rgba(255,182,213,0.25);
+            border: 3px solid #ff69b4;
+            margin-bottom: 8px;
+        }
+        .arts-card .title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d72660;
+            font-size: 1.18em;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 8px #fff0fa;
+        }
+        .arts-card .desc {
+            font-size: 1em;
+            color: #d72660;
+            min-height: 32px;
+            text-align: center;
+            font-style: italic;
         }
         h2 {
             color: #fff;
@@ -56,8 +92,9 @@
             text-shadow: 0 2px 16px #ff69b4, 0 1px 0 #fff0fa;
         }
         @media (max-width: 600px) {
-            .collections-list { gap: 14px; }
-            .collection-card { width: 98vw; padding: 12px; }
+            .arts-gallery { gap: 12px; }
+            .arts-card { width: 98vw; padding: 8px; }
+            .arts-card img { width: 90vw; height: 40vw; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -135,7 +172,7 @@
                                 let color = '#ffd700';
                                 if (premiumTier === 'Silver') color = '#c0c0c0';
                                 if (premiumTier === 'Bronze') color = '#cd7f32';
-                                premiumBadgeHeader.innerHTML = `<span style="padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;">${premiumTier} Premium</span>`;
+                                premiumBadgeHeader.innerHTML = `<span style=\"padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;\">${premiumTier} Premium</span>`;
                             } else {
                                 premiumBadgeHeader.innerHTML = '';
                             }
@@ -167,19 +204,73 @@
             });
         </script>
     </header>
-    <main class="collections-page">
-        <h2>Life Force Suck Collections</h2>
-        <div class="collections-list">
-            <a href="life-force-suck.html" class="collection-card">Life Force Suck</a>
-            <a href="life-force-suck-classic.html" class="collection-card">Life Force Suck Classic</a>
-            <a href="life-force-suck-vagina.html" class="collection-card">Life Force Suck Vagina</a>
-            <a href="life-force-suck-imcuming-collections.html" class="collection-card">Life Force Suck Imcuming Collections</a>
-            <a href="life-force-suck-hypnosis.html" class="collection-card">Life Force Suck (hypnosis)</a>
-            <a href="life-force-suck-hypnosis2.html" class="collection-card">Life Force Suck (hypnosis 2)</a>
+    <main class="arts-gallery-page">
+        <h2><span class="egg-icon"></span>Life Force Suck (classic)</h2>
+        <div class="arts-gallery">
+            <div class="arts-card" onclick="showImageModal('lifesuck/1i.jpg','Life Suck Classic 1','Classic vitality and energy.')">
+                <img src="lifesuck/1i.jpg" alt="Life Suck Classic 1">
+                <div class="title">Life Suck Classic 1</div>
+                <div class="desc">Classic vitality and energy.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/12i.jpg','Life Suck Classic 2','Classic essence of life.')">
+                <img src="lifesuck/12i.jpg" alt="Life Suck Classic 2">
+                <div class="title">Life Suck Classic 2</div>
+                <div class="desc">Classic essence of life.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/3880330-insatiable-brunette-office-slut-sophia-leone-latin-hottie-sophia-leone-fucks-her-real-estate-ag.jpg','Life Suck Classic 3','Classic energy transfer.')">
+                <img src="lifesuck/3880330-insatiable-brunette-office-slut-sophia-leone-latin-hottie-sophia-leone-fucks-her-real-estate-ag.jpg" alt="Life Suck Classic 3">
+                <div class="title">Life Suck Classic 3</div>
+                <div class="desc">Classic energy transfer.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/6242477-733hot55-12c7.jpg','Life Suck Classic 4','Classic life force in motion.')">
+                <img src="lifesuck/6242477-733hot55-12c7.jpg" alt="Life Suck Classic 4">
+                <div class="title">Life Suck Classic 4</div>
+                <div class="desc">Classic life force in motion.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/80153253_013_25e5.jpg','Life Suck Classic 5','Classic feminine power.')">
+                <img src="lifesuck/80153253_013_25e5.jpg" alt="Life Suck Classic 5">
+                <div class="title">Life Suck Classic 5</div>
+                <div class="desc">Classic feminine power.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/i.jpg','Life Suck Classic 6','Classic essence and energy.')">
+                <img src="lifesuck/i.jpg" alt="Life Suck Classic 6">
+                <div class="title">Life Suck Classic 6</div>
+                <div class="desc">Classic essence and energy.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/i.webp','Life Suck Classic 7','Classic life and flow.')">
+                <img src="lifesuck/i.webp" alt="Life Suck Classic 7">
+                <div class="title">Life Suck Classic 7</div>
+                <div class="desc">Classic life and flow.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/i22.jpg','Life Suck Classic 8','Classic feminine essence.')">
+                <img src="lifesuck/i22.jpg" alt="Life Suck Classic 8">
+                <div class="title">Life Suck Classic 8</div>
+                <div class="desc">Classic feminine essence.</div>
+            </div>
+            <div class="arts-card" onclick="showImageModal('lifesuck/IMG_0903.jpeg','Life Suck Classic 9','Classic vital flow.')">
+                <img src="lifesuck/IMG_0903.jpeg" alt="Life Suck Classic 9">
+                <div class="title">Life Suck Classic 9</div>
+                <div class="desc">Classic vital flow.</div>
+            </div>
         </div>
+        <div id="imageModal" style="display:none;position:fixed;z-index:10000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <div style="position:relative;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;">
+                <img id="modalImg" src="" alt="" style="max-width:80vw;max-height:70vh;border-radius:24px;box-shadow:0 4px 32px #ff69b4;">
+                <div id="modalTitle" style="color:#fff;font-size:1.3em;margin-top:18px;text-align:center;text-shadow:0 2px 12px #ff69b4;"></div>
+                <div id="modalDesc" style="color:#fff;font-size:1em;margin-top:8px;text-align:center;text-shadow:0 1px 6px #ff69b4;"></div>
+                <button onclick="document.getElementById('imageModal').style.display='none'" style="margin-top:18px;padding:8px 28px;font-size:1.1em;background:#ff69b4;color:#fff;border:none;border-radius:8px;cursor:pointer;">Close</button>
+            </div>
+        </div>
+        <script>
+        function showImageModal(src, title, desc) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        </script>
     </main>
 </body>
 </html>
-
 
 
