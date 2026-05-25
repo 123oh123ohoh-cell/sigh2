@@ -95,6 +95,21 @@
             logo.addEventListener('pointerdown', restoreOriginalLogoColor);
             logo.addEventListener('mousedown', restoreOriginalLogoColor);
             logo.addEventListener('touchstart', restoreOriginalLogoColor, { passive: true });
+            logo.addEventListener('click', function (event) {
+                var body = document.body;
+                if (!body || !body.classList.contains('mobile-mode')) {
+                    return;
+                }
+                var href = String(logo.getAttribute('href') || '').trim();
+                if (!href || href.charAt(0) === '#' || /^javascript:/i.test(href)) {
+                    return;
+                }
+                event.preventDefault();
+                restoreOriginalLogoColor();
+                window.setTimeout(function () {
+                    window.location.href = href;
+                }, 70);
+            });
             logo.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter' || event.key === ' ') {
                     restoreOriginalLogoColor();
@@ -139,6 +154,7 @@
 
         var links = Array.prototype.slice.call(nav.querySelectorAll('a.nav-link'));
         var homeOnlyLink = null;
+        var collectionsOnlyLink = null;
 
         if (current === 'index.html') {
             homeOnlyLink = links.find(function (link) {
@@ -149,9 +165,18 @@
             }) || null;
         }
 
+        if (current.indexOf('collections') !== -1) {
+            collectionsOnlyLink = links.find(function (link) {
+                var text = String(link.textContent || '').trim().toLowerCase();
+                return text.indexOf('collection') !== -1;
+            }) || null;
+        }
+
         links.forEach(function (link) {
             var target = normalizeNavTarget(link.getAttribute('href'));
-            var isCurrent = homeOnlyLink ? (link === homeOnlyLink) : (target === matchTarget);
+            var isCurrent = homeOnlyLink
+                ? (link === homeOnlyLink)
+                : (collectionsOnlyLink ? (link === collectionsOnlyLink) : (target === matchTarget));
             link.classList.toggle('nav-link-current', isCurrent);
             link.classList.toggle('nav-link-active', isCurrent);
             link.classList.toggle('mobile-nav-current', isCurrent);
