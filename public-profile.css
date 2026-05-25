@@ -116,7 +116,7 @@
 @media (max-width: 600px) {
   .public-profile-main {
     min-height: 100svh;
-    padding: calc(env(safe-area-inset-top) + 82px) max(12px, env(safe-area-inset-right)) 16px max(12px, env(safe-area-inset-left));
+    padding: calc(env(safe-area-inset-top) + 104px) max(12px, env(safe-area-inset-right)) 16px max(12px, env(safe-area-inset-left));
     align-items: stretch;
   }
 
