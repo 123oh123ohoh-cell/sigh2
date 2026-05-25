@@ -494,10 +494,10 @@ body.mobile-mode {
 
 body.mobile-mode .header {
     padding: 10px max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left));
-    padding-right: max(52px, calc(env(safe-area-inset-right) + 52px));
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 2px;
+    grid-template-columns: 34px minmax(0, 1fr) 36px;
+    column-gap: 4px;
+    row-gap: 4px;
     align-items: center;
     justify-content: normal;
     max-width: 100vw;
@@ -513,6 +513,7 @@ body.mobile-mode .logo {
 body.mobile-mode .header > .logo {
     grid-column: 1;
     grid-row: 1;
+    justify-self: start;
 }
 
 body.mobile-mode .logo img {
@@ -563,17 +564,15 @@ body.mobile-mode .header .search-bar input {
 }
 
 body.mobile-mode .header .profile-dropdown {
-    position: fixed;
-    top: calc(max(0px, env(safe-area-inset-top)) + 10px);
-    right: calc(max(0px, env(safe-area-inset-right)) + 8px);
+    position: static;
     margin-left: 0;
     z-index: 4005;
 }
 
 body.mobile-mode .header > .profile-dropdown {
-    grid-column: auto;
-    grid-row: auto;
-    justify-self: auto;
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
 }
 
 body.mobile-mode .header > .profile-dropdown .profile-btn {
