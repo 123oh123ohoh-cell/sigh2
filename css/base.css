@@ -159,6 +159,7 @@ body.mom-mode.settings-page .profile-form {
     position: relative;
     display: inline-block;
     margin-left: 18px;
+    z-index: 12050;
 }
 .profile-btn {
     background: var(--card-bg);
@@ -171,10 +172,44 @@ body.mom-mode.settings-page .profile-form {
     cursor: pointer;
     transition: background 0.2s;
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    isolation: isolate;
 }
 .profile-btn:hover, .profile-btn:focus {
     background: var(--hover-bg);
 }
+.profile-btn #profileAvatarIcon {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.profile-btn #profileAvatarFallback {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.profile-btn #profileAvatarIcon[style*='display: none'] + #profileAvatarFallback,
+.profile-btn #profileAvatarIcon:not([src]),
+.profile-btn #profileAvatarIcon[src=''] + #profileAvatarFallback {
+    z-index: 2;
+}
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -183,7 +218,7 @@ body.mom-mode.settings-page .profile-form {
     min-width: 160px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     border-radius: 10px;
-    z-index: 1001;
+    z-index: 12060;
     margin-top: 8px;
     padding: 10px 0;
 }

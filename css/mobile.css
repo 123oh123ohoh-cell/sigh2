@@ -130,7 +130,8 @@ body.mobile-mode .header .search-bar input::placeholder {
 body.mobile-mode .header .profile-dropdown {
     position: static;
     margin-left: 0;
-    z-index: 4005;
+    z-index: 12055;
+    min-width: 40px;
 }
 
 body.mobile-mode .header > .profile-dropdown {
@@ -143,6 +144,13 @@ body.mobile-mode .header > .profile-dropdown .profile-btn {
     margin: 0;
     width: 40px;
     height: 40px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+body.mobile-mode .header > .profile-dropdown .dropdown-content {
+    z-index: 12060;
 }
 
 body.mobile-mode .nav-link {

@@ -8,10 +8,7 @@
         'vagina/8441522.png'
     ];
     var profileFetchInFlight = null;
-    var profileFetchToken = '';
-    var profileSyncRequestId = 0;
-    var profileRetryTimers = {};
-    var profileRetryAttempts = {};
+    var profilePrefetchStarted = false;
     var mobileNavOutsideClickWired = false;
 
     function clamp(value, min, max) {
@@ -870,7 +867,7 @@
         }
     }
 
-    function getProfileAvatarCacheKey(username) {
+    function getAvatarCacheKey(username) {
         return 'profileAvatar:' + String(username || '').trim().toLowerCase();
     }
 
@@ -878,21 +875,121 @@
         if (!username) {
             return '';
         }
-        try {
-            return String(localStorage.getItem(getProfileAvatarCacheKey(username)) || '').trim();
-        } catch (error) {
-            return '';
+        return String(localStorage.getItem(getAvatarCacheKey(username)) || '').trim();
+    }
+
+    function setCachedProfileAvatar(username, avatar) {
+        if (!username) {
+            return;
+        }
+        var key = getAvatarCacheKey(username);
+        var value = String(avatar || '').trim();
+        if (value) {
+            localStorage.setItem(key, value);
+        } else {
+            localStorage.removeItem(key);
         }
     }
 
-    function setCachedProfileAvatar(username, avatarUrl) {
-        if (!username || !avatarUrl) {
-            return;
+    function normalizeAvatarValue(value) {
+        var raw = String(value || '').trim();
+        if (!raw) {
+            return '';
+        }
+        var lowered = raw.toLowerCase();
+        if (lowered === 'null' || lowered === 'undefined' || lowered === '[object object]') {
+            return '';
+        }
+        return raw;
+    }
+
+    function resolveAvatarUrl(value) {
+        var raw = normalizeAvatarValue(value);
+        if (!raw) {
+            return '';
         }
         try {
-            localStorage.setItem(getProfileAvatarCacheKey(username), String(avatarUrl));
+            var resolved = new URL(raw, window.location.href);
+            var protocol = String(resolved.protocol || '').toLowerCase();
+            if (protocol === 'http:' || protocol === 'https:' || protocol === 'data:' || protocol === 'blob:') {
+                return resolved.href;
+            }
         } catch (error) {
-            // ignore storage quota/private mode errors
+            return '';
+        }
+        return '';
+    }
+
+    function preloadImage(url) {
+        return new Promise(function (resolve) {
+            if (!url) {
+                resolve(false);
+                return;
+            }
+            var done = false;
+            var image = new Image();
+            var timeout = window.setTimeout(function () {
+                if (done) {
+                    return;
+                }
+                done = true;
+                resolve(false);
+            }, 7000);
+
+            image.onload = function () {
+                if (done) {
+                    return;
+                }
+                done = true;
+                window.clearTimeout(timeout);
+                resolve(true);
+            };
+
+            image.onerror = function () {
+                if (done) {
+                    return;
+                }
+                done = true;
+                window.clearTimeout(timeout);
+                resolve(false);
+            };
+
+            image.src = url;
+        });
+    }
+
+    async function showProfileAvatarFromSource(profileAvatarIcon, profileAvatarFallback, source) {
+        if (!profileAvatarIcon) {
+            return false;
+        }
+        var resolvedUrl = resolveAvatarUrl(source);
+        if (!resolvedUrl) {
+            return false;
+        }
+        var canLoad = await preloadImage(resolvedUrl);
+        if (!canLoad) {
+            return false;
+        }
+        profileAvatarIcon.onerror = null;
+        profileAvatarIcon.src = resolvedUrl;
+        profileAvatarIcon.style.display = '';
+        if (profileAvatarFallback) {
+            profileAvatarFallback.style.display = 'none';
+        }
+        return true;
+    }
+
+    function showProfileAvatarLoading(profileAvatarIcon, profileAvatarFallback) {
+        if (!profileAvatarIcon) {
+            if (profileAvatarFallback) {
+                profileAvatarFallback.style.display = 'none';
+            }
+            return;
+        }
+
+        profileAvatarIcon.style.display = 'none';
+        if (profileAvatarFallback) {
+            profileAvatarFallback.style.display = 'none';
         }
     }
 
@@ -970,16 +1067,11 @@
         });
     }
 
-    function fetchProfileData(token, forceRefresh) {
+    function fetchProfileData(token) {
         if (!token) {
             return Promise.resolve({});
         }
-        if (forceRefresh) {
-            profileFetchInFlight = null;
-            profileFetchToken = '';
-        }
-        if (!profileFetchInFlight || profileFetchToken !== token) {
-            profileFetchToken = token;
+        if (!profileFetchInFlight) {
             profileFetchInFlight = fetch('https://ownshub.onrender.com/api/profile', {
                 headers: { 'Authorization': 'Bearer ' + token }
             }).then(function (res) {
@@ -990,38 +1082,25 @@
             }).catch(function () {
                 return {};
             }).finally(function () {
-                if (profileFetchToken === token) {
-                    profileFetchInFlight = null;
-                }
+                profileFetchInFlight = null;
             });
         }
         return profileFetchInFlight;
     }
 
-    function scheduleProfileRetry(loggedInUser) {
-        if (!loggedInUser) {
+    function primeProfileFetchFromStorage() {
+        if (profilePrefetchStarted) {
             return;
         }
-        var key = String(loggedInUser).trim().toLowerCase();
-        var attempts = profileRetryAttempts[key] || 0;
-        if (attempts >= 1 || profileRetryTimers[key]) {
-            return;
+        profilePrefetchStarted = true;
+        var token = localStorage.getItem('token');
+        if (token) {
+            fetchProfileData(token);
         }
-        profileRetryAttempts[key] = attempts + 1;
-        profileRetryTimers[key] = window.setTimeout(function () {
-            delete profileRetryTimers[key];
-            syncGlobalProfileHeader({ forceProfileRefresh: true });
-        }, 1200);
     }
 
-    async function syncGlobalProfileHeader(options) {
-        var opts = options || {};
-        var requestId = ++profileSyncRequestId;
+    async function syncGlobalProfileHeader() {
         ensureProfileDropdownExists();
-        ensureHomeLinkInNavBars();
-        // Upload link injection removed; now only in index.html
-        wireProfileDropdownToggle();
-        wireMobileLogoNavToggle();
 
         var loggedInUser = localStorage.getItem('loggedInUser');
         var token = localStorage.getItem('token');
@@ -1036,22 +1115,14 @@
         var profileAvatarIcon = document.getElementById('profileAvatarIcon');
         var profileAvatarFallback = document.getElementById('profileAvatarFallback');
 
-        // Show a safe default avatar while profile data is loading.
-        showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
-
         if (loggedInUser && token) {
+            showProfileAvatarLoading(profileAvatarIcon, profileAvatarFallback);
+
+            // Start backend fetch first so avatar loading is prioritized on refresh/login.
+            var profileDataPromise = fetchProfileData(token);
+
             var cachedAvatar = getCachedProfileAvatar(loggedInUser);
-            if (profileAvatarIcon && cachedAvatar) {
-                profileAvatarIcon.onerror = function () {
-                    this.onerror = null;
-                    this.src = DEFAULT_PROFILE_AVATAR;
-                };
-                profileAvatarIcon.src = cachedAvatar;
-                profileAvatarIcon.style.display = '';
-                if (profileAvatarFallback) {
-                    profileAvatarFallback.style.display = 'none';
-                }
-            }
+            await showProfileAvatarFromSource(profileAvatarIcon, profileAvatarFallback, cachedAvatar);
 
             if (profileLink) {
                 profileLink.style.display = '';
@@ -1065,24 +1136,14 @@
 
             if (publicProfileLink) publicProfileLink.style.display = 'none';
 
-            var profileData = await fetchProfileData(token, !!opts.forceProfileRefresh);
-            if (requestId !== profileSyncRequestId) {
-                return;
-            }
+            var profileData = await profileDataPromise;
             var avatar = profileData && profileData.avatar ? profileData.avatar : '';
-            if (profileAvatarIcon && avatar) {
-                profileAvatarIcon.onerror = function () {
-                    this.onerror = null;
-                    this.src = DEFAULT_PROFILE_AVATAR;
-                };
-                profileAvatarIcon.src = avatar;
-                profileAvatarIcon.style.display = '';
-                if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
-                setCachedProfileAvatar(loggedInUser, avatar);
-                profileRetryAttempts[String(loggedInUser).trim().toLowerCase()] = 0;
+            var avatarApplied = await showProfileAvatarFromSource(profileAvatarIcon, profileAvatarFallback, avatar);
+            if (avatarApplied) {
+                setCachedProfileAvatar(loggedInUser, resolveAvatarUrl(avatar));
             } else {
+                setCachedProfileAvatar(loggedInUser, '');
                 showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
-                scheduleProfileRetry(loggedInUser);
             }
         } else {
             if (profileLink) {
@@ -1097,14 +1158,20 @@
             if (publicProfileLink) publicProfileLink.style.display = 'none';
             showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
         }
+
+        ensureHomeLinkInNavBars();
+        // Upload link injection removed; now only in index.html
+        wireProfileDropdownToggle();
+        wireMobileLogoNavToggle();
     }
 
+    primeProfileFetchFromStorage();
     applySavedAppearance();
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function () {
-            applySavedAppearance();
             syncGlobalProfileHeader();
+            applySavedAppearance();
             syncOwBranding();
             wireMobileLogoNavToggle();
             applyDeviceMode();
