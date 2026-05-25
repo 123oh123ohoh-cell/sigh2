@@ -2,6 +2,11 @@
     var DEFAULT_THEME = 'dark';
     var DEFAULT_ACCENT = '#d12a7a';
     var DEFAULT_PROFILE_AVATAR = 'logos_and_profileicons/defaultpfp.webp';
+    var VAGINA_TEXTURE_IMAGES = [
+        'vagina/2492938.png',
+        'vagina/6205268.png',
+        'vagina/8441522.png'
+    ];
     var profileFetchInFlight = null;
     var mobileNavOutsideClickWired = false;
 
@@ -23,6 +28,9 @@
         if (!body) {
             return;
         }
+        var fileName = String((window.location && window.location.pathname) || '').split('/').pop().toLowerCase();
+        body.classList.toggle('raw-page', fileName.indexOf('raw') !== -1);
+
         var isMobile = detectMobileClient();
         body.classList.toggle('mobile-mode', isMobile);
         body.classList.toggle('desktop-mode', !isMobile);
@@ -175,7 +183,7 @@
         if (!fileName) {
             return false;
         }
-        return fileName.indexOf('collections') !== -1 || fileName.indexOf('arts') !== -1 || fileName.indexOf('vagina') !== -1 || fileName.indexOf('hypnosis') !== -1 || fileName.indexOf('raw') !== -1 || fileName.indexOf('cum') !== -1 || fileName.indexOf('baby') !== -1 || /-2\.html$/.test(fileName);
+        return fileName.indexOf('collections') !== -1 || fileName.indexOf('arts') !== -1 || fileName.indexOf('vagina') !== -1 || fileName.indexOf('hypnosis') !== -1 || fileName.indexOf('raw') !== -1 || fileName.indexOf('cum') !== -1 || fileName.indexOf('baby') !== -1 || fileName.indexOf('came') !== -1 || fileName.indexOf('imcuming') !== -1 || /-2\.html$/.test(fileName);
     }
 
     function getSectionFallbackTarget(fileName) {
@@ -198,7 +206,10 @@
             return 'raw-collections.html';
         }
         if (fileName.indexOf('cum') !== -1 || fileName.indexOf('baby') !== -1) {
-            return 'cum-collections.html';
+            return 'clack-collections.html';
+        }
+        if (fileName.indexOf('came') !== -1) {
+            return 'clack-collections.html';
         }
         if (/-2\.html$/.test(fileName)) {
             return 'collections.html';
@@ -267,6 +278,106 @@
                 positionCollectionsBackButton(document.getElementById('collectionsBackBtn'));
             });
         }
+    }
+
+    function initVagina2TextureBackground() {
+        var path = String((window.location && window.location.pathname) || '').toLowerCase();
+        var fileName = path.split('/').pop();
+        if (!/vagina2\.html$/.test(fileName)) {
+            return;
+        }
+
+        if (document.getElementById('vagina2BgTexture')) {
+            return;
+        }
+
+        var imageSources = VAGINA_TEXTURE_IMAGES.slice();
+
+        if (!imageSources.length) {
+            return;
+        }
+
+        var layer = document.createElement('div');
+        layer.id = 'vagina2BgTexture';
+        layer.className = 'vagina2-bg-texture';
+
+        var gridA = document.createElement('div');
+        gridA.className = 'vagina2-bg-grid layer-a';
+        layer.appendChild(gridA);
+
+        var gridB = document.createElement('div');
+        gridB.className = 'vagina2-bg-grid layer-b';
+        layer.appendChild(gridB);
+
+        var movers = document.createElement('div');
+        movers.className = 'vagina2-bg-movers';
+        layer.appendChild(movers);
+
+        var lanePercents = [4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92];
+        for (var i = 0; i < lanePercents.length; i += 1) {
+            var mover = document.createElement('img');
+            mover.className = 'vagina2-bg-mover';
+            mover.src = imageSources[i % imageSources.length];
+            mover.alt = '';
+            mover.setAttribute('aria-hidden', 'true');
+            mover.style.setProperty('--lane-x', lanePercents[i] + 'vw');
+            mover.style.setProperty('--mover-size', (72 + (i % 3) * 14) + 'px');
+            mover.style.setProperty('--mover-duration', (15 + (i % 4) * 2.5) + 's');
+            mover.style.setProperty('--mover-delay', String(i * -1.8) + 's');
+            mover.style.setProperty('--drift', ((i % 2 === 0 ? 1 : -1) * (6 + (i % 3) * 2)) + 'px');
+            movers.appendChild(mover);
+        }
+
+        document.body.classList.add('vagina2-texture-active');
+        document.body.prepend(layer);
+    }
+
+    function initImcumingFireworks() {
+        var path = String((window.location && window.location.pathname) || '').toLowerCase();
+        var fileName = path.split('/').pop();
+        if (!/imcuming\d*\.html$/.test(fileName)) {
+            return;
+        }
+        if (document.getElementById('imcumingFireworks')) {
+            return;
+        }
+
+        var layer = document.createElement('div');
+        layer.id = 'imcumingFireworks';
+        layer.className = 'imcuming-fireworks';
+
+        for (var i = 0; i < 18; i += 1) {
+            var fw = document.createElement('span');
+            fw.className = 'imcuming-firework';
+            fw.setAttribute('aria-hidden', 'true');
+            var xValue = (4 + Math.random() * 92).toFixed(2) + 'vw';
+            var peakValue = (9 + Math.random() * 50).toFixed(2) + 'vh';
+            var delayValue = -1 * (Math.random() * 9);
+            fw.style.setProperty('--x', xValue);
+            fw.style.setProperty('--peak', peakValue);
+            fw.style.setProperty('--size', (44 + Math.random() * 44).toFixed(0) + 'px');
+            fw.style.setProperty('--delay', delayValue.toFixed(2) + 's');
+            fw.style.setProperty('--duration', (3.5 + Math.random() * 2.3).toFixed(2) + 's');
+            fw.style.setProperty('--hue', String(318 + Math.round(Math.random() * 26)));
+            layer.appendChild(fw);
+
+            for (var j = 0; j < 4; j += 1) {
+                var drop = document.createElement('span');
+                drop.className = 'imcuming-milk-drop';
+                drop.setAttribute('aria-hidden', 'true');
+                drop.style.setProperty('--x', xValue);
+                drop.style.setProperty('--peak', peakValue);
+                drop.style.setProperty('--dx', ((Math.random() * 22) - 11).toFixed(2) + 'vw');
+                drop.style.setProperty('--fall', (16 + Math.random() * 32).toFixed(2) + 'vh');
+                drop.style.setProperty('--drop-size', (7 + Math.random() * 10).toFixed(0) + 'px');
+                drop.style.setProperty('--delay', (delayValue + 0.35 + Math.random() * 0.5).toFixed(2) + 's');
+                drop.style.setProperty('--duration', (3.5 + Math.random() * 2.3).toFixed(2) + 's');
+                layer.appendChild(drop);
+            }
+        }
+
+        document.body.classList.add('imcuming-fireworks-active');
+        document.body.prepend(layer);
     }
 
     function normalizeTheme(theme) {
@@ -747,6 +858,8 @@
             wireMobileLogoNavToggle();
             applyDeviceMode();
             ensureSectionBackButton();
+            initVagina2TextureBackground();
+            initImcumingFireworks();
         });
     } else {
         syncGlobalProfileHeader();
@@ -754,6 +867,8 @@
         wireMobileLogoNavToggle();
         applyDeviceMode();
         ensureSectionBackButton();
+        initVagina2TextureBackground();
+        initImcumingFireworks();
     }
 
     window.addEventListener('storage', function (event) {
