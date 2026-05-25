@@ -46,7 +46,7 @@ body.mobile-mode .logo .ow-brand-text {
 }
 
 body.mobile-mode .header .nav-links {
-    display: none;
+    display: flex;
     grid-column: 1 / -1;
     grid-row: 2;
     width: 100%;
@@ -55,15 +55,25 @@ body.mobile-mode .header .nav-links {
     order: 20;
     padding-top: 2px;
     margin-top: 0;
-    max-height: calc((var(--app-vh, 1vh) * 100) - 96px);
-    overflow-y: auto;
+    max-height: 0;
+    overflow: hidden;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     align-content: flex-start;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: max-height 0.28s ease, opacity 0.2s ease, transform 0.24s ease;
 }
 
 body.mobile-mode .header.mobile-nav-open .nav-links {
-    display: flex;
+    max-height: calc((var(--app-vh, 1vh) * 100) - 96px);
+    overflow-y: auto;
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
 }
 
 body.mobile-mode .mobile-menu-btn {
@@ -84,10 +94,13 @@ body.mobile-mode .mobile-menu-btn {
     cursor: pointer;
     z-index: 4010;
     box-shadow: 0 1px 6px #0002;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 body.mobile-mode .header.mobile-nav-open .mobile-menu-btn {
     background: var(--hover-bg);
+    transform: rotate(90deg) scale(1.03);
+    box-shadow: 0 4px 12px #0003;
 }
 
 body.mobile-mode .header .search-bar {

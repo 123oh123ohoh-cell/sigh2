@@ -55,6 +55,7 @@
                 menuBtn.setAttribute('aria-expanded', 'false');
             }
         });
+        applyLogoTheme(getSavedState().mode);
     }
 
     function ensureHomeLinkInNavBars() {
@@ -112,6 +113,7 @@
                 header.classList.toggle('mobile-nav-open', !!open);
                 logo.setAttribute('aria-expanded', open ? 'true' : 'false');
                 menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                applyLogoTheme(getSavedState().mode);
             }
 
             function toggleMenu(event) {
@@ -507,6 +509,22 @@
         }
     }
 
+    function applyLogoTheme(mode) {
+        var headers = document.querySelectorAll('.header');
+        headers.forEach(function (header) {
+            var img = header.querySelector('.logo img');
+            if (!img) {
+                return;
+            }
+            var menuOpen = header.classList.contains('mobile-nav-open');
+            if (mode === 'light') {
+                img.style.filter = menuOpen ? '' : 'brightness(0) saturate(100%)';
+            } else {
+                img.style.filter = '';
+            }
+        });
+    }
+
     function applySavedAppearance() {
         var root = document.documentElement;
         var body = document.body;
@@ -527,6 +545,7 @@
         body.classList.remove('theme-light', 'theme-dark', 'donk-mode', 'mom-mode');
         body.classList.add(themeClass);
         body.setAttribute('data-theme', mode);
+        applyLogoTheme(mode);
 
         if (state.donkEnabled) {
             body.classList.add('donk-mode');
@@ -901,55 +920,3 @@
     window.syncGlobalProfileHeader = syncGlobalProfileHeader;
     window.applyDeviceMode = applyDeviceMode;
 })();
-
-document.addEventListener('DOMContentLoaded', function() {
-    const logoText = document.querySelector('.logo .cute-logo span:nth-child(2)');
-    const logoIcon = document.querySelector('.logo .cute-logo span:nth-child(1) svg');
-    const currentTheme = localStorage.getItem('theme') || 'light';
-
-    if (!logoText || !logoIcon) {
-        updateLogoTheme(currentTheme);
-        return;
-    }
-
-    function applyThemeToLogo(theme) {
-        if (theme === 'dark') {
-            logoText.style.textShadow = '0 4px 12px #ff99cc, 0 3px 0 #333';
-            logoText.style.filter = 'drop-shadow(0 0 10px #ff99cc88)';
-            logoIcon.style.fill = '#ff99cc';
-            logoIcon.style.stroke = '#ff66a3';
-        } else {
-            logoText.style.textShadow = '0 4px 12px #ff99cc, 0 3px 0 #fff4';
-            logoText.style.filter = 'drop-shadow(0 0 10px #ff99cc88)';
-            logoIcon.style.fill = '#ff99cc';
-            logoIcon.style.stroke = '#ff66a3';
-        }
-    }
-
-    function updateLogoTheme(theme) {
-        const logo = document.querySelector('.logo img');
-        if (logo) {
-            if (theme === 'light') {
-                logo.style.filter = 'brightness(0) invert(1)';
-            } else {
-                logo.style.filter = 'none';
-            }
-        }
-    }
-
-    if (typeof window.applySavedAppearance === 'function') {
-        applyThemeToLogo(currentTheme);
-
-        window.applySavedAppearance = function() {
-            const theme = localStorage.getItem('theme') || 'light';
-            applyThemeToLogo(theme);
-        };
-    }
-
-    updateLogoTheme(currentTheme);
-
-    // Add event listener for theme changes
-    document.addEventListener('themeChange', (event) => {
-        updateLogoTheme(event.detail.theme);
-    });
-});
