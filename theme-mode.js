@@ -520,6 +520,10 @@
             if (!img) {
                 return;
             }
+            if (mode === 'dark') {
+                img.style.filter = 'brightness(0) invert(1) saturate(100%)';
+                return;
+            }
             var menuOpen = header.classList.contains('mobile-nav-open');
             if (menuOpen) {
                 img.style.filter = 'sepia(1) saturate(650%) hue-rotate(300deg) brightness(0.95)';
