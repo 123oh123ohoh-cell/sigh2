@@ -771,6 +771,12 @@
         }
     });
 
+    // Run one more sync after full page load so page-specific scripts cannot
+    // leave the header avatar in fallback emoji state.
+    window.addEventListener('load', function () {
+        syncGlobalProfileHeader();
+    });
+
     window.addEventListener('resize', applyDeviceMode);
     window.addEventListener('orientationchange', applyDeviceMode);
 
