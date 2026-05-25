@@ -493,12 +493,13 @@ body.mobile-mode {
 }
 
 body.mobile-mode .header {
-    padding: 10px 12px;
+    padding: 10px max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left));
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 10px;
     align-items: center;
     justify-content: normal;
+    max-width: 100vw;
 }
 
 body.mobile-mode .logo {
@@ -514,6 +515,10 @@ body.mobile-mode .logo img {
     margin-right: 8px;
 }
 
+body.mobile-mode .logo .ow-brand-text {
+    display: none !important;
+}
+
 body.mobile-mode .header .nav-links {
     display: none;
     grid-column: 1 / -1;
@@ -522,6 +527,11 @@ body.mobile-mode .header .nav-links {
     gap: 8px;
     order: 20;
     padding-top: 4px;
+    max-height: calc((var(--app-vh, 1vh) * 100) - 96px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    align-content: flex-start;
 }
 
 body.mobile-mode .header.mobile-nav-open .nav-links {
@@ -530,8 +540,8 @@ body.mobile-mode .header.mobile-nav-open .nav-links {
 
 body.mobile-mode .header .search-bar {
     min-width: 0;
-    width: min(46vw, 220px);
-    margin-left: auto;
+    width: 100%;
+    margin-left: 0;
 }
 
 body.mobile-mode .header .search-bar input {
@@ -543,12 +553,18 @@ body.mobile-mode .header .profile-dropdown {
 }
 
 body.mobile-mode .nav-link {
-    flex: 1 1 calc(33.333% - 8px);
-    min-width: 88px;
+    flex: 1 1 calc(50% - 8px);
+    min-width: 96px;
     text-align: center;
     padding: 8px 10px;
     border-radius: 8px;
     background: var(--hover-bg);
+}
+
+@media (max-width: 380px) {
+    body.mobile-mode .nav-link {
+        flex-basis: 100%;
+    }
 }
 
 body.mobile-mode .main-content,

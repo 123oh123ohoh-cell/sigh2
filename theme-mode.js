@@ -44,7 +44,27 @@
         });
     }
 
+    function ensureHomeLinkInNavBars() {
+        var navLists = document.querySelectorAll('.header .nav-links');
+        navLists.forEach(function (nav) {
+            var hasHome = Array.prototype.slice.call(nav.querySelectorAll('a')).some(function (link) {
+                var href = String(link.getAttribute('href') || '').trim().toLowerCase();
+                var text = String(link.textContent || '').trim().toLowerCase();
+                return text === 'home' || href === 'index.html' || /\/index\.html(?:[#?].*)?$/.test(href) || href === '/';
+            });
+
+            if (!hasHome) {
+                var homeLink = document.createElement('a');
+                homeLink.href = 'index.html';
+                homeLink.className = 'nav-link';
+                homeLink.textContent = 'Home';
+                nav.insertBefore(homeLink, nav.firstChild);
+            }
+        });
+    }
+
     function wireMobileLogoNavToggle() {
+        ensureHomeLinkInNavBars();
         var headers = document.querySelectorAll('.header');
         headers.forEach(function (header, index) {
             var logo = header.querySelector('.logo');
@@ -490,6 +510,7 @@
 
     async function syncGlobalProfileHeader() {
         ensureProfileDropdownExists();
+        ensureHomeLinkInNavBars();
         wireProfileDropdownToggle();
         wireMobileLogoNavToggle();
 
