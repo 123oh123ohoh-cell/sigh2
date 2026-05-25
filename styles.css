@@ -505,10 +505,16 @@ body.mobile-mode .logo img {
     margin-right: 8px;
 }
 
-body.mobile-mode .nav-links {
+body.mobile-mode .header .nav-links {
+    display: none;
     width: 100%;
     flex-wrap: wrap;
     gap: 8px;
+    order: 20;
+}
+
+body.mobile-mode .header.mobile-nav-open .nav-links {
+    display: flex;
 }
 
 body.mobile-mode .nav-link {
