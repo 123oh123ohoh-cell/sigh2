@@ -517,22 +517,36 @@
         var headers = document.querySelectorAll('.header');
         headers.forEach(function (header) {
             var img = header.querySelector('.logo img');
+            var menuBtn = header.querySelector('.mobile-menu-btn');
             if (!img) {
-                return;
-            }
-            if (mode === 'dark') {
-                img.style.filter = 'brightness(0) invert(1) saturate(100%)';
                 return;
             }
             var menuOpen = header.classList.contains('mobile-nav-open');
             if (menuOpen) {
-                img.style.filter = 'sepia(1) saturate(650%) hue-rotate(300deg) brightness(0.95)';
+                // While menu is open, show original brand/icon color.
+                img.style.filter = '';
+                if (menuBtn) {
+                    menuBtn.style.color = '';
+                }
+                return;
+            }
+            if (mode === 'dark') {
+                img.style.filter = 'brightness(0) invert(1) saturate(100%)';
+                if (menuBtn) {
+                    menuBtn.style.color = '#ffffff';
+                }
                 return;
             }
             if (mode === 'light') {
                 img.style.filter = 'brightness(0) saturate(100%)';
+                if (menuBtn) {
+                    menuBtn.style.color = '#20171d';
+                }
             } else {
                 img.style.filter = '';
+                if (menuBtn) {
+                    menuBtn.style.color = '';
+                }
             }
         });
     }
