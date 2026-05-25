@@ -90,6 +90,13 @@
                 if (image) {
                     image.style.filter = '';
                 }
+                logo.dataset.logoPreviewActive = '1';
+                window.setTimeout(function () {
+                    if (logo.dataset.logoPreviewActive === '1') {
+                        delete logo.dataset.logoPreviewActive;
+                        applyLogoTheme(getSavedState().mode);
+                    }
+                }, 220);
             }
 
             logo.addEventListener('pointerdown', restoreOriginalLogoColor);
@@ -641,8 +648,13 @@
     function applyLogoTheme(mode) {
         var headers = document.querySelectorAll('.header');
         headers.forEach(function (header) {
-            var img = header.querySelector('.logo img');
+            var logo = header.querySelector('.logo');
+            var img = logo ? logo.querySelector('img') : null;
             if (!img) {
+                return;
+            }
+            if (logo && logo.dataset.logoPreviewActive === '1') {
+                img.style.filter = '';
                 return;
             }
             var menuOpen = header.classList.contains('mobile-nav-open');
