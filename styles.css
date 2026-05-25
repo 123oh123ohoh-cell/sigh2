@@ -478,6 +478,14 @@ body.theme-light {
     color-scheme: light;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100%;
+}
+
 /* Global mobile mode (enabled by theme-mode.js when phone usage is detected) */
 body.mobile-mode {
     overflow-x: hidden;
@@ -486,17 +494,18 @@ body.mobile-mode {
 
 body.mobile-mode .header {
     padding: 10px 12px;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
     gap: 10px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: normal;
 }
 
 body.mobile-mode .logo {
     font-size: 1rem;
     display: inline-flex;
     align-items: center;
+    min-width: 0;
 }
 
 body.mobile-mode .logo img {
@@ -507,14 +516,30 @@ body.mobile-mode .logo img {
 
 body.mobile-mode .header .nav-links {
     display: none;
+    grid-column: 1 / -1;
     width: 100%;
     flex-wrap: wrap;
     gap: 8px;
     order: 20;
+    padding-top: 4px;
 }
 
 body.mobile-mode .header.mobile-nav-open .nav-links {
     display: flex;
+}
+
+body.mobile-mode .header .search-bar {
+    min-width: 0;
+    width: min(46vw, 220px);
+    margin-left: auto;
+}
+
+body.mobile-mode .header .search-bar input {
+    min-width: 0;
+}
+
+body.mobile-mode .header .profile-dropdown {
+    margin-left: 0;
 }
 
 body.mobile-mode .nav-link {
@@ -542,6 +567,42 @@ body.mobile-mode .section,
 body.mobile-mode .categories {
     padding-left: 12px !important;
     padding-right: 12px !important;
+}
+
+body.mobile-mode .hero {
+    height: auto;
+    min-height: 56vh;
+}
+
+body.mobile-mode .hero-content {
+    padding: 108px 12px 14px;
+    gap: 20px;
+}
+
+body.mobile-mode .hero-title {
+    font-size: clamp(1.7rem, 8vw, 2.4rem);
+}
+
+body.mobile-mode .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 18px;
+}
+
+body.mobile-mode .video-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+body.mobile-mode .video-thumbnail {
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
+body.mobile-mode .premium-banner,
+body.mobile-mode .card,
+body.mobile-mode .panel,
+body.mobile-mode .chat-container {
+    width: min(100%, 100vw);
 }
 
 body.mobile-mode img,
@@ -813,11 +874,13 @@ body.theme-light .header.scrolled {
     margin-top: 20px;
     position: relative;
     z-index: 3;
+    width: 100%;
     padding: 0 30px;
 }
 
 .section {
     margin-bottom: 50px;
+    width: 100%;
 }
 
 .section-title {
@@ -1236,6 +1299,7 @@ body.theme-light .header.scrolled {
 .chat-container {
   max-width: 900px;
   margin: 40px auto;
+    width: 100%;
   display: flex;
   border-radius: 16px;
   box-shadow: 0 2px 24px rgba(0,0,0,0.22);
@@ -1374,7 +1438,7 @@ body.theme-light .header.scrolled {
     box-shadow: none;
   }
   .user-list {
-    width: 100vw;
+        width: 100%;
     min-height: 0;
     max-height: 120px;
     display: flex;

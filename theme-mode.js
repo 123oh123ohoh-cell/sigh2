@@ -81,6 +81,18 @@
                     event.preventDefault();
                 }
             });
+
+            nav.addEventListener('click', function (event) {
+                var body = document.body;
+                if (!body || !body.classList.contains('mobile-mode')) {
+                    return;
+                }
+                var link = event.target.closest('a');
+                if (link) {
+                    header.classList.remove('mobile-nav-open');
+                    logo.setAttribute('aria-expanded', 'false');
+                }
+            });
         });
 
         if (!mobileNavOutsideClickWired) {
