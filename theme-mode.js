@@ -41,6 +41,10 @@
             if (logo) {
                 logo.setAttribute('aria-expanded', 'false');
             }
+            var menuBtn = header.querySelector('.mobile-menu-btn');
+            if (menuBtn) {
+                menuBtn.setAttribute('aria-expanded', 'false');
+            }
         });
     }
 
@@ -104,6 +108,16 @@
                 return;
             }
 
+            var menuBtn = header.querySelector('.mobile-menu-btn');
+            if (!menuBtn) {
+                menuBtn = document.createElement('button');
+                menuBtn.type = 'button';
+                menuBtn.className = 'mobile-menu-btn';
+                menuBtn.setAttribute('aria-label', 'Toggle navigation menu');
+                menuBtn.textContent = '\u2630';
+                header.insertBefore(menuBtn, header.firstChild);
+            }
+
             if (!nav.id) {
                 nav.id = 'mobile-nav-' + index;
             }
@@ -111,8 +125,10 @@
             logo.dataset.mobileNavWired = '1';
             logo.setAttribute('aria-controls', nav.id);
             logo.setAttribute('aria-expanded', 'false');
+            menuBtn.setAttribute('aria-controls', nav.id);
+            menuBtn.setAttribute('aria-expanded', 'false');
 
-            logo.addEventListener('pointerdown', function (event) {
+            menuBtn.addEventListener('pointerdown', function (event) {
                 var body = document.body;
                 if (!body || !body.classList.contains('mobile-mode')) {
                     return;
@@ -123,14 +139,7 @@
                 var shouldOpen = !header.classList.contains('mobile-nav-open');
                 closeAllMobileNavMenus();
                 header.classList.toggle('mobile-nav-open', shouldOpen);
-                logo.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-            });
-
-            logo.addEventListener('click', function (event) {
-                var body = document.body;
-                if (body && body.classList.contains('mobile-mode')) {
-                    event.preventDefault();
-                }
+                menuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
             });
 
             nav.addEventListener('click', function (event) {
@@ -142,6 +151,7 @@
                 if (link) {
                     header.classList.remove('mobile-nav-open');
                     logo.setAttribute('aria-expanded', 'false');
+                    menuBtn.setAttribute('aria-expanded', 'false');
                 }
             });
         });
