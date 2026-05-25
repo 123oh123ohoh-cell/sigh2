@@ -67,39 +67,10 @@
         });
     }
 
-    function ensureUploadLinkInMobileNav() {
-        var navLists = document.querySelectorAll('.header .nav-links');
-        navLists.forEach(function (nav) {
-            if (nav.querySelector('.mobile-upload-link')) {
-                return;
-            }
-
-            var hasUpload = Array.prototype.slice.call(nav.querySelectorAll('a')).some(function (link) {
-                var href = String(link.getAttribute('href') || '').trim().toLowerCase();
-                return href === 'upload.html' || /\/upload\.html(?:[#?].*)?$/.test(href);
-            });
-
-            if (!hasUpload) {
-                var uploadLink = document.createElement('a');
-                uploadLink.href = 'upload.html';
-                uploadLink.className = 'nav-link mobile-nav-only mobile-upload-link';
-                uploadLink.textContent = 'Upload';
-                nav.appendChild(uploadLink);
-                return;
-            }
-
-            var existingUpload = nav.querySelector('a[href="upload.html"]');
-            if (existingUpload && !existingUpload.classList.contains('mobile-upload-link')) {
-                var mobileUploadLink = existingUpload.cloneNode(true);
-                mobileUploadLink.classList.add('mobile-nav-only', 'mobile-upload-link');
-                nav.appendChild(mobileUploadLink);
-            }
-        });
-    }
 
     function wireMobileLogoNavToggle() {
         ensureHomeLinkInNavBars();
-        ensureUploadLinkInMobileNav();
+        // Upload link injection removed; now only in index.html
         var headers = document.querySelectorAll('.header');
         headers.forEach(function (header, index) {
             var logo = header.querySelector('.logo');
@@ -245,6 +216,17 @@
             g: a.g + (b.g - a.g) * t,
             b: a.b + (b.b - a.b) * t
         });
+
+        // Auto-close mobile nav on scroll
+        if (!window._mobileNavScrollWired) {
+            window._mobileNavScrollWired = true;
+            window.addEventListener('scroll', function () {
+                var body = document.body;
+                if (body && body.classList.contains('mobile-mode')) {
+                    closeAllMobileNavMenus();
+                }
+            }, { passive: true });
+        }
     }
 
     function toRgba(hex, alpha) {
@@ -552,7 +534,7 @@
     async function syncGlobalProfileHeader() {
         ensureProfileDropdownExists();
         ensureHomeLinkInNavBars();
-        ensureUploadLinkInMobileNav();
+        // Upload link injection removed; now only in index.html
         wireProfileDropdownToggle();
         wireMobileLogoNavToggle();
 

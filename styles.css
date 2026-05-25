@@ -518,7 +518,8 @@ body.mobile-mode .logo {
 body.mobile-mode .header > .logo {
     grid-column: 1;
     grid-row: 1;
-    justify-self: start;
+    justify-self: center;
+    margin-left: 8px;
 }
 
 body.mobile-mode .logo img {
@@ -539,12 +540,13 @@ body.mobile-mode .header .nav-links {
     flex-wrap: wrap;
     gap: 6px;
     order: 20;
-    padding-top: 4px;
+    padding-top: 0;
     max-height: calc((var(--app-vh, 1vh) * 100) - 96px);
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    align-content: flex-start;
+    align-content: center;
+    align-items: center;
 }
 
 body.mobile-mode .header.mobile-nav-open .nav-links {
