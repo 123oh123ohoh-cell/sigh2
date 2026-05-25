@@ -99,18 +99,40 @@
             menuBtn.setAttribute('aria-controls', nav.id);
             menuBtn.setAttribute('aria-expanded', 'false');
 
-            menuBtn.addEventListener('pointerdown', function (event) {
+            function setMenuOpen(open) {
+                header.classList.toggle('mobile-nav-open', !!open);
+                logo.setAttribute('aria-expanded', open ? 'true' : 'false');
+                menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+
+            function toggleMenu(event) {
                 var body = document.body;
                 if (!body || !body.classList.contains('mobile-mode')) {
                     return;
                 }
-                event.preventDefault();
-                event.stopPropagation();
-
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
                 var shouldOpen = !header.classList.contains('mobile-nav-open');
                 closeAllMobileNavMenus();
-                header.classList.toggle('mobile-nav-open', shouldOpen);
-                menuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+                setMenuOpen(shouldOpen);
+            }
+
+            menuBtn.addEventListener('pointerdown', function (event) {
+                menuBtn.dataset.lastPointerToggleAt = String(Date.now());
+                toggleMenu(event);
+            });
+
+            menuBtn.addEventListener('click', function (event) {
+                var lastPointerToggleAt = parseInt(menuBtn.dataset.lastPointerToggleAt || '0', 10);
+                if (Date.now() - lastPointerToggleAt < 450) {
+                    // Ignore synthetic click after pointerdown to avoid double toggle.
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
+                }
+                toggleMenu(event);
             });
 
             nav.addEventListener('click', function (event) {
@@ -120,15 +142,22 @@
                 }
                 var link = event.target.closest('a');
                 if (link) {
-                    header.classList.remove('mobile-nav-open');
-                    logo.setAttribute('aria-expanded', 'false');
-                    menuBtn.setAttribute('aria-expanded', 'false');
+                    setMenuOpen(false);
                 }
             });
         });
 
         if (!mobileNavOutsideClickWired) {
             mobileNavOutsideClickWired = true;
+            document.addEventListener('pointerdown', function (event) {
+                var body = document.body;
+                if (!body || !body.classList.contains('mobile-mode')) {
+                    return;
+                }
+                if (!event.target.closest('.header')) {
+                    closeAllMobileNavMenus();
+                }
+            });
             document.addEventListener('click', function (event) {
                 var body = document.body;
                 if (!body || !body.classList.contains('mobile-mode')) {
