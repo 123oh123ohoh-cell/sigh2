@@ -601,20 +601,29 @@ body.theme-light .header.scrolled {
 }
 
 .profile-btn {
-    width: 35px;
-    height: 35px;
+    width: 39px;
+    height: 39px;
     background: var(--gradient);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.3s ease;
-    font-size: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 17px;
 }
 
 .profile-btn:hover {
     transform: scale(1.1);
+}
+
+.profile-btn:active {
+    transform: scale(1.06);
+}
+
+.profile-dropdown.show .profile-btn {
+    transform: scale(1.16);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.28);
 }
 
 /* Hero Section */
