@@ -555,12 +555,19 @@ body.mobile-mode .header .search-bar {
 body.mobile-mode .header > .search-bar {
     grid-column: 2;
     grid-row: 1;
-    border-radius: 10px;
-    padding: 7px 8px;
+    border-radius: 9px;
+    padding: 5px 8px;
+    min-height: 30px;
 }
 
 body.mobile-mode .header .search-bar input {
     min-width: 0;
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+body.mobile-mode .header .search-bar input::placeholder {
+    font-size: 13px;
 }
 
 body.mobile-mode .header .profile-dropdown {
