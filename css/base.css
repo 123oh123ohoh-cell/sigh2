@@ -994,6 +994,17 @@ body.theme-light .header.scrolled {
     margin-right: 10px;
 }
 
+/* Make logo black in light mode */
+@media (prefers-color-scheme: light) {
+    .logo img {
+        filter: brightness(0) invert(0);
+    }
+}
+
+body.theme-light .logo img {
+    filter: brightness(0) invert(0);
+}
+
 .nav-links {
     display: flex;
     gap: 25px;
