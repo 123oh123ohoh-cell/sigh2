@@ -1,6 +1,7 @@
 (function () {
     var DEFAULT_THEME = 'dark';
     var DEFAULT_ACCENT = '#d12a7a';
+    var DEFAULT_PROFILE_AVATAR = 'logos_and_profileicons/defaultpfp.webp';
     var profileFetchInFlight = null;
     var mobileNavOutsideClickWired = false;
 
@@ -563,6 +564,20 @@
         return fileName === 'profile.html' || fileName === 'public-profile.html';
     }
 
+    function showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback) {
+        if (profileAvatarIcon) {
+            profileAvatarIcon.onerror = function () {
+                this.onerror = null;
+                this.src = DEFAULT_PROFILE_AVATAR;
+            };
+            profileAvatarIcon.src = DEFAULT_PROFILE_AVATAR;
+            profileAvatarIcon.style.display = '';
+        }
+        if (profileAvatarFallback) {
+            profileAvatarFallback.style.display = 'none';
+        }
+    }
+
     function ensureProfileDropdownExists() {
         if (shouldSkipInjectedProfileDropdown()) {
             return;
@@ -581,7 +596,7 @@
         dropdown.className = 'profile-dropdown';
         dropdown.innerHTML =
             '<button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">' +
-                '<img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">' +
+                '<img id="profileAvatarIcon" src="' + DEFAULT_PROFILE_AVATAR + '" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">' +
                 '<span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">\ud83d\udc64</span>' +
             '</button>' +
             '<div class="dropdown-content" id="profileDropdownMenu">' +
@@ -678,6 +693,9 @@
         var profileAvatarIcon = document.getElementById('profileAvatarIcon');
         var profileAvatarFallback = document.getElementById('profileAvatarFallback');
 
+        // Show a safe default avatar while profile data is loading.
+        showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
+
         if (loggedInUser && token) {
             if (profileLink) {
                 profileLink.style.display = '';
@@ -694,12 +712,15 @@
             var profileData = await fetchProfileData(token);
             var avatar = profileData && profileData.avatar ? profileData.avatar : '';
             if (profileAvatarIcon && avatar) {
+                profileAvatarIcon.onerror = function () {
+                    this.onerror = null;
+                    this.src = DEFAULT_PROFILE_AVATAR;
+                };
                 profileAvatarIcon.src = avatar;
                 profileAvatarIcon.style.display = '';
                 if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
             } else {
-                if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
-                if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+                showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
             }
         } else {
             if (profileLink) {
@@ -712,8 +733,7 @@
             if (dropdownLogin) dropdownLogin.style.display = '';
             if (dropdownSignup) dropdownSignup.style.display = '';
             if (publicProfileLink) publicProfileLink.style.display = 'none';
-            if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
-            if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+            showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
         }
     }
 

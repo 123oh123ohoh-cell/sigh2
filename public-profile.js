@@ -12,6 +12,7 @@ const profileTitle = document.getElementById('profileTitle');
 const infoDiv = document.getElementById('publicProfileInfo');
 const editBtnDiv = document.getElementById('editProfileBtnContainer');
 const followBtnDiv = document.getElementById('followBtnContainer');
+const DEFAULT_PROFILE_AVATAR = 'logos_and_profileicons/defaultpfp.webp';
 
 if (!username) {
     infoDiv.innerHTML = '<p>No user specified.</p>';
@@ -31,8 +32,7 @@ if (!username) {
                 };
             }
             let pronouns = data.pronouns === 'custom' ? data.customPronouns : data.pronouns;
-            // Default avatar SVG (circle with user icon)
-            const defaultAvatar = `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="54" fill="#e0e0e0" stroke="#fff" stroke-width="2"/><ellipse cx="55" cy="46" rx="26" ry="26" fill="#bdbdbd"/><ellipse cx="55" cy="85" rx="36" ry="20" fill="#bdbdbd"/></svg>`;
+            const defaultAvatar = `<img class='public-profile-avatar' src='${DEFAULT_PROFILE_AVATAR}' alt='Avatar'>`;
             let nameHtml = '';
             // Premium badge (only for own profile, since we can't know others' premium from localStorage)
             let premiumBadge = '';
@@ -65,7 +65,7 @@ if (!username) {
             }
             infoDiv.innerHTML = `
                 <div class="public-profile-summary">
-                    ${data.avatar ? `<img class='public-profile-avatar' src='${data.avatar}' alt='Avatar'>` : defaultAvatar}
+                    ${data.avatar ? `<img class='public-profile-avatar' src='${data.avatar}' alt='Avatar' onerror="this.onerror=null;this.src='${DEFAULT_PROFILE_AVATAR}'">` : defaultAvatar}
                     <div class="public-profile-info">
                         ${nameHtml}
                         <div style="font-size:1.08em;color:#bbb;margin-top:2px;">${pronouns ? pronouns : '<span style=\'opacity:0.7;\'>No pronouns set</span>'}</div>
@@ -160,7 +160,7 @@ if (!username) {
         })
         .catch(() => {
             // On error, show default profile
-            const defaultAvatar = `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="55" cy="55" r="54" fill="#e0e0e0" stroke="#fff" stroke-width="2"/><ellipse cx="55" cy="46" rx="26" ry="26" fill="#bdbdbd"/><ellipse cx="55" cy="85" rx="36" ry="20" fill="#bdbdbd"/></svg>`;
+            const defaultAvatar = `<img class='public-profile-avatar' src='${DEFAULT_PROFILE_AVATAR}' alt='Avatar'>`;
             infoDiv.innerHTML = `
                 <div class="public-profile-summary">
                     ${defaultAvatar}
