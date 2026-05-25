@@ -209,6 +209,7 @@
         updateModeButtons(normalized);
         if (persist !== false) {
             localStorage.setItem('appearanceTheme', normalized);
+            localStorage.setItem('theme', normalized);
         }
         if (typeof window.applySavedAppearance === 'function') {
             window.applySavedAppearance();

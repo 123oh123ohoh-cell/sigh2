@@ -94,12 +94,11 @@ body.mobile-mode .mobile-menu-btn {
     cursor: pointer;
     z-index: 4010;
     box-shadow: 0 1px 6px #0002;
-    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
 body.mobile-mode .header.mobile-nav-open .mobile-menu-btn {
     background: var(--hover-bg);
-    transform: rotate(90deg) scale(1.03);
     box-shadow: 0 4px 12px #0003;
 }
 

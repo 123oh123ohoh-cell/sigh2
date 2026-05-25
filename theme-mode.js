@@ -392,6 +392,10 @@
 
     function getSavedState() {
         var rawTheme = String(localStorage.getItem('appearanceTheme') || '').toLowerCase();
+        if (!rawTheme) {
+            // Fallback for legacy pages that still store plain "theme".
+            rawTheme = String(localStorage.getItem('theme') || '').toLowerCase();
+        }
         var mode = normalizeTheme(rawTheme);
         var donkEnabled = localStorage.getItem('appearanceDonk') === 'on';
         var momEnabled = localStorage.getItem('appearanceMom') === 'on';
@@ -517,8 +521,12 @@
                 return;
             }
             var menuOpen = header.classList.contains('mobile-nav-open');
+            if (menuOpen) {
+                img.style.filter = 'sepia(1) saturate(650%) hue-rotate(300deg) brightness(0.95)';
+                return;
+            }
             if (mode === 'light') {
-                img.style.filter = menuOpen ? '' : 'brightness(0) saturate(100%)';
+                img.style.filter = 'brightness(0) saturate(100%)';
             } else {
                 img.style.filter = '';
             }
@@ -575,13 +583,17 @@
             if (!localStorage.getItem('appearanceTheme')) {
                 localStorage.setItem('appearanceTheme', DEFAULT_THEME);
             }
+            localStorage.setItem('theme', DEFAULT_THEME);
         } else if (input === 'mom') {
             localStorage.setItem('appearanceMom', 'on');
             if (!localStorage.getItem('appearanceTheme')) {
                 localStorage.setItem('appearanceTheme', DEFAULT_THEME);
             }
+            localStorage.setItem('theme', DEFAULT_THEME);
         } else {
-            localStorage.setItem('appearanceTheme', normalizeTheme(input));
+            var normalized = normalizeTheme(input);
+            localStorage.setItem('appearanceTheme', normalized);
+            localStorage.setItem('theme', normalized);
         }
         applySavedAppearance();
     }
@@ -893,6 +905,7 @@
     window.addEventListener('storage', function (event) {
         if (
             event.key === 'appearanceTheme' ||
+            event.key === 'theme' ||
             event.key === 'appearanceAccent' ||
             event.key === 'appearanceDonk' ||
             event.key === 'appearanceMom'
