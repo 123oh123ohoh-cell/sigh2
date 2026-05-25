@@ -8,6 +8,10 @@
         'vagina/8441522.png'
     ];
     var profileFetchInFlight = null;
+    var profileFetchToken = '';
+    var profileSyncRequestId = 0;
+    var profileRetryTimers = {};
+    var profileRetryAttempts = {};
     var mobileNavOutsideClickWired = false;
 
     function clamp(value, min, max) {
@@ -866,6 +870,32 @@
         }
     }
 
+    function getProfileAvatarCacheKey(username) {
+        return 'profileAvatar:' + String(username || '').trim().toLowerCase();
+    }
+
+    function getCachedProfileAvatar(username) {
+        if (!username) {
+            return '';
+        }
+        try {
+            return String(localStorage.getItem(getProfileAvatarCacheKey(username)) || '').trim();
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function setCachedProfileAvatar(username, avatarUrl) {
+        if (!username || !avatarUrl) {
+            return;
+        }
+        try {
+            localStorage.setItem(getProfileAvatarCacheKey(username), String(avatarUrl));
+        } catch (error) {
+            // ignore storage quota/private mode errors
+        }
+    }
+
     function ensureProfileDropdownExists() {
         if (shouldSkipInjectedProfileDropdown()) {
             return;
@@ -940,11 +970,16 @@
         });
     }
 
-    function fetchProfileData(token) {
+    function fetchProfileData(token, forceRefresh) {
         if (!token) {
             return Promise.resolve({});
         }
-        if (!profileFetchInFlight) {
+        if (forceRefresh) {
+            profileFetchInFlight = null;
+            profileFetchToken = '';
+        }
+        if (!profileFetchInFlight || profileFetchToken !== token) {
+            profileFetchToken = token;
             profileFetchInFlight = fetch('https://ownshub.onrender.com/api/profile', {
                 headers: { 'Authorization': 'Bearer ' + token }
             }).then(function (res) {
@@ -955,13 +990,33 @@
             }).catch(function () {
                 return {};
             }).finally(function () {
-                profileFetchInFlight = null;
+                if (profileFetchToken === token) {
+                    profileFetchInFlight = null;
+                }
             });
         }
         return profileFetchInFlight;
     }
 
-    async function syncGlobalProfileHeader() {
+    function scheduleProfileRetry(loggedInUser) {
+        if (!loggedInUser) {
+            return;
+        }
+        var key = String(loggedInUser).trim().toLowerCase();
+        var attempts = profileRetryAttempts[key] || 0;
+        if (attempts >= 1 || profileRetryTimers[key]) {
+            return;
+        }
+        profileRetryAttempts[key] = attempts + 1;
+        profileRetryTimers[key] = window.setTimeout(function () {
+            delete profileRetryTimers[key];
+            syncGlobalProfileHeader({ forceProfileRefresh: true });
+        }, 1200);
+    }
+
+    async function syncGlobalProfileHeader(options) {
+        var opts = options || {};
+        var requestId = ++profileSyncRequestId;
         ensureProfileDropdownExists();
         ensureHomeLinkInNavBars();
         // Upload link injection removed; now only in index.html
@@ -985,6 +1040,19 @@
         showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
 
         if (loggedInUser && token) {
+            var cachedAvatar = getCachedProfileAvatar(loggedInUser);
+            if (profileAvatarIcon && cachedAvatar) {
+                profileAvatarIcon.onerror = function () {
+                    this.onerror = null;
+                    this.src = DEFAULT_PROFILE_AVATAR;
+                };
+                profileAvatarIcon.src = cachedAvatar;
+                profileAvatarIcon.style.display = '';
+                if (profileAvatarFallback) {
+                    profileAvatarFallback.style.display = 'none';
+                }
+            }
+
             if (profileLink) {
                 profileLink.style.display = '';
                 profileLink.href = 'public-profile.html?user=' + encodeURIComponent(loggedInUser);
@@ -997,7 +1065,10 @@
 
             if (publicProfileLink) publicProfileLink.style.display = 'none';
 
-            var profileData = await fetchProfileData(token);
+            var profileData = await fetchProfileData(token, !!opts.forceProfileRefresh);
+            if (requestId !== profileSyncRequestId) {
+                return;
+            }
             var avatar = profileData && profileData.avatar ? profileData.avatar : '';
             if (profileAvatarIcon && avatar) {
                 profileAvatarIcon.onerror = function () {
@@ -1007,8 +1078,11 @@
                 profileAvatarIcon.src = avatar;
                 profileAvatarIcon.style.display = '';
                 if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
+                setCachedProfileAvatar(loggedInUser, avatar);
+                profileRetryAttempts[String(loggedInUser).trim().toLowerCase()] = 0;
             } else {
                 showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
+                scheduleProfileRetry(loggedInUser);
             }
         } else {
             if (profileLink) {
