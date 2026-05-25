@@ -77,6 +77,37 @@
         });
     }
 
+    function normalizeNavTarget(value) {
+        var href = String(value || '').trim().toLowerCase();
+        if (!href || href === '/' || href === './') {
+            return 'index.html';
+        }
+        if (href.indexOf('#') !== -1) {
+            href = href.split('#')[0];
+        }
+        if (href.indexOf('?') !== -1) {
+            href = href.split('?')[0];
+        }
+        if (href.charAt(href.length - 1) === '/') {
+            return 'index.html';
+        }
+        return href.split('/').pop() || 'index.html';
+    }
+
+    function updateCurrentNavLinkState(nav) {
+        if (!nav) {
+            return;
+        }
+        var current = normalizeNavTarget(window.location && window.location.pathname);
+        var links = nav.querySelectorAll('a.nav-link');
+        links.forEach(function (link) {
+            var target = normalizeNavTarget(link.getAttribute('href'));
+            var isCurrent = target === current;
+            link.classList.toggle('mobile-nav-current', isCurrent);
+            link.setAttribute('aria-current', isCurrent ? 'page' : 'false');
+        });
+    }
+
 
     function wireMobileLogoNavToggle() {
         ensureHomeLinkInNavBars();
@@ -102,6 +133,8 @@
             if (!nav.id) {
                 nav.id = 'mobile-nav-' + index;
             }
+
+            updateCurrentNavLinkState(nav);
 
             logo.dataset.mobileNavWired = '1';
             logo.setAttribute('aria-controls', nav.id);
@@ -153,8 +186,23 @@
                 }
                 var link = event.target.closest('a');
                 if (link) {
+                    nav.querySelectorAll('a.nav-link').forEach(function (item) {
+                        item.classList.remove('mobile-nav-tap-active');
+                    });
+                    link.classList.add('mobile-nav-tap-active');
                     setMenuOpen(false);
                 }
+            });
+
+            nav.addEventListener('pointerdown', function (event) {
+                var link = event.target.closest('a.nav-link');
+                if (!link) {
+                    return;
+                }
+                nav.querySelectorAll('a.nav-link').forEach(function (item) {
+                    item.classList.remove('mobile-nav-tap-active');
+                });
+                link.classList.add('mobile-nav-tap-active');
             });
         });
 
