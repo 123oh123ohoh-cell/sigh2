@@ -254,17 +254,15 @@ function renderUserList() {
   let usersByName = Object.fromEntries(allUsers.map(u => [u.username, u]));
   let filtered = allUsers.filter(u => u.username !== myUsername);
 
-  // If searching (not empty), show search results at top, else show recents at top
-  if (userSearch && userSearch.trim().length > 0) {
-    let term = userSearch;
-    if (userSearch.startsWith('@')) term = userSearch.slice(1);
-    term = term.toLowerCase();
+  // If searching, show search results at top, else show recents at top
+  if (userSearch.startsWith('@')) {
+    const term = userSearch.slice(1).toLowerCase();
     filtered = filtered.filter(u =>
       u.username.toLowerCase().includes(term) ||
       (u.displayName && u.displayName.toLowerCase().includes(term))
     );
     // If not found, allow quick start
-    if (filtered.length === 0 && userSearch.startsWith('@')) {
+    if (filtered.length === 0) {
       const typed = userSearch.slice(1).trim();
       if (typed && typed !== myUsername) {
         const li = makeUserLi({ username: typed, displayName: typed }, true);
