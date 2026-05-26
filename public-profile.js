@@ -19,7 +19,7 @@ if (!username) {
 } else {
     profileTitle.textContent = '';
     profileTitle.style.display = 'none';
-    fetch(`https://ownshub.onrender.com/api/profile?user=${encodeURIComponent(username)}`)
+    fetch(`https://sigh2.onrender.com/api/profile?user=${encodeURIComponent(username)}`)
         .then(res => res.json())
         .then(data => {
             // If no profile, show default
@@ -45,7 +45,7 @@ if (!username) {
                 try {
                     // Synchronously fetch own premiumTier from backend
                     const xhr = new XMLHttpRequest();
-                    xhr.open('GET', 'https://ownshub.onrender.com/api/profile', false);
+                    xhr.open('GET', 'https://sigh2.onrender.com/api/profile', false);
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     xhr.send();
                     if (xhr.status === 200) {
@@ -108,7 +108,7 @@ if (!username) {
                   followBtnDiv.innerHTML = `<button id="unfollowBtn" class="btn" style="background:linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);color:#181818;padding:10px 24px;border-radius:6px;font-weight:700;">Unfollow</button>`;
                   followBtnDiv.appendChild(chatBtn);
                   document.getElementById('unfollowBtn').onclick = function() {
-                    fetch('https://ownshub.onrender.com/api/unfollow', {
+                    fetch('https://sigh2.onrender.com/api/unfollow', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ if (!username) {
                   followBtnDiv.innerHTML = `<button id="followBtn" class="btn" style="background:linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);color:#181818;padding:10px 24px;border-radius:6px;font-weight:700;">Follow</button>`;
                   followBtnDiv.appendChild(chatBtn);
                   document.getElementById('followBtn').onclick = function() {
-                    fetch('https://ownshub.onrender.com/api/follow', {
+                    fetch('https://sigh2.onrender.com/api/follow', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

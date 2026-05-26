@@ -44,10 +44,14 @@ function initDb() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         sender TEXT NOT NULL,
         receiver TEXT NOT NULL,
-        content TEXT NOT NULL,
+        content TEXT,
+        image TEXT,
+        gif TEXT,
         timestamp TEXT NOT NULL
       )`
     );
+    db.run('ALTER TABLE messages ADD COLUMN image TEXT', () => {});
+    db.run('ALTER TABLE messages ADD COLUMN gif TEXT', () => {});
   });
 }
 
@@ -138,39 +142,33 @@ app.get('/api/messages', (req, res) => {
       return res.status(500).json({ error: 'DB error', details: err.message });
     }
 
-    res.json(rows || []);
+    res.json((rows || []).map(r => ({ ...r, image: r.image || null, gif: r.gif || null })));
   });
 });
 
 app.post('/api/messages', (req, res) => {
   const sender = getRequestUsername(req);
-  const { receiver, content } = req.body;
+  const { receiver, content, image, gif } = req.body;
 
-  if (!sender || !receiver || !content) {
+  if (!sender || !receiver) {
     return res.status(400).json({ error: 'Missing fields' });
   }
 
-  const trimmed = String(content).trim();
-  if (!trimmed) {
+  const trimmed = content ? String(content).trim() : '';
+  if (!trimmed && !image && !gif) {
     return res.status(400).json({ error: 'Empty message' });
   }
 
   const timestamp = new Date().toISOString();
   db.run(
-    'INSERT INTO messages (sender, receiver, content, timestamp) VALUES (?, ?, ?, ?)',
-    [sender, receiver, trimmed, timestamp],
+    'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
+    [sender, receiver, trimmed || '', image || null, gif || null, timestamp],
     function onInsert(err) {
       if (err) {
         return res.status(500).json({ error: 'DB error', details: err.message });
       }
 
-      res.json({
-        id: this.lastID,
-        sender,
-        receiver,
-        content: trimmed,
-        timestamp
-      });
+      res.json({ id: this.lastID, sender, receiver, content: trimmed, image: image || null, gif: gif || null, timestamp });
     }
   );
 });
@@ -259,15 +257,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('private_message', (msg) => {
-    if (!msg || !msg.receiver || !msg.content) {
+    if (!msg || !msg.receiver) {
       return;
     }
 
     const sender = String(msg.sender || socket.data.username || '').trim();
     const receiver = String(msg.receiver || '').trim();
-    const content = String(msg.content || '').trim();
+    const content = msg.content ? String(msg.content).trim() : '';
+    const image = msg.image || null;
+    const gif = msg.gif || null;
 
-    if (!sender || !receiver || !content) {
+    if (!sender || !receiver || (!content && !image && !gif)) {
       return;
     }
 
@@ -275,12 +275,14 @@ io.on('connection', (socket) => {
       sender,
       receiver,
       content,
+      image,
+      gif,
       timestamp: new Date().toISOString()
     };
 
     db.run(
-      'INSERT INTO messages (sender, receiver, content, timestamp) VALUES (?, ?, ?, ?)',
-      [saved.sender, saved.receiver, saved.content, saved.timestamp],
+      'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
+      [saved.sender, saved.receiver, saved.content, saved.image, saved.gif, saved.timestamp],
       () => {
         io.to(roomFor(saved.sender)).emit('private_message', saved);
         if (saved.receiver !== saved.sender) {

@@ -29,7 +29,7 @@ if (signupForm) {
         const password = document.getElementById('signupPassword').value;
         if (!username || !password) return alert('Please fill all fields.');
         try {
-            const res = await fetch('https://ownshub.onrender.com/api/signup', {
+            const res = await fetch('https://sigh2.onrender.com/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -55,7 +55,7 @@ if (loginForm) {
         const password = document.getElementById('loginPassword').value;
         const loginDevice = detectLoginDevice();
         try {
-            const res = await fetch('https://ownshub.onrender.com/api/login', {
+            const res = await fetch('https://sigh2.onrender.com/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password, loginDevice })
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Fetch comments from backend
 async function getComments(videoId) {
     try {
-        const res = await fetch(`https://ownshub.onrender.com/api/comments/${videoId}`);
+        const res = await fetch(`https://sigh2.onrender.com/api/comments/${videoId}`);
         if (!res.ok) return [];
         return await res.json();
     } catch {
@@ -113,7 +113,7 @@ async function saveComment(videoId, text) {
     let headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = 'Bearer ' + token;
     try {
-        const res = await fetch('https://ownshub.onrender.com/api/comments', {
+        const res = await fetch('https://sigh2.onrender.com/api/comments', {
             method: 'POST',
             headers,
             body: JSON.stringify({ videoId, text, username })

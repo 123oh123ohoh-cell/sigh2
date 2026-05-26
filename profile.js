@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isLoggedIn) {
         fetchOptions.headers = { 'Authorization': 'Bearer ' + token };
     }
-    fetch('https://ownshub.onrender.com/api/profile', fetchOptions)
+    fetch('https://sigh2.onrender.com/api/profile', fetchOptions)
         .then(res => res.json())
         .then(data => {
             if (data.avatar) {
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const customPronouns = document.getElementById('customPronouns').value.trim();
         const bio = document.getElementById('bio').value.trim();
         const avatar = document.getElementById('avatarPreview').src || '';
-        fetch('https://ownshub.onrender.com/api/profile', {
+        fetch('https://sigh2.onrender.com/api/profile', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

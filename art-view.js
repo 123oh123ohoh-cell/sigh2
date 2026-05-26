@@ -13,7 +13,7 @@ async function loadArt() {
         return;
     }
     try {
-        const res = await fetch('https://ownshub.onrender.com/api/arts/' + encodeURIComponent(artId));
+        const res = await fetch('https://sigh2.onrender.com/api/arts/' + encodeURIComponent(artId));
         if (!res.ok) throw new Error('Not found');
         const art = await res.json();
         document.getElementById('artViewImage').src = art.image;
@@ -24,7 +24,7 @@ async function loadArt() {
         // Fetch artist info for avatar and display name
         let artistHtml = '';
         try {
-            const profileRes = await fetch('https://ownshub.onrender.com/api/profile?user=' + encodeURIComponent(art.username));
+            const profileRes = await fetch('https://sigh2.onrender.com/api/profile?user=' + encodeURIComponent(art.username));
             let profile = await profileRes.json();
             if (!profile || Object.keys(profile).length === 0) {
                 profile = { displayName: art.username, avatar: '' };
@@ -37,7 +37,7 @@ async function loadArt() {
             let userPremiumTier = '';
             if (loggedInUser && art.username === loggedInUser && token) {
                 try {
-                    const res = await fetch('https://ownshub.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+                    const res = await fetch('https://sigh2.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
                     if (res.ok) {
                         const data = await res.json();
                         userPremiumTier = data.premiumTier;
@@ -71,7 +71,7 @@ async function loadArt() {
             document.getElementById('deleteArtBtn').onclick = async function() {
                 if (confirm('Are you sure you want to delete this art?')) {
                     const token = localStorage.getItem('token');
-                    const delRes = await fetch('https://ownshub.onrender.com/api/arts/' + encodeURIComponent(artId), {
+                    const delRes = await fetch('https://sigh2.onrender.com/api/arts/' + encodeURIComponent(artId), {
                         method: 'DELETE',
                         headers: { 'Authorization': 'Bearer ' + token }
                     });

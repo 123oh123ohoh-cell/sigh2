@@ -1072,7 +1072,7 @@
             return Promise.resolve({});
         }
         if (!profileFetchInFlight) {
-            profileFetchInFlight = fetch('https://ownshub.onrender.com/api/profile', {
+            profileFetchInFlight = fetch('https://sigh2.onrender.com/api/profile', {
                 headers: { 'Authorization': 'Bearer ' + token }
             }).then(function (res) {
                 if (!res.ok) {

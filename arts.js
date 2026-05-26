@@ -89,7 +89,7 @@ function renderArtsGallery(arts) {
                 const artId = btn.getAttribute('data-artid');
                 const token = localStorage.getItem('token');
                 try {
-                    const res = await fetch('https://ownshub.onrender.com/api/arts/' + encodeURIComponent(artId), {
+                    const res = await fetch('https://sigh2.onrender.com/api/arts/' + encodeURIComponent(artId), {
                         method: 'DELETE',
                         headers: { 'Authorization': 'Bearer ' + token }
                     });
@@ -116,7 +116,7 @@ function renderArtsGallery(arts) {
 
 async function fetchAndRenderArts() {
     try {
-        const res = await fetch('https://ownshub.onrender.com/api/arts');
+        const res = await fetch('https://sigh2.onrender.com/api/arts');
         const arts = await res.json();
         // Sync backend data to localStorage
         localStorage.setItem('arts', JSON.stringify(arts));
