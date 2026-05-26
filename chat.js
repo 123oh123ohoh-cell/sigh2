@@ -58,10 +58,7 @@ if (socket) {
   socket.on('typing', data => {
     if (data.from === currentChatUser) showTypingIndicator(data.from);
   });
-      // Deduplication for double texting bug
-      let lastSentMsg = null;
 
-  let lastSentMsg = null;
   socket.on('private_message', msg => {
     if (msg.sender === currentChatUser || (msg.sender === myUsername && msg.receiver === currentChatUser)) {
       appendMessage(msg, msg.sender === myUsername);
@@ -72,17 +69,6 @@ if (socket) {
       renderUserList();
     }
   });
-      // Deduplicate by timestamp, sender, content, image, gif
-      if (lastSentMsg &&
-        lastSentMsg.timestamp === msg.timestamp &&
-        lastSentMsg.sender === msg.sender &&
-        lastSentMsg.receiver === msg.receiver &&
-        lastSentMsg.content === msg.content &&
-        lastSentMsg.image === msg.image &&
-        lastSentMsg.gif === msg.gif) {
-        return;
-      }
-      lastSentMsg = msg;
 
   socket.emit('get_online_users');
 } else {
@@ -127,28 +113,6 @@ function renderUserList() {
   userList.innerHTML = '';
 
   let filtered = allUsers.filter(u => u.username !== myUsername);
-
-  // Build a map of most recent DM timestamp per user
-  let chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '{}');
-  const recentMap = {};
-  for (const [user, msgs] of Object.entries(chatHistory)) {
-    if (!Array.isArray(msgs) || !msgs.length) continue;
-    // Only consider users that are not self
-    if (user === myUsername) continue;
-    // Find most recent message timestamp
-    const lastMsg = msgs.reduce((a, b) => new Date(a.timestamp) > new Date(b.timestamp) ? a : b);
-    recentMap[user] = lastMsg.timestamp;
-  }
-
-  // Sort filtered users by most recent DM (desc), fallback to alphabetical
-  filtered.sort((a, b) => {
-    const ta = recentMap[a.username];
-    const tb = recentMap[b.username];
-    if (ta && tb) return new Date(tb) - new Date(ta);
-    if (ta) return -1;
-    if (tb) return 1;
-    return a.username.localeCompare(b.username);
-  });
 
   if (userSearch.startsWith('@')) {
     const term = userSearch.slice(1).toLowerCase();
@@ -258,9 +222,8 @@ function selectUser(username, liElem) {
   headerAvatar.style.display = 'block';
   updateChatHeaderStatus();
 
-  // Clear messages, fetch and merge local+backend history
+  // Clear messages, fetch history
   messagesArea.innerHTML = '';
-  const localMsgs = loadChatFromLocal(username);
   fetch(`${CHAT_SERVER_URL}/api/messages?user=${encodeURIComponent(username)}`, {
     headers: {
       'Authorization': token ? 'Bearer ' + token : '',
@@ -269,20 +232,13 @@ function selectUser(username, liElem) {
   })
     .then(r => r.json())
     .then(messages => {
-      // Merge and deduplicate by timestamp+sender+content
-      const allMsgs = [...localMsgs, ...messages].filter((msg, idx, arr) =>
-        arr.findIndex(m => m.timestamp === msg.timestamp && m.sender === msg.sender && m.content === msg.content) === idx
-      );
-      if (allMsgs.length === 0) {
+      if (messages.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'transient-notice';
         empty.textContent = 'No messages yet. Say hi! 👋';
         messagesArea.appendChild(empty);
       } else {
-        allMsgs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        allMsgs.forEach(msg => appendMessage(msg, msg.sender === myUsername));
-        // Save merged to localStorage
-        saveChatToLocal(username, allMsgs);
+        messages.forEach(msg => appendMessage(msg, msg.sender === myUsername));
         scrollToBottom();
       }
     })
@@ -313,7 +269,9 @@ function sendMessage() {
     timestamp: new Date().toISOString()
   };
 
-  const tryRest = () => {
+  if (socket && socket.connected) {
+    socket.emit('private_message', msg);
+  } else {
     fetch(`${CHAT_SERVER_URL}/api/messages`, {
       method: 'POST',
       headers: {

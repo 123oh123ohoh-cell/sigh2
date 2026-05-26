@@ -45,7 +45,6 @@ function initDb() {
         sender TEXT NOT NULL,
         receiver TEXT NOT NULL,
         content TEXT NOT NULL,
-        image TEXT,
         timestamp TEXT NOT NULL
       )`
     );
@@ -127,7 +126,7 @@ app.get('/api/messages', (req, res) => {
   }
 
   const sql = `
-    SELECT sender, receiver, content, image, timestamp
+    SELECT sender, receiver, content, timestamp
     FROM messages
     WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?)
     ORDER BY id ASC
@@ -145,21 +144,21 @@ app.get('/api/messages', (req, res) => {
 
 app.post('/api/messages', (req, res) => {
   const sender = getRequestUsername(req);
-  const { receiver, content, image } = req.body;
+  const { receiver, content } = req.body;
 
-  if (!sender || !receiver || (typeof content !== 'string' && typeof image !== 'string')) {
+  if (!sender || !receiver || !content) {
     return res.status(400).json({ error: 'Missing fields' });
   }
 
-  const trimmed = String(content || '').trim();
-  if (!trimmed && !image) {
+  const trimmed = String(content).trim();
+  if (!trimmed) {
     return res.status(400).json({ error: 'Empty message' });
   }
 
   const timestamp = new Date().toISOString();
   db.run(
-    'INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)',
-    [sender, receiver, trimmed, image || null, timestamp],
+    'INSERT INTO messages (sender, receiver, content, timestamp) VALUES (?, ?, ?, ?)',
+    [sender, receiver, trimmed, timestamp],
     function onInsert(err) {
       if (err) {
         return res.status(500).json({ error: 'DB error', details: err.message });
@@ -170,7 +169,6 @@ app.post('/api/messages', (req, res) => {
         sender,
         receiver,
         content: trimmed,
-        image: image || null,
         timestamp
       });
     }
@@ -260,44 +258,37 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('private_message', (msg, ack) => {
-      if (!msg || !msg.receiver) {
-        if (ack) ack('error');
-        return;
-      }
+  socket.on('private_message', (msg) => {
+    if (!msg || !msg.receiver || !msg.content) {
+      return;
+    }
 
-      const sender = String(msg.sender || socket.data.username || '').trim();
-      const receiver = String(msg.receiver || '').trim();
-      const content = String(msg.content || '').trim();
-      const image = typeof msg.image === 'string' ? msg.image : null;
-      const gif = typeof msg.gif === 'string' ? msg.gif : null;
+    const sender = String(msg.sender || socket.data.username || '').trim();
+    const receiver = String(msg.receiver || '').trim();
+    const content = String(msg.content || '').trim();
 
-      if (!sender || !receiver || (!content && !image && !gif)) {
-        if (ack) ack('error');
-        return;
-      }
+    if (!sender || !receiver || !content) {
+      return;
+    }
 
-      const saved = {
-        sender,
-        receiver,
-        content,
-        image,
-        gif,
-        timestamp: new Date().toISOString()
-      };
+    const saved = {
+      sender,
+      receiver,
+      content,
+      timestamp: new Date().toISOString()
+    };
 
-      db.run(
-        'INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)',
-        [saved.sender, saved.receiver, saved.content, saved.image || saved.gif || null, saved.timestamp],
-        () => {
-          io.to(roomFor(saved.sender)).emit('private_message', saved);
-          if (saved.receiver !== saved.sender) {
-            io.to(roomFor(saved.receiver)).emit('private_message', saved);
-          }
-          if (ack) ack('ok');
+    db.run(
+      'INSERT INTO messages (sender, receiver, content, timestamp) VALUES (?, ?, ?, ?)',
+      [saved.sender, saved.receiver, saved.content, saved.timestamp],
+      () => {
+        io.to(roomFor(saved.sender)).emit('private_message', saved);
+        if (saved.receiver !== saved.sender) {
+          io.to(roomFor(saved.receiver)).emit('private_message', saved);
         }
-      );
-    });
+      }
+    );
+  });
 
   socket.on('disconnect', () => {
     const username = socket.data.username;
