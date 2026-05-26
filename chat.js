@@ -1,3 +1,33 @@
+  // Helper to get last message for a user
+  async function getLastMessage(username) {
+    // 1. Try backend
+    try {
+      const res = await fetch(`${CHAT_SERVER_URL}/api/messages/last?user=${encodeURIComponent(username)}`, {
+        headers: { 'Authorization': token ? 'Bearer ' + token : '', 'X-Chat-User': myUsername }
+      });
+      if (res.ok) {
+        const msg = await res.json();
+        if (msg && (msg.content || msg.image || msg.gif)) return msg;
+      }
+    } catch (e) {}
+    // 2. Fallback: localStorage
+    try {
+      const key1 = `chat_${myUsername}_${username}`;
+      const key2 = `chat_${username}_${myUsername}`;
+      let arr1 = JSON.parse(localStorage.getItem(key1) || '[]');
+      let arr2 = JSON.parse(localStorage.getItem(key2) || '[]');
+      let all = arr1.concat(arr2);
+      all.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      if (all.length > 0) return all[0];
+    } catch (e) {}
+    return null;
+  }
+
+  // Fetch last message for each recent DM
+  window.lastMsgMap = {};
+  await Promise.all(recents.map(async username => {
+    window.lastMsgMap[username] = await getLastMessage(username);
+  }));
 // --- Recent DMs tracking ---
 async function getRecentDMs() {
   // Try backend, localhost, then localStorage, then merge all
@@ -329,6 +359,32 @@ function makeUserLi(u, isQuickStart = false) {
   usernameSpan.className = 'user-username';
   usernameSpan.textContent = '@' + u.username;
   info.appendChild(usernameSpan);
+  // Last message preview (if available)
+  if (!isQuickStart && window.lastMsgMap && window.lastMsgMap[u.username]) {
+    const msg = window.lastMsgMap[u.username];
+    const preview = document.createElement('div');
+    preview.className = 'user-lastmsg';
+    if (msg) {
+      if (msg.image) preview.textContent = '[Image]';
+      else if (msg.gif) preview.textContent = '[GIF]';
+      else preview.textContent = msg.content || '';
+      if (msg.timestamp) {
+        const ts = new Date(msg.timestamp);
+        preview.title = ts.toLocaleString();
+        preview.style.opacity = '0.7';
+        preview.style.fontSize = '0.9em';
+        preview.style.marginTop = '2px';
+        // Optionally show time inline
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'user-lastmsg-time';
+        timeSpan.textContent = ' · ' + ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        timeSpan.style.opacity = '0.6';
+        timeSpan.style.fontSize = '0.85em';
+        preview.appendChild(timeSpan);
+      }
+    }
+    info.appendChild(preview);
+  }
   li.appendChild(info);
 
   // Unread badge
