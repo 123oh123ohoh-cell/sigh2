@@ -1,3 +1,23 @@
+// --- Listen for avatar/profile changes and update chat UI ---
+window.addEventListener('storage', function (e) {
+  if (e.key === 'profileAvatar' && e.newValue) {
+    updateMyAvatar(e.newValue);
+  }
+});
+
+function updateMyAvatar(newAvatar) {
+  // Update in allUsers
+  const idx = allUsers.findIndex(u => u.username === myUsername);
+  if (idx !== -1) {
+    allUsers[idx].avatar = newAvatar;
+    renderUserList();
+    // If current chat is self, update header
+    if (currentChatUser === myUsername) {
+      const headerAvatar = document.getElementById('chatHeaderAvatar');
+      if (headerAvatar) headerAvatar.src = newAvatar || DEFAULT_AVATAR;
+    }
+  }
+}
 // --- Local chat history helpers ---
 function saveChatToLocal(username, messages) {
   if (!username) return;
@@ -306,9 +326,7 @@ function sendMessage() {
     timestamp: new Date().toISOString()
   };
 
-  if (socket && socket.connected) {
-    socket.emit('private_message', msg);
-  } else {
+  const tryRest = () => {
     fetch(`${CHAT_SERVER_URL}/api/messages`, {
       method: 'POST',
       headers: {
@@ -317,11 +335,25 @@ function sendMessage() {
         'X-Chat-User': myUsername
       },
       body: JSON.stringify({ receiver: currentChatUser, content, image: pendingImageDataUrl })
-    }).catch(() => showNotice('Message failed. Check server.', 'var(--red)'));
+    })
+    .then(r => { if (!r.ok) throw new Error('REST failed'); })
+    .catch(() => showNotice('Message failed. Check server.', 'var(--red)'));
+  };
+
+  if (socket && socket.connected) {
+    // Use Socket.io ack for delivery confirmation
+    socket.emit('private_message', msg, (ack) => {
+      if (ack !== 'ok') {
+        // Socket delivery failed, try REST
+        tryRest();
+      }
+    });
+  } else {
+    tryRest();
   }
 
-    lastSentMsg = msg; // Set lastSentMsg to the current message
-    appendMessage(msg, true);
+  lastSentMsg = msg; // Set lastSentMsg to the current message
+  appendMessage(msg, true);
   if (input) input.value = '';
   clearImagePreview();
   scrollToBottom();
@@ -592,6 +624,12 @@ fetch(`${CHAT_SERVER_URL}/api/users`)
   .then(r => r.json())
   .then(users => {
     allUsers = users;
+    // If we have a locally updated avatar, use it for self
+    const localAvatar = localStorage.getItem('profileAvatar');
+    if (localAvatar) {
+      const idx = allUsers.findIndex(u => u.username === myUsername);
+      if (idx !== -1) allUsers[idx].avatar = localAvatar;
+    }
     renderUserList();
 
     // Auto-select from ?user= param

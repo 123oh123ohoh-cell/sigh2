@@ -5,8 +5,7 @@
   "main": "backend/index.js",
   "scripts": {
     "start": "node backend/index.js",
-    "start:chat": "node backend/chat-server.js",
-    "postinstall": "npm rebuild"
+    "start:chat": "node backend/chat-server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
