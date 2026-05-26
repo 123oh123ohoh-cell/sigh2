@@ -4,7 +4,8 @@
   "description": "OwnsHub social site backend and chat system",
   "main": "backend/index.js",
   "scripts": {
-    "start": "node backend/index.js"
+    "start": "node backend/index.js",
+    "start:chat": "node backend/chat-server.js"
   },
   "dependencies": {
     "express": "^4.18.2",

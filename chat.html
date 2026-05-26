@@ -4,160 +4,116 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat - OwnsHub</title>
-  <link rel="stylesheet" href="styles.css">
-<script src="theme-mode.js"></script>
+  <link rel="stylesheet" href="chat.css">
+  <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 </head>
 <body>
-  <!-- Top Navigation Bar -->
-  <header class="header" style="margin-bottom:0;">
-    <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="arts.html" class="nav-link">Arts</a>
+
+  <!-- ── HEADER ─────────────────────────────────────── -->
+  <header class="chat-app-header">
+    <a href="index.html" class="logo">
+      <img src="logos_and_profileicons/logo6.png" alt="Logo">
+      OwnsHub
+    </a>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="arts.html">Arts</a>
+      <a href="chat.html" class="active" aria-current="page">Chat</a>
     </nav>
-    <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
-    <div class="profile-dropdown">
-      <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
-        <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
-        <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
-      </button>
-      <div class="dropdown-content" id="profileDropdownMenu">
-        <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
-        <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
-        <a href="login.html" id="dropdownLogin">Log In</a>
-        <a href="signup.html" id="dropdownSignup">Create Account</a>
-      </div>
+    <div id="connectionStatus" class="status-indicator">
+      <span id="statusDot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--yellow);"></span>
+      <span id="statusText">Connecting…</span>
     </div>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      async function updateDropdownMenu() {
-        const loggedInUser = localStorage.getItem('loggedInUser');
-        const token = localStorage.getItem('token');
-        const profileLink = document.getElementById('profileLink');
-        const signoutLink = document.getElementById('signoutLink');
-        const dropdownLogin = document.getElementById('dropdownLogin');
-        const dropdownSignup = document.getElementById('dropdownSignup');
-        const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
-        const profileAvatarIcon = document.getElementById('profileAvatarIcon');
-        const profileAvatarFallback = document.getElementById('profileAvatarFallback');
-        if (loggedInUser && token) {
-          if (profileLink) profileLink.style.display = '';
-          if (signoutLink) signoutLink.style.display = '';
-          if (dropdownLogin) dropdownLogin.style.display = 'none';
-          if (dropdownSignup) dropdownSignup.style.display = 'none';
-          // Fetch premiumTier and avatar from backend
-          let premiumTier = '';
-          let avatar = '';
-          try {
-            const res = await fetch('https://ownshub.onrender.com/api/profile', {
-              headers: { 'Authorization': 'Bearer ' + token }
-            });
-            if (res.ok) {
-              const data = await res.json();
-              premiumTier = data.premiumTier;
-              avatar = data.avatar;
-            }
-          } catch {}
-          if (premiumBadgeHeader) {
-            if (premiumTier) {
-              let color = '#ffd700';
-              if (premiumTier === 'Silver') color = '#c0c0c0';
-              if (premiumTier === 'Bronze') color = '#cd7f32';
-              premiumBadgeHeader.innerHTML = `<span style=\"padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;\">${premiumTier} Premium</span>`;
-            } else {
-              premiumBadgeHeader.innerHTML = '';
-            }
-          }
-          // Set avatar icon
-          if (profileAvatarIcon && avatar) {
-            profileAvatarIcon.src = avatar;
-            profileAvatarIcon.style.display = '';
-            if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
-          } else {
-            if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
-            if (profileAvatarFallback) profileAvatarFallback.style.display = '';
-          }
-        } else {
-          if (profileLink) profileLink.style.display = 'none';
-          if (signoutLink) signoutLink.style.display = 'none';
-          if (dropdownLogin) dropdownLogin.style.display = '';
-          if (dropdownSignup) dropdownSignup.style.display = '';
-          if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
-          if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
-          if (profileAvatarFallback) profileAvatarFallback.style.display = '';
-        }
-      }
-      updateDropdownMenu();
-      window.addEventListener('storage', function(e) {
-        if (e.key === 'loggedInUser') {
-          updateDropdownMenu();
-        }
-      });
-    });
-    </script>
   </header>
-  <div class="chat-container" style="max-width:600px;margin:40px auto 0 auto;flex-direction:column;">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px 0 24px;">
-      <h2 style="color:#ffb347;">Public Board</h2>
-      <div style="position:relative;">
-        <span id="notifBell" style="font-size:2em;cursor:pointer;">🔔</span>
-        <span id="notifCount" style="position:absolute;top:-8px;right:-8px;background:#df1717;color:#fff;font-size:0.95em;font-weight:bold;border-radius:50%;padding:2px 8px;display:none;">0</span>
+
+  <!-- ── MAIN ───────────────────────────────────────── -->
+  <div class="chat-app-main">
+
+    <!-- SIDEBAR -->
+    <aside class="chat-sidebar">
+      <div class="sidebar-top">
+        <input id="userSearchInput" type="text" placeholder="🔍  Search @username…" autocomplete="off">
+        <div class="sidebar-status-row">
+          <div class="sidebar-my-status">
+            <span id="myStatusDot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--green);"></span>
+            <span id="myStatusLabel">Online</span>
+          </div>
+          <select id="statusSelect" title="Set your status" style="flex:1;">
+            <option value="online">🟢 Online</option>
+            <option value="away">🟡 Away</option>
+            <option value="dnd">🔴 Do Not Disturb</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div id="messagesArea" style="background:#181818;margin:18px 0 0 0;padding:18px 24px 24px 24px;border-radius:12px;min-height:220px;max-height:400px;overflow-y:auto;"></div>
-    <form id="postForm" style="display:flex;gap:12px;margin:18px 24px 0 24px;">
-      <input type="text" id="postInput" placeholder="Write a post..." maxlength="200" style="flex:1;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#232323;color:#fff;">
-      <button type="submit" style="background:var(--gradient);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-weight:600;cursor:pointer;">Post</button>
-    </form>
+      <div class="sidebar-section-label">Direct Messages</div>
+      <ul id="userList" class="user-list"></ul>
+    </aside>
+
+    <!-- CHAT PANEL -->
+    <section class="chat-main">
+
+      <!-- empty state -->
+      <div id="emptyState">
+        <div class="empty-icon">💬</div>
+        <div class="empty-title">No chat open</div>
+        <div class="empty-sub">Select someone from the sidebar to start messaging</div>
+      </div>
+
+      <!-- chat header -->
+      <div id="chatHeader" class="chat-header" style="display:none;">
+        <img id="chatHeaderAvatar" class="chat-header-avatar" src="" alt="">
+        <div class="chat-header-info">
+          <div id="chatHeaderName" class="chat-header-name">—</div>
+          <div id="chatHeaderStatus" class="chat-header-status">—</div>
+        </div>
+        <div class="chat-header-actions">
+          <button class="icon-btn" title="Profile" onclick="viewProfile()">👤</button>
+        </div>
+      </div>
+
+      <!-- messages -->
+      <div id="messagesArea" class="messages-area" style="display:none;"></div>
+
+      <!-- typing indicator -->
+      <div id="typingIndicator">
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span id="typingText">someone is typing…</span>
+      </div>
+
+      <!-- GIF picker -->
+      <div id="gifPicker">
+        <input id="gifSearch" type="text" placeholder="Search GIFs (Tenor)…">
+        <div id="gifResults"></div>
+      </div>
+
+      <!-- Emoji picker -->
+      <div id="emojiPicker"></div>
+
+      <!-- input area -->
+      <div id="chatInputArea" class="chat-input-area" style="display:none;">
+        <div class="input-toolbar">
+          <button class="toolbar-btn" id="emojiToggleBtn" title="Emoji">😊</button>
+          <button class="toolbar-btn" id="gifToggleBtn" title="GIF">GIF</button>
+          <label class="toolbar-btn" title="Attach image" style="cursor:pointer;">
+            📎<input type="file" id="imageFileInput" accept="image/*" style="display:none;">
+          </label>
+        </div>
+        <div id="imagePreviewWrap">
+          <img id="imagePreview" src="" alt="preview">
+          <button class="remove-img" id="removeImageBtn">✕</button>
+        </div>
+        <div class="input-row">
+          <textarea id="chatInput" placeholder="Message…" rows="1" maxlength="2000"></textarea>
+          <button id="sendBtn" type="button">Send</button>
+        </div>
+      </div>
+
+    </section>
   </div>
-  <script>
-    // Simple public board logic with notification badge
-    let posts = JSON.parse(localStorage.getItem('publicPosts') || '[]');
-    let lastRead = parseInt(localStorage.getItem('publicPostsRead') || '0');
-    function renderPosts() {
-      const area = document.getElementById('messagesArea');
-      if (!posts.length) {
-        area.innerHTML = '<div style="color:#bbb;text-align:center;">No posts yet.</div>';
-        return;
-      }
-      area.innerHTML = posts.map(post =>
-        `<div style="background:#232323;padding:12px 16px;border-radius:8px;margin-bottom:10px;">
-          <b style="color:#ffb347;">${post.user}</b> <span style="color:#888;font-size:0.92em;">${post.time}</span><br>${post.text}
-        </div>`
-      ).join('');
-    }
-    function updateNotif() {
-      const notif = document.getElementById('notifCount');
-      const unread = posts.length - lastRead;
-      notif.textContent = unread;
-      notif.style.display = unread > 0 ? '' : 'none';
-    }
-    document.getElementById('postForm').onsubmit = function(e) {
-      e.preventDefault();
-      const input = document.getElementById('postInput');
-      const text = input.value.trim();
-      if (!text) return;
-      const user = localStorage.getItem('loggedInUser') || 'Anonymous';
-      const now = new Date();
-      const time = now.toLocaleString();
-      posts.push({ user, text, time });
-      localStorage.setItem('publicPosts', JSON.stringify(posts));
-      input.value = '';
-      renderPosts();
-      updateNotif();
-    };
-    document.getElementById('notifBell').onclick = function() {
-      lastRead = posts.length;
-      localStorage.setItem('publicPostsRead', lastRead);
-      updateNotif();
-    };
-    // Initial render
-    renderPosts();
-    updateNotif();
-    // Mark all as read on load
-    lastRead = posts.length;
-    localStorage.setItem('publicPostsRead', lastRead);
-    updateNotif();
-  </script>
+
+  <script src="chat.js"></script>
 </body>
 </html>
