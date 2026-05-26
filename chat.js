@@ -1,3 +1,37 @@
+// --- Recent DMs tracking ---
+function getRecentDMs() {
+  return JSON.parse(localStorage.getItem('recentDMs') || '[]');
+}
+function saveRecentDMs(list) {
+  localStorage.setItem('recentDMs', JSON.stringify(list));
+}
+function touchRecentDM(username) {
+  if (!username || username === myUsername) return;
+  let recents = getRecentDMs();
+  recents = recents.filter(u => u !== username);
+  recents.unshift(username);
+  saveRecentDMs(recents.slice(0, 30));
+}
+// --- Listen for avatar/profile changes and update chat UI ---
+window.addEventListener('storage', function (e) {
+  if (e.key === 'profileAvatar' && e.newValue) {
+    updateMyAvatar(e.newValue);
+  }
+});
+
+function updateMyAvatar(newAvatar) {
+  // Update in allUsers
+  const idx = allUsers.findIndex(u => u.username === myUsername);
+  if (idx !== -1) {
+    allUsers[idx].avatar = newAvatar;
+    renderUserList();
+    // If current chat is self, update header
+    if (currentChatUser === myUsername) {
+      const headerAvatar = document.getElementById('chatHeaderAvatar');
+      if (headerAvatar) headerAvatar.src = newAvatar || DEFAULT_AVATAR;
+    }
+  }
+}
 // OwnsHub Chat Client - Upgraded
 // Requires: loggedInUser + token in localStorage, Socket.io backend
 
@@ -112,36 +146,48 @@ function renderUserList() {
   if (!userList) return;
   userList.innerHTML = '';
 
+  let recents = getRecentDMs();
+  let usersByName = Object.fromEntries(allUsers.map(u => [u.username, u]));
   let filtered = allUsers.filter(u => u.username !== myUsername);
 
+  // If searching, show search results at top, else show recents at top
   if (userSearch.startsWith('@')) {
     const term = userSearch.slice(1).toLowerCase();
     filtered = filtered.filter(u =>
       u.username.toLowerCase().includes(term) ||
       (u.displayName && u.displayName.toLowerCase().includes(term))
     );
-  } else if (userSearch.length > 0) {
-    filtered = [];
-  }
-
-  if (filtered.length === 0 && userSearch.startsWith('@')) {
-    const typed = userSearch.slice(1).trim();
-    if (typed && typed !== myUsername) {
-      const li = makeUserLi({ username: typed, displayName: typed }, true);
-      userList.appendChild(li);
+    // If not found, allow quick start
+    if (filtered.length === 0) {
+      const typed = userSearch.slice(1).trim();
+      if (typed && typed !== myUsername) {
+        const li = makeUserLi({ username: typed, displayName: typed }, true);
+        userList.appendChild(li);
+      }
+      return;
     }
+    filtered.forEach(u => userList.appendChild(makeUserLi(u)));
     return;
   }
 
-  if (filtered.length === 0) {
+  // Stack recents at top
+  let stacked = [];
+  recents.forEach(username => {
+    if (usersByName[username]) stacked.push(usersByName[username]);
+  });
+  // Add the rest (not in recents)
+  filtered.forEach(u => {
+    if (!recents.includes(u.username)) stacked.push(u);
+  });
+
+  if (stacked.length === 0) {
     const li = document.createElement('li');
     li.style.cssText = 'opacity:0.5;cursor:default;font-size:0.9em;';
     li.textContent = 'No users found. Type @username to start a chat.';
     userList.appendChild(li);
     return;
   }
-
-  filtered.forEach(u => userList.appendChild(makeUserLi(u)));
+  stacked.forEach(u => userList.appendChild(makeUserLi(u)));
 }
 
 function makeUserLi(u, isQuickStart = false) {
@@ -193,6 +239,7 @@ function makeUserLi(u, isQuickStart = false) {
 
 // ─── SELECT USER ──────────────────────────────────────────────
 function selectUser(username, liElem) {
+    touchRecentDM(username);
   currentChatUser = username;
   currentChatUserObj = allUsers.find(u => u.username === username) || { username, displayName: username };
 
@@ -543,6 +590,12 @@ fetch(`${CHAT_SERVER_URL}/api/users`)
   .then(r => r.json())
   .then(users => {
     allUsers = users;
+    // If we have a locally updated avatar, use it for self
+    const localAvatar = localStorage.getItem('profileAvatar');
+    if (localAvatar) {
+      const idx = allUsers.findIndex(u => u.username === myUsername);
+      if (idx !== -1) allUsers[idx].avatar = localAvatar;
+    }
     renderUserList();
 
     // Auto-select from ?user= param
