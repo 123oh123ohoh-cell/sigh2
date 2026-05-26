@@ -1,16 +1,110 @@
 // --- Recent DMs tracking ---
-function getRecentDMs() {
-  return JSON.parse(localStorage.getItem('recentDMs') || '[]');
+async function getRecentDMs() {
+  // Try backend, localhost, then localStorage, then merge all
+  let local = JSON.parse(localStorage.getItem('recentDMs_' + myUsername) || '[]');
+  let backend = [];
+  let localhost = [];
+  try {
+    let res = await fetch(`${CHAT_SERVER_URL}/api/recent-dms?user=${encodeURIComponent(myUsername)}`, {
+      headers: { 'Authorization': token ? 'Bearer ' + token : '' }
+    });
+    if (res.ok) backend = await res.json();
+  } catch (e) {}
+  if (!CHAT_SERVER_URL.includes('localhost')) {
+    try {
+      let res = await fetch(`http://localhost:3000/api/recent-dms?user=${encodeURIComponent(myUsername)}`, {
+        headers: { 'Authorization': token ? 'Bearer ' + token : '' }
+      });
+      if (res.ok) localhost = await res.json();
+    } catch (e) {}
+  }
+  // Merge and dedup
+  let merged = [...new Set([...local, ...backend, ...localhost])];
+  localStorage.setItem('recentDMs_' + myUsername, JSON.stringify(merged.slice(0, 30)));
+  return merged.slice(0, 30);
 }
-function saveRecentDMs(list) {
-  localStorage.setItem('recentDMs', JSON.stringify(list));
+async function saveRecentDMs(list) {
+  localStorage.setItem('recentDMs_' + myUsername, JSON.stringify(list));
+  // Save to backend
+  try {
+    await fetch(`${CHAT_SERVER_URL}/api/recent-dms`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': token ? 'Bearer ' + token : '' },
+      body: JSON.stringify({ user: myUsername, recents: list })
+    });
+  } catch (e) {}
+  // Save to localhost if not already
+  if (!CHAT_SERVER_URL.includes('localhost')) {
+    try {
+      await fetch(`http://localhost:3000/api/recent-dms`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': token ? 'Bearer ' + token : '' },
+        body: JSON.stringify({ user: myUsername, recents: list })
+      });
+    } catch (e) {}
+  }
 }
-function touchRecentDM(username) {
+async function touchRecentDM(username) {
   if (!username || username === myUsername) return;
-  let recents = getRecentDMs();
+  let recents = await getRecentDMs();
   recents = recents.filter(u => u !== username);
   recents.unshift(username);
-  saveRecentDMs(recents.slice(0, 30));
+  recents = [...new Set(recents)];
+  await saveRecentDMs(recents.slice(0, 30));
+  if (typeof renderUserList === 'function') renderUserList();
+  fetchAndCacheAvatar(username);
+}
+
+// Fetch avatar from localStorage, backend, localhost, and update allUsers/localStorage
+async function fetchAndCacheAvatar(username) {
+  if (!username) return;
+  let avatar = null;
+  // 1. Check localStorage
+  avatar = localStorage.getItem('avatar_' + username);
+  if (avatar) {
+    updateUserAvatar(username, avatar);
+    return;
+  }
+  // 2. Try backend API
+  try {
+    let res = await fetch(`${CHAT_SERVER_URL}/api/profile/avatar/${encodeURIComponent(username)}`);
+    if (res.ok) {
+      let data = await res.json();
+      if (data && data.avatar) {
+        avatar = data.avatar;
+        localStorage.setItem('avatar_' + username, avatar);
+        updateUserAvatar(username, avatar);
+        return;
+      }
+    }
+  } catch (e) {}
+  // 3. Try localhost (if different from CHAT_SERVER_URL)
+  if (!CHAT_SERVER_URL.includes('localhost')) {
+    try {
+      let res = await fetch(`http://localhost:3000/api/profile/avatar/${encodeURIComponent(username)}`);
+      if (res.ok) {
+        let data = await res.json();
+        if (data && data.avatar) {
+          avatar = data.avatar;
+          localStorage.setItem('avatar_' + username, avatar);
+          updateUserAvatar(username, avatar);
+          return;
+        }
+      }
+    } catch (e) {}
+  }
+  // 4. Fallback: do nothing (will use default)
+}
+
+function updateUserAvatar(username, avatar) {
+  let idx = allUsers.findIndex(u => u.username === username);
+  if (idx !== -1) {
+    allUsers[idx].avatar = avatar;
+  } else {
+    allUsers.push({ username, avatar });
+  }
+  // Also update in DOM if needed
+  if (typeof renderUserList === 'function') renderUserList();
 }
 // --- Listen for avatar/profile changes and update chat UI ---
 window.addEventListener('storage', function (e) {
@@ -56,6 +150,9 @@ if (!myUsername || !token) {
 const socket = typeof window.io === 'function'
   ? io(CHAT_SERVER_URL, { transports: ['websocket'] })
   : null;
+
+// On page load, sync recents from all sources
+(async () => { await getRecentDMs(); if (typeof renderUserList === 'function') renderUserList(); })();
 
 // ─── STATE ───────────────────────────────────────────────────
 let currentChatUser = null;
@@ -157,15 +254,17 @@ function renderUserList() {
   let usersByName = Object.fromEntries(allUsers.map(u => [u.username, u]));
   let filtered = allUsers.filter(u => u.username !== myUsername);
 
-  // If searching, show search results at top, else show recents at top
-  if (userSearch.startsWith('@')) {
-    const term = userSearch.slice(1).toLowerCase();
+  // If searching (not empty), show search results at top, else show recents at top
+  if (userSearch && userSearch.trim().length > 0) {
+    let term = userSearch;
+    if (userSearch.startsWith('@')) term = userSearch.slice(1);
+    term = term.toLowerCase();
     filtered = filtered.filter(u =>
       u.username.toLowerCase().includes(term) ||
       (u.displayName && u.displayName.toLowerCase().includes(term))
     );
     // If not found, allow quick start
-    if (filtered.length === 0) {
+    if (filtered.length === 0 && userSearch.startsWith('@')) {
       const typed = userSearch.slice(1).trim();
       if (typed && typed !== myUsername) {
         const li = makeUserLi({ username: typed, displayName: typed }, true);
@@ -177,7 +276,7 @@ function renderUserList() {
     return;
   }
 
-  // Stack recents at top
+  // Stack strictly by recency (no pinning current chat)
   let stacked = [];
   recents.forEach(username => {
     if (usersByName[username]) stacked.push(usersByName[username]);
@@ -246,7 +345,8 @@ function makeUserLi(u, isQuickStart = false) {
 
 // ─── SELECT USER ──────────────────────────────────────────────
 function selectUser(username, liElem) {
-    touchRecentDM(username);
+  touchRecentDM(username);
+  fetchAndCacheAvatar(username);
   currentChatUser = username;
   currentChatUserObj = allUsers.find(u => u.username === username) || { username, displayName: username };
 
@@ -357,7 +457,8 @@ function appendMessage(msg, isMine) {
   const notice = area.querySelector('.transient-notice');
   if (notice) notice.remove();
 
-  const userObj = allUsers.find(u => u.username === msg.sender) || { username: msg.sender };
+  // Always use the latest avatar from allUsers
+  const userObj = allUsers.find(u => u.username === msg.sender) || { username: msg.sender, avatar: DEFAULT_AVATAR };
 
   const div = document.createElement('div');
   div.className = 'message ' + (isMine ? 'me' : 'them');
@@ -594,6 +695,11 @@ document.getElementById('statusSelect').addEventListener('change', function () {
 document.getElementById('userSearchInput').addEventListener('input', function () {
   userSearch = this.value;
   renderUserList();
+  // If search is cleared, reload full recent DMs
+  if (!userSearch.trim()) {
+    userSearch = '';
+    renderUserList();
+  }
 });
 
 // ─── LOAD USERS ───────────────────────────────────────────────
