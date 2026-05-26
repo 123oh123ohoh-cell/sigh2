@@ -374,27 +374,78 @@ function selectUser(username, liElem) {
   headerAvatar.style.display = 'block';
   updateChatHeaderStatus();
 
-  // Clear messages, fetch history
+  // Clear messages, fetch and merge history from all sources
   messagesArea.innerHTML = '';
-  fetch(`${CHAT_SERVER_URL}/api/messages?user=${encodeURIComponent(username)}`, {
-    headers: {
-      'Authorization': token ? 'Bearer ' + token : '',
-      'X-Chat-User': myUsername
+  (async () => {
+    let histories = [];
+    // 1. Backend
+    try {
+      let res = await fetch(`${CHAT_SERVER_URL}/api/messages?user=${encodeURIComponent(username)}`, {
+        headers: {
+          'Authorization': token ? 'Bearer ' + token : '',
+          'X-Chat-User': myUsername
+        }
+      });
+      if (res.ok) histories.push(await res.json());
+    } catch (e) {}
+    // 2. Localhost
+    if (!CHAT_SERVER_URL.includes('localhost')) {
+      try {
+        let res = await fetch(`http://localhost:3000/api/messages?user=${encodeURIComponent(username)}`, {
+          headers: {
+            'Authorization': token ? 'Bearer ' + token : '',
+            'X-Chat-User': myUsername
+          }
+        });
+        if (res.ok) histories.push(await res.json());
+      } catch (e) {}
     }
-  })
-    .then(r => r.json())
-    .then(messages => {
-      if (messages.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'transient-notice';
-        empty.textContent = 'No messages yet. Say hi! 👋';
-        messagesArea.appendChild(empty);
-      } else {
-        messages.forEach(msg => appendMessage(msg, msg.sender === myUsername));
-        scrollToBottom();
-      }
-    })
-    .catch(() => showNotice('Could not load message history.', 'var(--red)'));
+    // 3. LocalStorage
+    let localKey = `chatHistory_${myUsername}_${username}`;
+    let localHistory = JSON.parse(localStorage.getItem(localKey) || '[]');
+    if (localHistory.length) histories.push(localHistory);
+
+    // Merge and deduplicate by timestamp+sender+content
+    let allMsgs = histories.flat();
+    let seen = new Set();
+    let merged = allMsgs.filter(msg => {
+      let key = msg.timestamp + '|' + msg.sender + '|' + (msg.content || '') + '|' + (msg.image || '') + '|' + (msg.gif || '');
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    // Sort by timestamp ascending
+    merged.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    // Save merged history back to localStorage and backend
+    localStorage.setItem(localKey, JSON.stringify(merged));
+    try {
+      await fetch(`${CHAT_SERVER_URL}/api/messages/merge`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': token ? 'Bearer ' + token : '' },
+        body: JSON.stringify({ user: myUsername, other: username, messages: merged })
+      });
+    } catch (e) {}
+    if (!CHAT_SERVER_URL.includes('localhost')) {
+      try {
+        await fetch(`http://localhost:3000/api/messages/merge`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': token ? 'Bearer ' + token : '' },
+          body: JSON.stringify({ user: myUsername, other: username, messages: merged })
+        });
+      } catch (e) {}
+    }
+
+    if (merged.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'transient-notice';
+      empty.textContent = 'No messages yet. Say hi! 👋';
+      messagesArea.appendChild(empty);
+    } else {
+      merged.forEach(msg => appendMessage(msg, msg.sender === myUsername));
+      scrollToBottom();
+    }
+  })().catch(() => showNotice('Could not load message history.', 'var(--red)'));
 
   document.getElementById('chatInput').focus();
 }
