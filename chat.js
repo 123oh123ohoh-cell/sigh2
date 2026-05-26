@@ -693,11 +693,6 @@ document.getElementById('statusSelect').addEventListener('change', function () {
 document.getElementById('userSearchInput').addEventListener('input', function () {
   userSearch = this.value;
   renderUserList();
-  // If search is cleared, reload full recent DMs
-  if (!userSearch.trim()) {
-    userSearch = '';
-    renderUserList();
-  }
 });
 
 // ─── LOAD USERS ───────────────────────────────────────────────
