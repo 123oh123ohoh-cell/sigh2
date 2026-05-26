@@ -94,14 +94,21 @@ if (socket) {
   });
 
   socket.on('private_message', msg => {
+    // Always touch recents for sender/receiver and update list
+    const otherUser = msg.sender === myUsername ? msg.receiver : msg.sender;
+    // Dynamically add new user to allUsers if not present
+    if (!allUsers.some(u => u.username === otherUser)) {
+      allUsers.push({ username: otherUser, displayName: otherUser });
+    }
+    touchRecentDM(otherUser);
     if (msg.sender === currentChatUser || (msg.sender === myUsername && msg.receiver === currentChatUser)) {
       appendMessage(msg, msg.sender === myUsername);
       scrollToBottom();
     } else if (msg.receiver === myUsername) {
       unreadCounts[msg.sender] = (unreadCounts[msg.sender] || 0) + 1;
       saveUnread();
-      renderUserList();
     }
+    renderUserList();
   });
 
   socket.emit('get_online_users');
@@ -318,6 +325,7 @@ function sendMessage() {
 
   if (socket && socket.connected) {
     socket.emit('private_message', msg);
+    // Do NOT append locally; wait for server echo to avoid double texting
   } else {
     fetch(`${CHAT_SERVER_URL}/api/messages`, {
       method: 'POST',
@@ -327,10 +335,13 @@ function sendMessage() {
         'X-Chat-User': myUsername
       },
       body: JSON.stringify({ receiver: currentChatUser, content, image: pendingImageDataUrl })
-    }).catch(() => showNotice('Message failed. Check server.', 'var(--red)'));
+    })
+      .then(() => appendMessage(msg, true))
+      .catch(() => showNotice('Message failed. Check server.', 'var(--red)'));
   }
-
-  appendMessage(msg, true);
+  // Always touch recents and update list on send
+  touchRecentDM(currentChatUser);
+  renderUserList();
   if (input) input.value = '';
   clearImagePreview();
   scrollToBottom();
