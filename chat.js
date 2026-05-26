@@ -1,35 +1,3 @@
-// --- Listen for avatar/profile changes and update chat UI ---
-window.addEventListener('storage', function (e) {
-  if (e.key === 'profileAvatar' && e.newValue) {
-    updateMyAvatar(e.newValue);
-  }
-});
-
-function updateMyAvatar(newAvatar) {
-  // Update in allUsers
-  const idx = allUsers.findIndex(u => u.username === myUsername);
-  if (idx !== -1) {
-    allUsers[idx].avatar = newAvatar;
-    renderUserList();
-    // If current chat is self, update header
-    if (currentChatUser === myUsername) {
-      const headerAvatar = document.getElementById('chatHeaderAvatar');
-      if (headerAvatar) headerAvatar.src = newAvatar || DEFAULT_AVATAR;
-    }
-  }
-}
-// --- Local chat history helpers ---
-function saveChatToLocal(username, messages) {
-  if (!username) return;
-  let all = JSON.parse(localStorage.getItem('chatHistory') || '{}');
-  all[username] = messages;
-  localStorage.setItem('chatHistory', JSON.stringify(all));
-}
-function loadChatFromLocal(username) {
-  if (!username) return [];
-  let all = JSON.parse(localStorage.getItem('chatHistory') || '{}');
-  return all[username] || [];
-}
 // OwnsHub Chat Client - Upgraded
 // Requires: loggedInUser + token in localStorage, Socket.io backend
 
@@ -89,27 +57,34 @@ if (socket) {
 
   socket.on('typing', data => {
     if (data.from === currentChatUser) showTypingIndicator(data.from);
-    // --- Deduplication for double texting bug ---
-    let lastSentMsg = null;
   });
+      // Deduplication for double texting bug
+      let lastSentMsg = null;
 
+  let lastSentMsg = null;
   socket.on('private_message', msg => {
     if (msg.sender === currentChatUser || (msg.sender === myUsername && msg.receiver === currentChatUser)) {
       appendMessage(msg, msg.sender === myUsername);
       scrollToBottom();
-      // Deduplicate: don't append if just sent locally
-      if (lastSentMsg && msg.sender === lastSentMsg.sender && msg.content === lastSentMsg.content && msg.timestamp === lastSentMsg.timestamp) {
-        lastSentMsg = null;
+    } else if (msg.receiver === myUsername) {
+      unreadCounts[msg.sender] = (unreadCounts[msg.sender] || 0) + 1;
+      saveUnread();
+      renderUserList();
+    }
+  });
+      // Deduplicate by timestamp, sender, content, image, gif
+      if (lastSentMsg &&
+        lastSentMsg.timestamp === msg.timestamp &&
+        lastSentMsg.sender === msg.sender &&
+        lastSentMsg.receiver === msg.receiver &&
+        lastSentMsg.content === msg.content &&
+        lastSentMsg.image === msg.image &&
+        lastSentMsg.gif === msg.gif) {
         return;
       }
-      if (msg.sender === currentChatUser || (msg.sender === myUsername && msg.receiver === currentChatUser)) {
-        appendMessage(msg, msg.sender === myUsername);
-        scrollToBottom();
-      } else if (msg.receiver === myUsername) {
-        unreadCounts[msg.sender] = (unreadCounts[msg.sender] || 0) + 1;
-        saveUnread();
-        renderUserList();
-      }
+      lastSentMsg = msg;
+
+  socket.emit('get_online_users');
 } else {
   updateConnectionStatus('error');
 }
@@ -152,6 +127,28 @@ function renderUserList() {
   userList.innerHTML = '';
 
   let filtered = allUsers.filter(u => u.username !== myUsername);
+
+  // Build a map of most recent DM timestamp per user
+  let chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '{}');
+  const recentMap = {};
+  for (const [user, msgs] of Object.entries(chatHistory)) {
+    if (!Array.isArray(msgs) || !msgs.length) continue;
+    // Only consider users that are not self
+    if (user === myUsername) continue;
+    // Find most recent message timestamp
+    const lastMsg = msgs.reduce((a, b) => new Date(a.timestamp) > new Date(b.timestamp) ? a : b);
+    recentMap[user] = lastMsg.timestamp;
+  }
+
+  // Sort filtered users by most recent DM (desc), fallback to alphabetical
+  filtered.sort((a, b) => {
+    const ta = recentMap[a.username];
+    const tb = recentMap[b.username];
+    if (ta && tb) return new Date(tb) - new Date(ta);
+    if (ta) return -1;
+    if (tb) return 1;
+    return a.username.localeCompare(b.username);
+  });
 
   if (userSearch.startsWith('@')) {
     const term = userSearch.slice(1).toLowerCase();
@@ -289,18 +286,8 @@ function selectUser(username, liElem) {
         scrollToBottom();
       }
     })
-    .catch(() => {
-      // If backend fails, show only local
-      if (localMsgs.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'transient-notice';
-        empty.textContent = 'No messages yet. Say hi! 👋';
-        messagesArea.appendChild(empty);
-      } else {
-        localMsgs.forEach(msg => appendMessage(msg, msg.sender === myUsername));
-        scrollToBottom();
-      }
-    });
+    .catch(() => showNotice('Could not load message history.', 'var(--red)'));
+
   document.getElementById('chatInput').focus();
 }
 
@@ -335,24 +322,9 @@ function sendMessage() {
         'X-Chat-User': myUsername
       },
       body: JSON.stringify({ receiver: currentChatUser, content, image: pendingImageDataUrl })
-    })
-    .then(r => { if (!r.ok) throw new Error('REST failed'); })
-    .catch(() => showNotice('Message failed. Check server.', 'var(--red)'));
-  };
-
-  if (socket && socket.connected) {
-    // Use Socket.io ack for delivery confirmation
-    socket.emit('private_message', msg, (ack) => {
-      if (ack !== 'ok') {
-        // Socket delivery failed, try REST
-        tryRest();
-      }
-    });
-  } else {
-    tryRest();
+    }).catch(() => showNotice('Message failed. Check server.', 'var(--red)'));
   }
 
-  lastSentMsg = msg; // Set lastSentMsg to the current message
   appendMessage(msg, true);
   if (input) input.value = '';
   clearImagePreview();
@@ -362,17 +334,6 @@ function sendMessage() {
 
 // ─── APPEND MESSAGE ───────────────────────────────────────────
 function appendMessage(msg, isMine) {
-    // Always save for both sender and receiver, so both sides see full history
-    if (msg.sender && msg.receiver) {
-      let historyA = loadChatFromLocal(msg.sender);
-      let historyB = loadChatFromLocal(msg.receiver);
-      // Deduplicate by timestamp+content+sender
-      const dedup = arr => arr.filter((m, idx, a) => a.findIndex(n => n.timestamp === m.timestamp && n.content === m.content && n.sender === m.sender) === idx);
-      historyA.push(msg);
-      historyB.push(msg);
-      saveChatToLocal(msg.sender, dedup(historyA).slice(-100));
-      saveChatToLocal(msg.receiver, dedup(historyB).slice(-100));
-    }
   const area = document.getElementById('messagesArea');
   if (!area) return;
 
@@ -624,12 +585,6 @@ fetch(`${CHAT_SERVER_URL}/api/users`)
   .then(r => r.json())
   .then(users => {
     allUsers = users;
-    // If we have a locally updated avatar, use it for self
-    const localAvatar = localStorage.getItem('profileAvatar');
-    if (localAvatar) {
-      const idx = allUsers.findIndex(u => u.username === myUsername);
-      if (idx !== -1) allUsers[idx].avatar = localAvatar;
-    }
     renderUserList();
 
     // Auto-select from ?user= param

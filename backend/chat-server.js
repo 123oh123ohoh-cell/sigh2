@@ -261,43 +261,43 @@ io.on('connection', (socket) => {
   });
 
   socket.on('private_message', (msg, ack) => {
-    if (!msg || !msg.receiver) {
-      if (ack) ack('error');
-      return;
-    }
-
-    const sender = String(msg.sender || socket.data.username || '').trim();
-    const receiver = String(msg.receiver || '').trim();
-    const content = String(msg.content || '').trim();
-    const image = typeof msg.image === 'string' ? msg.image : null;
-    const gif = typeof msg.gif === 'string' ? msg.gif : null;
-
-    if (!sender || !receiver || (!content && !image && !gif)) {
-      if (ack) ack('error');
-      return;
-    }
-
-    const saved = {
-      sender,
-      receiver,
-      content,
-      image,
-      gif,
-      timestamp: new Date().toISOString()
-    };
-
-    db.run(
-      'INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)',
-      [saved.sender, saved.receiver, saved.content, saved.image || saved.gif || null, saved.timestamp],
-      () => {
-        io.to(roomFor(saved.sender)).emit('private_message', saved);
-        if (saved.receiver !== saved.sender) {
-          io.to(roomFor(saved.receiver)).emit('private_message', saved);
-        }
-        if (ack) ack('ok');
+      if (!msg || !msg.receiver) {
+        if (ack) ack('error');
+        return;
       }
-    );
-  });
+
+      const sender = String(msg.sender || socket.data.username || '').trim();
+      const receiver = String(msg.receiver || '').trim();
+      const content = String(msg.content || '').trim();
+      const image = typeof msg.image === 'string' ? msg.image : null;
+      const gif = typeof msg.gif === 'string' ? msg.gif : null;
+
+      if (!sender || !receiver || (!content && !image && !gif)) {
+        if (ack) ack('error');
+        return;
+      }
+
+      const saved = {
+        sender,
+        receiver,
+        content,
+        image,
+        gif,
+        timestamp: new Date().toISOString()
+      };
+
+      db.run(
+        'INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)',
+        [saved.sender, saved.receiver, saved.content, saved.image || saved.gif || null, saved.timestamp],
+        () => {
+          io.to(roomFor(saved.sender)).emit('private_message', saved);
+          if (saved.receiver !== saved.sender) {
+            io.to(roomFor(saved.receiver)).emit('private_message', saved);
+          }
+          if (ack) ack('ok');
+        }
+      );
+    });
 
   socket.on('disconnect', () => {
     const username = socket.data.username;
