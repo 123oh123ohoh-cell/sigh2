@@ -1,3 +1,15 @@
+// --- Local chat history helpers ---
+function saveChatToLocal(username, messages) {
+  if (!username) return;
+  let all = JSON.parse(localStorage.getItem('chatHistory') || '{}');
+  all[username] = messages;
+  localStorage.setItem('chatHistory', JSON.stringify(all));
+}
+function loadChatFromLocal(username) {
+  if (!username) return [];
+  let all = JSON.parse(localStorage.getItem('chatHistory') || '{}');
+  return all[username] || [];
+}
 // OwnsHub Chat Client - Upgraded
 // Requires: loggedInUser + token in localStorage, Socket.io backend
 
@@ -57,20 +69,27 @@ if (socket) {
 
   socket.on('typing', data => {
     if (data.from === currentChatUser) showTypingIndicator(data.from);
+    // --- Deduplication for double texting bug ---
+    let lastSentMsg = null;
   });
 
   socket.on('private_message', msg => {
     if (msg.sender === currentChatUser || (msg.sender === myUsername && msg.receiver === currentChatUser)) {
       appendMessage(msg, msg.sender === myUsername);
       scrollToBottom();
-    } else if (msg.receiver === myUsername) {
-      unreadCounts[msg.sender] = (unreadCounts[msg.sender] || 0) + 1;
-      saveUnread();
-      renderUserList();
-    }
-  });
-
-  socket.emit('get_online_users');
+      // Deduplicate: don't append if just sent locally
+      if (lastSentMsg && msg.sender === lastSentMsg.sender && msg.content === lastSentMsg.content && msg.timestamp === lastSentMsg.timestamp) {
+        lastSentMsg = null;
+        return;
+      }
+      if (msg.sender === currentChatUser || (msg.sender === myUsername && msg.receiver === currentChatUser)) {
+        appendMessage(msg, msg.sender === myUsername);
+        scrollToBottom();
+      } else if (msg.receiver === myUsername) {
+        unreadCounts[msg.sender] = (unreadCounts[msg.sender] || 0) + 1;
+        saveUnread();
+        renderUserList();
+      }
 } else {
   updateConnectionStatus('error');
 }
@@ -222,8 +241,9 @@ function selectUser(username, liElem) {
   headerAvatar.style.display = 'block';
   updateChatHeaderStatus();
 
-  // Clear messages, fetch history
+  // Clear messages, fetch and merge local+backend history
   messagesArea.innerHTML = '';
+  const localMsgs = loadChatFromLocal(username);
   fetch(`${CHAT_SERVER_URL}/api/messages?user=${encodeURIComponent(username)}`, {
     headers: {
       'Authorization': token ? 'Bearer ' + token : '',
@@ -232,18 +252,35 @@ function selectUser(username, liElem) {
   })
     .then(r => r.json())
     .then(messages => {
-      if (messages.length === 0) {
+      // Merge and deduplicate by timestamp+sender+content
+      const allMsgs = [...localMsgs, ...messages].filter((msg, idx, arr) =>
+        arr.findIndex(m => m.timestamp === msg.timestamp && m.sender === msg.sender && m.content === msg.content) === idx
+      );
+      if (allMsgs.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'transient-notice';
         empty.textContent = 'No messages yet. Say hi! 👋';
         messagesArea.appendChild(empty);
       } else {
-        messages.forEach(msg => appendMessage(msg, msg.sender === myUsername));
+        allMsgs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        allMsgs.forEach(msg => appendMessage(msg, msg.sender === myUsername));
+        // Save merged to localStorage
+        saveChatToLocal(username, allMsgs);
         scrollToBottom();
       }
     })
-    .catch(() => showNotice('Could not load message history.', 'var(--red)'));
-
+    .catch(() => {
+      // If backend fails, show only local
+      if (localMsgs.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'transient-notice';
+        empty.textContent = 'No messages yet. Say hi! 👋';
+        messagesArea.appendChild(empty);
+      } else {
+        localMsgs.forEach(msg => appendMessage(msg, msg.sender === myUsername));
+        scrollToBottom();
+      }
+    });
   document.getElementById('chatInput').focus();
 }
 
@@ -283,7 +320,8 @@ function sendMessage() {
     }).catch(() => showNotice('Message failed. Check server.', 'var(--red)'));
   }
 
-  appendMessage(msg, true);
+    lastSentMsg = msg; // Set lastSentMsg to the current message
+    appendMessage(msg, true);
   if (input) input.value = '';
   clearImagePreview();
   scrollToBottom();
@@ -292,6 +330,17 @@ function sendMessage() {
 
 // ─── APPEND MESSAGE ───────────────────────────────────────────
 function appendMessage(msg, isMine) {
+    // Always save for both sender and receiver, so both sides see full history
+    if (msg.sender && msg.receiver) {
+      let historyA = loadChatFromLocal(msg.sender);
+      let historyB = loadChatFromLocal(msg.receiver);
+      // Deduplicate by timestamp+content+sender
+      const dedup = arr => arr.filter((m, idx, a) => a.findIndex(n => n.timestamp === m.timestamp && n.content === m.content && n.sender === m.sender) === idx);
+      historyA.push(msg);
+      historyB.push(msg);
+      saveChatToLocal(msg.sender, dedup(historyA).slice(-100));
+      saveChatToLocal(msg.receiver, dedup(historyB).slice(-100));
+    }
   const area = document.getElementById('messagesArea');
   if (!area) return;
 

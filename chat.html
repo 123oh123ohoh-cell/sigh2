@@ -2,13 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Chat - OwnsHub</title>
   <link rel="stylesheet" href="chat.css">
   <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 </head>
 <body>
+  <script>
+    // Mobile detection: adds 'mobile' class to body if on mobile
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    if (isMobile()) document.documentElement.classList.add('mobile');
+  </script>
 
   <!-- ── HEADER ─────────────────────────────────────── -->
   <header class="chat-app-header">
