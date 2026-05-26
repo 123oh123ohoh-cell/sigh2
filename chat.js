@@ -275,12 +275,12 @@ function getStatusLabel(username) {
   return 'Offline';
 }
 
-function renderUserList() {
+async function renderUserList() {
   const userList = document.getElementById('userList');
   if (!userList) return;
   userList.innerHTML = '';
 
-  let recents = getRecentDMs();
+  let recents = await getRecentDMs();
   let usersByName = Object.fromEntries(allUsers.map(u => [u.username, u]));
   let filtered = allUsers.filter(u => u.username !== myUsername);
 
@@ -289,12 +289,13 @@ function renderUserList() {
     let term = userSearch;
     if (userSearch.startsWith('@')) term = userSearch.slice(1);
     term = term.toLowerCase();
-    filtered = filtered.filter(u =>
+    // Always show local results instantly
+    let localFiltered = allUsers.filter(u =>
       u.username.toLowerCase().includes(term) ||
       (u.displayName && u.displayName.toLowerCase().includes(term))
     );
-    // If not found, allow quick start
-    if (filtered.length === 0 && userSearch.startsWith('@')) {
+    // Show local results immediately
+    if (localFiltered.length === 0 && userSearch.startsWith('@')) {
       const typed = userSearch.slice(1).trim();
       if (typed && typed !== myUsername) {
         const li = makeUserLi({ username: typed, displayName: typed }, true);
@@ -302,7 +303,26 @@ function renderUserList() {
       }
       return;
     }
-    filtered.forEach(u => userList.appendChild(makeUserLi(u)));
+    localFiltered.forEach(u => userList.appendChild(makeUserLi(u)));
+    // Try backend search as enhancement, merge new users if found
+    fetch(`${CHAT_SERVER_URL}/api/users/search?term=${encodeURIComponent(term)}`, {
+      headers: { 'Authorization': token ? 'Bearer ' + token : '' }
+    })
+      .then(res => res.ok ? res.json() : [])
+      .then(users => {
+        if (Array.isArray(users)) {
+          users.forEach(u => {
+            if (!allUsers.some(lu => lu.username === u.username)) {
+              allUsers.push(u);
+              // Add to UI if not already present
+              if (!localFiltered.some(lu => lu.username === u.username)) {
+                userList.appendChild(makeUserLi(u));
+              }
+            }
+          });
+        }
+      })
+      .catch(() => {});
     return;
   }
 
