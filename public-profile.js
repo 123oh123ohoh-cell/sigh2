@@ -101,8 +101,8 @@ if (!username) {
                 chatBtn.style.textDecoration = 'none';
                 chatBtn.textContent = 'Chat';
                 chatBtn.onclick = function() {
-                  // Go to chat.html and pass ?user=username for direct message
-                  window.location.href = `chat.html?user=${encodeURIComponent(username)}`;
+                  // Go to chat2.html and pass ?user=username for direct message
+                  window.location.href = `chat2.html?user=${encodeURIComponent(username)}`;
                 };
                 if (isFollowing) {
                   followBtnDiv.innerHTML = `<button id="unfollowBtn" class="btn" style="background:linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);color:#181818;padding:10px 24px;border-radius:6px;font-weight:700;">Unfollow</button>`;

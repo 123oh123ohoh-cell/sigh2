@@ -1,3 +1,30 @@
+// --- Recent DMs table ---
+function initRecentDMsTable() {
+  db.run(`CREATE TABLE IF NOT EXISTS recent_dms (
+    username TEXT PRIMARY KEY,
+    recents TEXT
+  )`);
+}
+initRecentDMsTable();
+
+// --- API: Get/set recent DMs ---
+app.get('/api/recent-dms', (req, res) => {
+  const username = getRequestUsername(req);
+  if (!username) return res.status(401).json([]);
+  db.get('SELECT recents FROM recent_dms WHERE username = ?', [username], (err, row) => {
+    if (err || !row) return res.json([]);
+    try { res.json(JSON.parse(row.recents)); } catch { res.json([]); }
+  });
+});
+app.post('/api/recent-dms', (req, res) => {
+  const username = getRequestUsername(req);
+  if (!username) return res.status(401).json({ success: false });
+  const recents = Array.isArray(req.body.recents) ? req.body.recents.slice(0, 30) : [];
+  db.run('INSERT OR REPLACE INTO recent_dms (username, recents) VALUES (?, ?)', [username, JSON.stringify(recents)], err => {
+    if (err) return res.status(500).json({ success: false });
+    res.json({ success: true });
+  });
+});
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
@@ -45,6 +72,7 @@ function initDb() {
         sender TEXT NOT NULL,
         receiver TEXT NOT NULL,
         content TEXT NOT NULL,
+        image TEXT,
         timestamp TEXT NOT NULL
       )`
     );
@@ -126,7 +154,7 @@ app.get('/api/messages', (req, res) => {
   }
 
   const sql = `
-    SELECT sender, receiver, content, timestamp
+    SELECT sender, receiver, content, image, timestamp
     FROM messages
     WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?)
     ORDER BY id ASC
@@ -144,21 +172,21 @@ app.get('/api/messages', (req, res) => {
 
 app.post('/api/messages', (req, res) => {
   const sender = getRequestUsername(req);
-  const { receiver, content } = req.body;
+  const { receiver, content, image } = req.body;
 
-  if (!sender || !receiver || !content) {
+  if (!sender || !receiver || (typeof content !== 'string' && typeof image !== 'string')) {
     return res.status(400).json({ error: 'Missing fields' });
   }
 
-  const trimmed = String(content).trim();
-  if (!trimmed) {
+  const trimmed = String(content || '').trim();
+  if (!trimmed && !image) {
     return res.status(400).json({ error: 'Empty message' });
   }
 
   const timestamp = new Date().toISOString();
   db.run(
-    'INSERT INTO messages (sender, receiver, content, timestamp) VALUES (?, ?, ?, ?)',
-    [sender, receiver, trimmed, timestamp],
+    'INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)',
+    [sender, receiver, trimmed, image || null, timestamp],
     function onInsert(err) {
       if (err) {
         return res.status(500).json({ error: 'DB error', details: err.message });
@@ -169,6 +197,7 @@ app.post('/api/messages', (req, res) => {
         sender,
         receiver,
         content: trimmed,
+        image: image || null,
         timestamp
       });
     }
@@ -258,16 +287,20 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('private_message', (msg) => {
-    if (!msg || !msg.receiver || !msg.content) {
+  socket.on('private_message', (msg, ack) => {
+    if (!msg || !msg.receiver) {
+      if (ack) ack('error');
       return;
     }
 
     const sender = String(msg.sender || socket.data.username || '').trim();
     const receiver = String(msg.receiver || '').trim();
     const content = String(msg.content || '').trim();
+    const image = typeof msg.image === 'string' ? msg.image : null;
+    const gif = typeof msg.gif === 'string' ? msg.gif : null;
 
-    if (!sender || !receiver || !content) {
+    if (!sender || !receiver || (!content && !image && !gif)) {
+      if (ack) ack('error');
       return;
     }
 
@@ -275,17 +308,20 @@ io.on('connection', (socket) => {
       sender,
       receiver,
       content,
+      image,
+      gif,
       timestamp: new Date().toISOString()
     };
 
     db.run(
-      'INSERT INTO messages (sender, receiver, content, timestamp) VALUES (?, ?, ?, ?)',
-      [saved.sender, saved.receiver, saved.content, saved.timestamp],
+      'INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)',
+      [saved.sender, saved.receiver, saved.content, saved.image || saved.gif || null, saved.timestamp],
       () => {
         io.to(roomFor(saved.sender)).emit('private_message', saved);
         if (saved.receiver !== saved.sender) {
           io.to(roomFor(saved.receiver)).emit('private_message', saved);
         }
+        if (ack) ack('ok');
       }
     );
   });

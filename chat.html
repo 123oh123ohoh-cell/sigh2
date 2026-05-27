@@ -1,3 +1,12 @@
+      <!-- group management -->
+      <div id="groupSection" class="group-section">
+        <div class="group-header">Groups</div>
+        <ul id="groupList" class="group-list"></ul>
+        <div class="group-actions">
+          <input id="newGroupName" type="text" placeholder="New group name" maxlength="32" style="width:60%">
+          <button id="createGroupBtn" type="button">Create</button>
+        </div>
+      </div>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,12 +28,17 @@
     <nav class="nav">
       <a href="index.html">Home</a>
       <a href="arts.html">Arts</a>
-      <a href="chat.html" class="active" aria-current="page">Chat</a>
+      <a href="#" id="chatNavBtn" class="active" aria-current="page">Chat</a>
     </nav>
     <div id="connectionStatus" class="status-indicator">
       <span id="statusDot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--yellow);"></span>
       <span id="statusText">Connecting…</span>
     </div>
+    <select id="themeSelect" title="Theme" style="margin-left:18px;padding:4px 10px;border-radius:8px;background:var(--bg-surface);color:var(--text);border:1px solid var(--border);">
+      <option value="dark">🌑 Dark</option>
+      <option value="light">🌕 Light</option>
+      <option value="blue">🔵 Blue</option>
+    </select>
   </header>
 
   <!-- ── MAIN ───────────────────────────────────────── -->
@@ -46,6 +60,11 @@
           </select>
         </div>
       </div>
+      <div class="sidebar-section-label">Groups</div>
+      <div style="padding: 0 16px 8px;">
+        <button id="createGroupBtn" style="width:100%;padding:7px 0;border-radius:8px;background:var(--accent-2);color:#fff;font-weight:600;border:none;cursor:pointer;">+ New Group</button>
+      </div>
+      <ul id="groupList" class="user-list"></ul>
       <div class="sidebar-section-label">Direct Messages</div>
       <ul id="userList" class="user-list"></ul>
     </aside>
@@ -62,15 +81,22 @@
 
       <!-- chat header -->
       <div id="chatHeader" class="chat-header" style="display:none;">
+        <input id="messageSearchInput" type="text" placeholder="🔍 Search messages…" style="margin-left:16px;flex:1;max-width:320px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-surface);color:var(--text);font-size:0.98em;display:none;">
         <img id="chatHeaderAvatar" class="chat-header-avatar" src="" alt="">
         <div class="chat-header-info">
           <div id="chatHeaderName" class="chat-header-name">—</div>
           <div id="chatHeaderStatus" class="chat-header-status">—</div>
         </div>
         <div class="chat-header-actions">
+          <button class="icon-btn" id="blockUserBtn" title="Block user">🚫</button>
+          <button class="icon-btn" id="muteUserBtn" title="Mute user">🔇</button>
           <button class="icon-btn" title="Profile" onclick="viewProfile()">👤</button>
         </div>
       </div>
+
+
+      <!-- pins area -->
+      <div id="pinsArea" class="pins-area" style="display:none;"></div>
 
       <!-- messages -->
       <div id="messagesArea" class="messages-area" style="display:none;"></div>
@@ -97,8 +123,8 @@
         <div class="input-toolbar">
           <button class="toolbar-btn" id="emojiToggleBtn" title="Emoji">😊</button>
           <button class="toolbar-btn" id="gifToggleBtn" title="GIF">GIF</button>
-          <label class="toolbar-btn" title="Attach image" style="cursor:pointer;">
-            📎<input type="file" id="imageFileInput" accept="image/*" style="display:none;">
+          <label class="toolbar-btn" title="Attach file" style="cursor:pointer;">
+            📎<input type="file" id="fileInput" style="display:none;">
           </label>
         </div>
         <div id="imagePreviewWrap">
@@ -115,5 +141,12 @@
   </div>
 
   <script src="chat.js"></script>
+  <script>
+    // Intercept Chat nav button to load chat2.html
+    document.getElementById('chatNavBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = 'chat2.html';
+    });
+  </script>
 </body>
 </html>
