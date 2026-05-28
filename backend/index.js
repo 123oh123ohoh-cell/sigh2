@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const http = require('http');
 const { Server } = require('socket.io');
 const os = require('os');
@@ -20,16 +20,16 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // ─── DATABASE ─────────────────────────────────────────────────
-const db = new sqlite3.Database('./ownshub.db');
+const db = new Database('./ownshub.db');
 
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
+// Table creation and migrations
+try {
+  db.prepare(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
     password TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS profiles (
+  )`).run();
+  db.prepare(`CREATE TABLE IF NOT EXISTS profiles (
     username TEXT PRIMARY KEY,
     displayName TEXT,
     pronouns TEXT,
@@ -39,9 +39,8 @@ db.serialize(() => {
     followers INTEGER DEFAULT 0,
     following INTEGER DEFAULT 0,
     premiumTier TEXT DEFAULT NULL
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS messages (
+  )`).run();
+  db.prepare(`CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     sender TEXT,
     receiver TEXT,
@@ -49,9 +48,8 @@ db.serialize(() => {
     image TEXT,
     gif TEXT,
     timestamp TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS arts (
+  )`).run();
+  db.prepare(`CREATE TABLE IF NOT EXISTS arts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT,
     image TEXT,
@@ -59,24 +57,22 @@ db.serialize(() => {
     description TEXT,
     category TEXT,
     date TEXT
-  )`);
-
-  db.run(`CREATE TABLE IF NOT EXISTS comments (
+  )`).run();
+  db.prepare(`CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     videoId INTEGER,
     username TEXT,
     text TEXT,
     date TEXT
-  )`);
-
+  )`).run();
   // Migrations (safe to run every time)
-  db.run('ALTER TABLE profiles ADD COLUMN followers INTEGER DEFAULT 0', () => {});
-  db.run('ALTER TABLE profiles ADD COLUMN following INTEGER DEFAULT 0', () => {});
-  db.run('ALTER TABLE profiles ADD COLUMN premiumTier TEXT DEFAULT NULL', () => {});
-  db.run('ALTER TABLE arts ADD COLUMN category TEXT', () => {});
-  db.run('ALTER TABLE messages ADD COLUMN image TEXT', () => {});
-  db.run('ALTER TABLE messages ADD COLUMN gif TEXT', () => {});
-});
+  try { db.prepare('ALTER TABLE profiles ADD COLUMN followers INTEGER DEFAULT 0').run(); } catch {}
+  try { db.prepare('ALTER TABLE profiles ADD COLUMN following INTEGER DEFAULT 0').run(); } catch {}
+  try { db.prepare('ALTER TABLE profiles ADD COLUMN premiumTier TEXT DEFAULT NULL').run(); } catch {}
+  try { db.prepare('ALTER TABLE arts ADD COLUMN category TEXT').run(); } catch {}
+  try { db.prepare('ALTER TABLE messages ADD COLUMN image TEXT').run(); } catch {}
+  try { db.prepare('ALTER TABLE messages ADD COLUMN gif TEXT').run(); } catch {}
+} catch (e) { console.error('DB migration error:', e); }
 
 // ─── AUTH HELPER ──────────────────────────────────────────────
 function authenticateToken(req, res, next) {
@@ -178,14 +174,16 @@ app.post('/api/login', (req, res) => {
 
 // Users list (for chat sidebar)
 app.get('/api/users', (req, res) => {
-  db.all('SELECT u.username, p.displayName, p.avatar FROM users u LEFT JOIN profiles p ON u.username = p.username', (err, rows) => {
-    if (err) return res.status(500).json({ error: 'DB error' });
+  try {
+    const rows = db.prepare('SELECT u.username, p.displayName, p.avatar FROM users u LEFT JOIN profiles p ON u.username = p.username').all();
     res.json(rows.map(r => ({
       username: r.username,
       displayName: r.displayName || r.username,
       avatar: r.avatar || null
     })));
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Messages
@@ -193,14 +191,12 @@ app.get('/api/messages', authenticateToken, (req, res) => {
   const me = req.user.username;
   const other = req.query.user;
   if (!other) return res.status(400).json({ error: 'Missing user param' });
-  db.all(
-    `SELECT * FROM messages WHERE (sender=? AND receiver=?) OR (sender=? AND receiver=?) ORDER BY id ASC`,
-    [me, other, other, me],
-    (err, rows) => {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json(rows);
-    }
-  );
+  try {
+    const rows = db.prepare(`SELECT * FROM messages WHERE (sender=? AND receiver=?) OR (sender=? AND receiver=?) ORDER BY id ASC`).all(me, other, other, me);
+    res.json(rows);
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 app.post('/api/messages', authenticateToken, (req, res) => {
@@ -208,14 +204,13 @@ app.post('/api/messages', authenticateToken, (req, res) => {
   const { receiver, content, image, gif } = req.body;
   if (!receiver) return res.status(400).json({ error: 'Missing receiver' });
   const timestamp = new Date().toISOString();
-  db.run(
-    'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
-    [sender, receiver, content || '', image || null, gif || null, timestamp],
-    function(err) {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json({ id: this.lastID, sender, receiver, content, image, gif, timestamp });
-    }
-  );
+  try {
+    const stmt = db.prepare('INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)');
+    const info = stmt.run(sender, receiver, content || '', image || null, gif || null, timestamp);
+    res.json({ id: info.lastInsertRowid, sender, receiver, content, image, gif, timestamp });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Profile

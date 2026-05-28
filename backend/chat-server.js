@@ -29,7 +29,7 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const jwt = require('jsonwebtoken');
 const { Server } = require('socket.io');
 
@@ -46,37 +46,29 @@ const DB_PATH = process.env.DB_PATH || path.resolve(__dirname, '..', 'ownshub.db
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
-const db = new sqlite3.Database(DB_PATH);
+const db = new Database(DB_PATH);
 
 function initDb() {
-  db.serialize(() => {
-    db.run(
-      `CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE,
-        password TEXT
-      )`
-    );
-
-    db.run(
-      `CREATE TABLE IF NOT EXISTS profiles (
-        username TEXT PRIMARY KEY,
-        displayName TEXT,
-        avatar TEXT
-      )`
-    );
-
-    db.run(
-      `CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        sender TEXT NOT NULL,
-        receiver TEXT NOT NULL,
-        content TEXT NOT NULL,
-        image TEXT,
-        timestamp TEXT NOT NULL
-      )`
-    );
-  });
+  try {
+    db.prepare(`CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE,
+      password TEXT
+    )`).run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS profiles (
+      username TEXT PRIMARY KEY,
+      displayName TEXT,
+      avatar TEXT
+    )`).run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sender TEXT NOT NULL,
+      receiver TEXT NOT NULL,
+      content TEXT NOT NULL,
+      image TEXT,
+      timestamp TEXT NOT NULL
+    )`).run();
+  } catch (e) { console.error('DB migration error:', e); }
 }
 
 initDb();
@@ -136,13 +128,12 @@ app.get('/api/users', (_req, res) => {
     ORDER BY username COLLATE NOCASE ASC
   `;
 
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'DB error', details: err.message });
-    }
-
+  try {
+    const rows = db.prepare(sql).all();
     res.json(rows || []);
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error', details: err.message });
+  }
 });
 
 app.get('/api/messages', (req, res) => {
@@ -161,13 +152,12 @@ app.get('/api/messages', (req, res) => {
     LIMIT 500
   `;
 
-  db.all(sql, [me, otherUser, otherUser, me], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ error: 'DB error', details: err.message });
-    }
-
+  try {
+    const rows = db.prepare(sql).all(me, otherUser, otherUser, me);
     res.json(rows || []);
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error', details: err.message });
+  }
 });
 
 app.post('/api/messages', (req, res) => {
@@ -184,24 +174,20 @@ app.post('/api/messages', (req, res) => {
   }
 
   const timestamp = new Date().toISOString();
-  db.run(
-    'INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)',
-    [sender, receiver, trimmed, image || null, timestamp],
-    function onInsert(err) {
-      if (err) {
-        return res.status(500).json({ error: 'DB error', details: err.message });
-      }
-
-      res.json({
-        id: this.lastID,
-        sender,
-        receiver,
-        content: trimmed,
-        image: image || null,
-        timestamp
-      });
-    }
-  );
+  try {
+    const stmt = db.prepare('INSERT INTO messages (sender, receiver, content, image, timestamp) VALUES (?, ?, ?, ?, ?)');
+    const info = stmt.run(sender, receiver, trimmed, image || null, timestamp);
+    res.json({
+      id: info.lastInsertRowid,
+      sender,
+      receiver,
+      content: trimmed,
+      image: image || null,
+      timestamp
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error', details: err.message });
+  }
 });
 
 const userStatus = new Map();
