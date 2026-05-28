@@ -127,6 +127,41 @@
                     updateDropdownMenu();
                 }
             });
+                // Robust profile dropdown toggle logic (improved)
+                const dropdownBtn = document.getElementById('profileDropdownBtn');
+                const dropdownMenu = document.getElementById('profileDropdownMenu');
+                const dropdownContainer = dropdownBtn ? dropdownBtn.closest('.profile-dropdown') : null;
+                let dropdownOpen = false;
+                function closeDropdown() {
+                    dropdownMenu.classList.remove('show');
+                    dropdownContainer.classList.remove('show');
+                    dropdownOpen = false;
+                }
+                function openDropdown() {
+                    dropdownMenu.classList.add('show');
+                    dropdownContainer.classList.add('show');
+                    dropdownOpen = true;
+                }
+                function toggleDropdown(event) {
+                    event.stopPropagation();
+                    if (dropdownOpen) {
+                        closeDropdown();
+                    } else {
+                        openDropdown();
+                    }
+                }
+                if (dropdownBtn && dropdownMenu && dropdownContainer) {
+                    dropdownBtn.addEventListener('click', toggleDropdown);
+                    dropdownBtn.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            toggleDropdown(event);
+                        }
+                    });
+                    document.addEventListener('click', function(event) {
+                        if (dropdownOpen && !dropdownMenu.contains(event.target) && !dropdownBtn.contains(event.target)) {
+                            closeDropdown();
+                        }
+                    });
         });
         </script>
         <!-- Legacy appearance migration: defer to global theme-mode.js -->
