@@ -1114,6 +1114,7 @@
         var publicProfileLink = document.getElementById('publicProfileLink');
         var profileAvatarIcon = document.getElementById('profileAvatarIcon');
         var profileAvatarFallback = document.getElementById('profileAvatarFallback');
+        var chatHeaderBtn = document.getElementById('chatHeaderBtn');
 
         if (loggedInUser && token) {
             showProfileAvatarLoading(profileAvatarIcon, profileAvatarFallback);
@@ -1133,6 +1134,7 @@
             if (signoutLink) signoutLink.style.display = '';
             if (dropdownLogin) dropdownLogin.style.display = 'none';
             if (dropdownSignup) dropdownSignup.style.display = 'none';
+            if (chatHeaderBtn) chatHeaderBtn.style.display = '';
 
             if (publicProfileLink) publicProfileLink.style.display = 'none';
 
@@ -1155,6 +1157,7 @@
             if (signoutLink) signoutLink.style.display = 'none';
             if (dropdownLogin) dropdownLogin.style.display = '';
             if (dropdownSignup) dropdownSignup.style.display = '';
+            if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
             if (publicProfileLink) publicProfileLink.style.display = 'none';
             showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
         }
