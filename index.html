@@ -47,86 +47,18 @@
             </div>
         </div>
         <script>
-        // Switch dropdown menu and chat button based on login state
+        // Use global syncGlobalProfileHeader for nav avatar logic
         document.addEventListener('DOMContentLoaded', function() {
-            async function updateDropdownMenu() {
-                const loggedInUser = localStorage.getItem('loggedInUser');
-                const token = localStorage.getItem('token');
-                const profileLink = document.getElementById('profileLink');
-                const signoutLink = document.getElementById('signoutLink');
-                const dropdownLogin = document.getElementById('dropdownLogin');
-                const dropdownSignup = document.getElementById('dropdownSignup');
-                const chatHeaderBtn = document.getElementById('chatHeaderBtn');
-                const premiumBadgeHeader = document.getElementById('premiumBadgeHeader');
-                const profileAvatarIcon = document.getElementById('profileAvatarIcon');
-                const profileAvatarFallback = document.getElementById('profileAvatarFallback');
-                const settingsLink = document.getElementById('settingsLink');
-                if (loggedInUser && token) {
-                    if (profileLink) {
-                        profileLink.style.display = '';
-                        profileLink.href = 'public-profile.html?user=' + encodeURIComponent(loggedInUser);
-                        profileLink.textContent = 'Profile';
-                    }
-                    if (signoutLink) signoutLink.style.display = '';
-                    if (settingsLink) settingsLink.style.display = '';
-                    if (dropdownLogin) dropdownLogin.style.display = 'none';
-                    if (dropdownSignup) dropdownSignup.style.display = 'none';
-                    if (chatHeaderBtn) chatHeaderBtn.style.display = '';
-                    // Fetch premiumTier and avatar from backend
-                    let premiumTier = '';
-                    let avatar = '';
-                    try {
-                        const res = await fetch('https://ownshub.onrender.com/api/profile', {
-                            headers: { 'Authorization': 'Bearer ' + token }
-                        });
-                        if (res.ok) {
-                            const data = await res.json();
-                            premiumTier = data.premiumTier;
-                            avatar = data.avatar;
-                        }
-                    } catch {}
-                    if (premiumBadgeHeader) {
-                        if (premiumTier) {
-                            let color = '#ffd700';
-                            if (premiumTier === 'Silver') color = '#c0c0c0';
-                            if (premiumTier === 'Bronze') color = '#cd7f32';
-                            premiumBadgeHeader.innerHTML = `<span style="padding:1.5px 8px;border-radius:7px;background:${color};color:#181818;font-size:0.82em;font-weight:bold;vertical-align:middle;box-shadow:0 1px 4px #0002;letter-spacing:0.5px;">${premiumTier} Premium</span>`;
-                        } else {
-                            premiumBadgeHeader.innerHTML = '';
-                        }
-                    }
-                    // Set avatar icon
-                    if (profileAvatarIcon && avatar) {
-                        profileAvatarIcon.src = avatar;
-                        profileAvatarIcon.style.display = '';
-                        if (profileAvatarFallback) profileAvatarFallback.style.display = 'none';
-                    } else {
-                        if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
-                        if (profileAvatarFallback) profileAvatarFallback.style.display = '';
-                    }
-                } else {
-                    if (profileLink) {
-                        profileLink.style.display = 'none';
-                        profileLink.href = 'profile.html';
-                        profileLink.textContent = 'Profile';
-                    }
-                    if (signoutLink) signoutLink.style.display = 'none';
-                    if (settingsLink) settingsLink.style.display = 'none';
-                    if (dropdownLogin) dropdownLogin.style.display = '';
-                    if (dropdownSignup) dropdownSignup.style.display = '';
-                    if (chatHeaderBtn) chatHeaderBtn.style.display = 'none';
-                    if (premiumBadgeHeader) premiumBadgeHeader.innerHTML = '';
-                    if (profileAvatarIcon) profileAvatarIcon.style.display = 'none';
-                    if (profileAvatarFallback) profileAvatarFallback.style.display = '';
+            if (typeof window.syncGlobalProfileHeader === 'function') {
+                window.syncGlobalProfileHeader();
+            }
+        });
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'loggedInUser' || e.key === 'token') {
+                if (typeof window.syncGlobalProfileHeader === 'function') {
+                    window.syncGlobalProfileHeader();
                 }
             }
-            updateDropdownMenu();
-            // Listen for storage changes (e.g., login/logout in another tab)
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'loggedInUser') {
-                    updateDropdownMenu();
-                }
-            });
         });
         </script>
         <!-- Legacy appearance migration: defer to global theme-mode.js -->
