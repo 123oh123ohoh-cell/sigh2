@@ -151,25 +151,30 @@ app.get('/', (req, res) => res.send('OwnsHub Backend API running!'));
 app.post('/api/signup', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Missing fields' });
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-    if (row) return res.status(409).json({ error: 'Username exists' });
-    const hash = bcrypt.hashSync(password, 10);
-    db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hash], function(err) {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
-      res.json({ token, username });
-    });
-  });
+  const row = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+  if (row) return res.status(409).json({ error: 'Username exists' });
+  const hash = bcrypt.hashSync(password, 10);
+  try {
+    db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run(username, hash);
+    const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
+    res.json({ token, username });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
+
 
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
-  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
+  try {
+    const row = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
     if (!row) return res.status(401).json({ error: 'Invalid credentials' });
     if (!bcrypt.compareSync(password, row.password)) return res.status(401).json({ error: 'Invalid credentials' });
     const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
     res.json({ token, username });
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Users list (for chat sidebar)
@@ -216,39 +221,42 @@ app.post('/api/messages', authenticateToken, (req, res) => {
 // Profile
 app.get('/api/profile', (req, res) => {
   const username = req.query.user;
-  if (username) {
-    db.get('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier FROM profiles WHERE username = ?', [username], (err, row) => {
-      if (err) return res.status(500).json({ error: 'DB error' });
+  try {
+    let row;
+    if (username) {
+      row = db.prepare('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier FROM profiles WHERE username = ?').get(username);
       res.json(row || {});
-    });
-  } else {
-    authenticateToken(req, res, () => {
-      db.get('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier FROM profiles WHERE username = ?', [req.user.username], (err, row) => {
-        if (err) return res.status(500).json({ error: 'DB error' });
-        res.json(row || {});
+    } else {
+      authenticateToken(req, res, () => {
+        try {
+          row = db.prepare('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier FROM profiles WHERE username = ?').get(req.user.username);
+          res.json(row || {});
+        } catch (err) {
+          return res.status(500).json({ error: 'DB error' });
+        }
       });
-    });
+      return;
+    }
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
   }
 });
 
 app.post('/api/profile', authenticateToken, (req, res) => {
   const username = req.user.username;
   const { displayName, pronouns, customPronouns, bio, avatar, premiumTier } = req.body;
-  db.get('SELECT followers, following FROM profiles WHERE username = ?', [username], (err, row) => {
+  try {
+    const row = db.prepare('SELECT followers, following FROM profiles WHERE username = ?').get(username);
     const followers = row ? row.followers || 0 : 0;
     const following = row ? row.following || 0 : 0;
-    db.run(
-      `INSERT INTO profiles (username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT(username) DO UPDATE SET displayName=excluded.displayName, pronouns=excluded.pronouns,
-       customPronouns=excluded.customPronouns, bio=excluded.bio, avatar=excluded.avatar, premiumTier=excluded.premiumTier`,
-      [username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier],
-      function(err) {
-        if (err) return res.status(500).json({ error: 'DB error', details: err.message });
-        res.json({ success: true });
-      }
-    );
-  });
+    db.prepare(`INSERT INTO profiles (username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(username) DO UPDATE SET displayName=excluded.displayName, pronouns=excluded.pronouns, customPronouns=excluded.customPronouns, bio=excluded.bio, avatar=excluded.avatar, premiumTier=excluded.premiumTier`)
+      .run(username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier);
+    res.json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Follow / Unfollow
@@ -256,30 +264,37 @@ app.post('/api/follow', authenticateToken, (req, res) => {
   const follower = req.user.username;
   const { followee } = req.body;
   if (!followee || follower === followee) return res.status(400).json({ error: 'Invalid' });
-  db.run('UPDATE profiles SET following = following + 1 WHERE username = ?', [follower], () => {
-    db.run('UPDATE profiles SET followers = followers + 1 WHERE username = ?', [followee], () => {
-      res.json({ success: true });
-    });
-  });
+  try {
+    db.prepare('UPDATE profiles SET following = following + 1 WHERE username = ?').run(follower);
+    db.prepare('UPDATE profiles SET followers = followers + 1 WHERE username = ?').run(followee);
+    res.json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 app.post('/api/unfollow', authenticateToken, (req, res) => {
   const follower = req.user.username;
   const { followee } = req.body;
   if (!followee || follower === followee) return res.status(400).json({ error: 'Invalid' });
-  db.run('UPDATE profiles SET following = MAX(following-1,0) WHERE username = ?', [follower], () => {
-    db.run('UPDATE profiles SET followers = MAX(followers-1,0) WHERE username = ?', [followee], () => {
-      res.json({ success: true });
-    });
-  });
+  try {
+    db.prepare('UPDATE profiles SET following = MAX(following-1,0) WHERE username = ?').run(follower);
+    db.prepare('UPDATE profiles SET followers = MAX(followers-1,0) WHERE username = ?').run(followee);
+    res.json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Arts
+
 app.get('/api/arts', (req, res) => {
-  db.all('SELECT * FROM arts ORDER BY id DESC', (err, rows) => {
-    if (err) return res.status(500).json({ error: 'DB error' });
+  try {
+    const rows = db.prepare('SELECT * FROM arts ORDER BY id DESC').all();
     res.json(rows);
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 app.post('/api/arts', authenticateToken, (req, res) => {
@@ -287,27 +302,35 @@ app.post('/api/arts', authenticateToken, (req, res) => {
   const { image, title, description, category } = req.body;
   if (!image || !title || !category) return res.status(400).json({ error: 'Missing fields' });
   const date = new Date().toLocaleString();
-  db.run('INSERT INTO arts (username, image, title, description, category, date) VALUES (?, ?, ?, ?, ?, ?)',
-    [username, image, title, description, category, date], function(err) {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json({ id: this.lastID, username, image, title, description, category, date });
-    });
+  try {
+    const info = db.prepare('INSERT INTO arts (username, image, title, description, category, date) VALUES (?, ?, ?, ?, ?, ?)')
+      .run(username, image, title, description, category, date);
+    res.json({ id: info.lastInsertRowid, username, image, title, description, category, date });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 app.delete('/api/arts/:id', authenticateToken, (req, res) => {
   const username = req.user.username;
-  db.get('SELECT username FROM arts WHERE id = ?', [req.params.id], (err, row) => {
+  try {
+    const row = db.prepare('SELECT username FROM arts WHERE id = ?').get(req.params.id);
     if (!row) return res.status(404).json({ error: 'Not found' });
     if (row.username !== username) return res.status(403).json({ error: 'Not authorized' });
-    db.run('DELETE FROM arts WHERE id = ?', [req.params.id], () => res.json({ success: true }));
-  });
+    db.prepare('DELETE FROM arts WHERE id = ?').run(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 app.get('/api/hijab-arts', (req, res) => {
-  db.all("SELECT * FROM arts WHERE category = 'Hijab' ORDER BY id DESC", (err, rows) => {
-    if (err) return res.status(500).json({ error: 'DB error' });
+  try {
+    const rows = db.prepare("SELECT * FROM arts WHERE category = 'Hijab' ORDER BY id DESC").all();
     res.json(rows);
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Comments
@@ -315,28 +338,34 @@ app.post('/api/comments', (req, res) => {
   const { videoId, text, username } = req.body;
   if (!videoId || !text) return res.status(400).json({ error: 'Missing fields' });
   const date = new Date().toLocaleString();
-  db.run('INSERT INTO comments (videoId, username, text, date) VALUES (?, ?, ?, ?)',
-    [videoId, username || 'Anonymous', text, date], function(err) {
-      if (err) return res.status(500).json({ error: 'DB error' });
-      res.json({ id: this.lastID, videoId, username, text, date });
-    });
+  try {
+    const info = db.prepare('INSERT INTO comments (videoId, username, text, date) VALUES (?, ?, ?, ?)')
+      .run(videoId, username || 'Anonymous', text, date);
+    res.json({ id: info.lastInsertRowid, videoId, username, text, date });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 app.get('/api/comments/:videoId', (req, res) => {
-  db.all('SELECT * FROM comments WHERE videoId = ? ORDER BY id DESC', [req.params.videoId], (err, rows) => {
-    if (err) return res.status(500).json({ error: 'DB error' });
+  try {
+    const rows = db.prepare('SELECT * FROM comments WHERE videoId = ? ORDER BY id DESC').all(req.params.videoId);
     res.json(rows);
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // Premium
 app.post('/api/premium', authenticateToken, (req, res) => {
   const { premiumTier } = req.body;
   if (!premiumTier) return res.status(400).json({ error: 'Missing premiumTier' });
-  db.run('UPDATE profiles SET premiumTier = ? WHERE username = ?', [premiumTier, req.user.username], function(err) {
-    if (err) return res.status(500).json({ error: 'DB error' });
+  try {
+    db.prepare('UPDATE profiles SET premiumTier = ? WHERE username = ?').run(premiumTier, req.user.username);
     res.json({ success: true, premiumTier });
-  });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
 });
 
 // ─── START SERVER ─────────────────────────────────────────────
