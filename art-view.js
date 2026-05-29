@@ -29,7 +29,9 @@ async function loadArt() {
             if (!profile || Object.keys(profile).length === 0) {
                 profile = { displayName: art.username, avatar: '' };
             }
-            const avatar = profile.avatar ? `<img src="${profile.avatar}" alt="Avatar" style="width:48px;height:48px;border-radius:50%;vertical-align:middle;margin-right:10px;">` : '';
+            // Always show a default avatar if missing or broken
+            const avatarUrl = profile.avatar && profile.avatar.trim() ? profile.avatar : 'logos_and_profileicons/default-profile.png';
+            const avatar = `<img src="${avatarUrl}" alt="Avatar" style="width:48px;height:48px;border-radius:50%;vertical-align:middle;margin-right:10px;" onerror=\"this.onerror=null;this.src='logos_and_profileicons/default-profile.png';\">`;
             // Premium badge if this is the logged-in user and they have premium (from backend)
             let premiumBadge = '';
             const loggedInUser = localStorage.getItem('loggedInUser');

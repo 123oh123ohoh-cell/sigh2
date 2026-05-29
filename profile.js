@@ -11,9 +11,10 @@ function renderProfileSummary(data, username) {
         if (data.premiumTier === 'Bronze') color = '#cd7f32';
         premiumBadge = `<span style="margin-left:8px;padding:2px 10px;border-radius:8px;background:${color};color:#181818;font-size:0.95em;font-weight:bold;vertical-align:middle;">${data.premiumTier} Premium</span>`;
     }
+    const avatarUrl = data.avatar && data.avatar.trim() ? data.avatar : 'logos_and_profileicons/default-profile.png';
     summary.innerHTML = `
         <div style="display:flex;align-items:center;gap:18px;">
-            ${data.avatar ? `<img class='profile-avatar' src='${data.avatar}' alt='Avatar'>` : ''}
+            <img class='profile-avatar' src='${avatarUrl}' alt='Avatar' onerror="this.onerror=null;this.src='logos_and_profileicons/default-profile.png';">
             <div>
                 <div><strong>${data.displayName || username}</strong> ${premiumBadge}</div>
                 ${pronouns ? `<div style='font-size:0.98em;color:var(--text-dark);'>${pronouns}</div>` : ''}
@@ -37,10 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('https://ownshub.onrender.com/api/profile', fetchOptions)
         .then(res => res.json())
         .then(data => {
-            if (data.avatar) {
-                document.getElementById('avatarPreview').src = data.avatar;
-                document.getElementById('avatarPreview').style.display = '';
-            }
+            const avatarUrl = data.avatar && data.avatar.trim() ? data.avatar : 'logos_and_profileicons/default-profile.png';
+            document.getElementById('avatarPreview').src = avatarUrl;
+            document.getElementById('avatarPreview').style.display = '';
             if (isLoggedIn) {
                 profileInfo.innerHTML = `<p><strong>Username:</strong> ${username}</p>`;
                 if (data.displayName) document.getElementById('displayName').value = data.displayName;

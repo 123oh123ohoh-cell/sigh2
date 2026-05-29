@@ -29,7 +29,7 @@ if (signupForm) {
         const password = document.getElementById('signupPassword').value;
         if (!username || !password) return alert('Please fill all fields.');
         try {
-            const res = await fetch('https://ownshub.onrender.com/api/signup', {
+            const res = await fetch('https://sigh2.onrender.com/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -54,24 +54,58 @@ if (loginForm) {
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
         const loginDevice = detectLoginDevice();
+        let loginSuccess = false;
+        let lastError = '';
+        // Try sigh2 backend first
         try {
-            const res = await fetch('https://ownshub.onrender.com/api/login', {
+            const res = await fetch('https://sigh2.onrender.com/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password, loginDevice })
             });
             const data = await res.json();
-            if (!res.ok) return alert(data.error || 'Login failed');
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('loggedInUser', data.username);
-            localStorage.setItem('lastLoginDevice', loginDevice.deviceType);
-            localStorage.setItem('lastLoginIsIPad', String(loginDevice.isIPad));
-            localStorage.setItem('lastLoginIsMobile', String(loginDevice.isMobile));
-            alert('Login successful!');
-            window.location.href = 'index.html';
+            if (res.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('loggedInUser', data.username);
+                localStorage.setItem('lastLoginDevice', loginDevice.deviceType);
+                localStorage.setItem('lastLoginIsIPad', String(loginDevice.isIPad));
+                localStorage.setItem('lastLoginIsMobile', String(loginDevice.isMobile));
+                alert('Login successful!');
+                window.location.href = 'index.html';
+                loginSuccess = true;
+                return;
+            } else {
+                lastError = data.error || 'Login failed';
+            }
         } catch (err) {
-            alert('Login failed. Backend not reachable?');
+            lastError = 'Login failed. sigh2 backend not reachable?';
         }
+        // If not found, try old backend
+        if (!loginSuccess) {
+            try {
+                const res = await fetch('https://ownshub.onrender.com/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, loginDevice })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('loggedInUser', data.username);
+                    localStorage.setItem('lastLoginDevice', loginDevice.deviceType);
+                    localStorage.setItem('lastLoginIsIPad', String(loginDevice.isIPad));
+                    localStorage.setItem('lastLoginIsMobile', String(loginDevice.isMobile));
+                    alert('Login successful! (old database)');
+                    window.location.href = 'index.html';
+                    return;
+                } else {
+                    lastError = data.error || 'Login failed';
+                }
+            } catch (err) {
+                lastError = 'Login failed. Backend not reachable?';
+            }
+        }
+        alert(lastError);
     });
 }
 
