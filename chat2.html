@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
-  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <style>
     /* ── DESIGN TOKENS ─────────────────────────────────── */
     :root {
@@ -914,6 +914,18 @@ function setStatus(state) {
   txt.textContent = s.label;
 }
 
+// ── NOTIFICATIONS ─────────────────────────────────────────────
+if ('Notification' in window && Notification.permission === 'default') {
+  Notification.requestPermission();
+}
+function requestNotification(msg) {
+  if (document.hasFocus()) return;
+  if (Notification.permission !== 'granted') return;
+  const sender = msg.sender || 'Someone';
+  const body = msg.content || (msg.image ? '[Image]' : msg.gif ? '[GIF]' : msg.file ? '[File]' : '');
+  new Notification('OwnsHub — ' + sender, { body, icon: 'logos_and_profileicons/logo6.png', tag: 'chat-' + sender });
+}
+
 // ── SOCKET EVENTS ──────────────────────────────────────────────
 if (socket) {
   socket.emit('join', myUsername);
@@ -932,16 +944,16 @@ if (socket) {
     const other = msg.sender === myUsername ? msg.receiver : msg.sender;
     ensureUserExists(other);
     touchRecent(other);
-    // Store under the other user's key (the "chatId" from my perspective)
     saveMsgLocally(msg, other);
-    // Prevent double message: if this is the echo of my just-sent message, skip appending
     if (!(msg.sender === myUsername && window._lastSentMsg === msg.timestamp)) {
       if (other === currentChatUser) {
         appendMessage(msg);
         scrollBottom();
+        if (msg.sender !== myUsername) requestNotification(msg);
       } else if (msg.receiver === myUsername) {
         unreadCounts[msg.sender] = (unreadCounts[msg.sender] || 0) + 1;
         saveUnread();
+        if (msg.sender !== myUsername) requestNotification(msg);
       }
     }
     renderUserList();
@@ -952,11 +964,13 @@ if (socket) {
       saveMsgLocally(msg, msg.group);
       appendMessage(msg);
       scrollBottom();
+      requestNotification(msg);
     } else if (msg.sender !== myUsername) {
       saveMsgLocally(msg, msg.group);
       unreadCounts['g_' + msg.group] = (unreadCounts['g_' + msg.group] || 0) + 1;
       saveUnread();
       renderGroupList();
+      requestNotification(msg);
     }
   });
 
@@ -2126,6 +2140,7 @@ window.addEventListener('beforeunload', () => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeEmoji(); closeGif(); closeModal(); clearReply(); }
 });
-</script>
+<\/script>
+<script src="chat.js"></script>
 </body>
 </html>
