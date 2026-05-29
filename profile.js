@@ -98,8 +98,20 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // Redirect to public profile page after save
-                window.location.replace(`public-profile.html?user=${encodeURIComponent(username)}`);
+                // After save, reload profile from backend to update avatar and UI
+                fetch('https://ownshub.onrender.com/api/profile', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                })
+                .then(res => res.json())
+                .then(profile => {
+                    const avatarUrl = profile.avatar && profile.avatar.trim() ? profile.avatar : 'logos_and_profileicons/default-profile.png';
+                    document.getElementById('avatarPreview').src = avatarUrl;
+                    document.getElementById('avatarPreview').style.display = '';
+                    renderProfileSummary(profile, username);
+                    document.getElementById('profileSavedMsg').textContent = 'Profile saved!';
+                    document.getElementById('profileSavedMsg').style.display = 'block';
+                    setTimeout(() => { document.getElementById('profileSavedMsg').style.display = 'none'; }, 2000);
+                });
             } else {
                 alert('Failed to save profile.');
             }

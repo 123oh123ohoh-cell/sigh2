@@ -732,45 +732,24 @@ async function touchRecentDM(username) {
   fetchAndCacheAvatar(username);
 }
 
-// Fetch avatar from localStorage, backend, localhost, and update allUsers/localStorage
+
+// Always fetch avatar from backend and update allUsers
 async function fetchAndCacheAvatar(username) {
   if (!username) return;
-  let avatar = null;
-  // 1. Check localStorage
-  avatar = localStorage.getItem('avatar_' + username);
-  if (avatar) {
-    updateUserAvatar(username, avatar);
-    return;
-  }
-  // 2. Try backend API
   try {
-    let res = await fetch(`${CHAT_SERVER_URL}/api/profile/avatar/${encodeURIComponent(username)}`);
+    let res = await fetch(`${CHAT_SERVER_URL}/api/profile?user=${encodeURIComponent(username)}`);
     if (res.ok) {
       let data = await res.json();
       if (data && data.avatar) {
-        avatar = data.avatar;
-        localStorage.setItem('avatar_' + username, avatar);
-        updateUserAvatar(username, avatar);
-        return;
+        updateUserAvatar(username, data.avatar);
+        localStorage.setItem('avatar_' + username, data.avatar);
+      }
+      if (data && data.displayName) {
+        let idx = allUsers.findIndex(u => u.username === username);
+        if (idx !== -1) allUsers[idx].displayName = data.displayName;
       }
     }
   } catch (e) {}
-  // 3. Try localhost (if different from CHAT_SERVER_URL)
-  if (!CHAT_SERVER_URL.includes('localhost')) {
-    try {
-      let res = await fetch(`http://localhost:3000/api/profile/avatar/${encodeURIComponent(username)}`);
-      if (res.ok) {
-        let data = await res.json();
-        if (data && data.avatar) {
-          avatar = data.avatar;
-          localStorage.setItem('avatar_' + username, avatar);
-          updateUserAvatar(username, avatar);
-          return;
-        }
-      }
-    } catch (e) {}
-  }
-  // 4. Fallback: do nothing (will use default)
 }
 
 function updateUserAvatar(username, avatar) {
