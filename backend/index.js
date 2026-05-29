@@ -1,3 +1,44 @@
+// ─── GROUPS ─────────────────────────────────────────────────
+// Create groups table if not exists
+try {
+  db.prepare(`CREATE TABLE IF NOT EXISTS groups (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    members TEXT,
+    creator TEXT,
+    createdAt TEXT
+  )`).run();
+} catch (e) { console.error('DB migration error (groups):', e); }
+
+// Get all groups
+app.get('/api/groups', (req, res) => {
+  try {
+    const rows = db.prepare('SELECT * FROM groups ORDER BY createdAt DESC').all();
+    // Parse members JSON for each group
+    const groups = rows.map(g => ({ ...g, members: JSON.parse(g.members || '[]') }));
+    res.json(groups);
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
+});
+
+// Create a new group
+app.post('/api/groups', (req, res) => {
+  const { id, name, members, creator } = req.body;
+  if (!id || !name || !Array.isArray(members) || !members.length) {
+    return res.status(400).json({ error: 'Missing fields' });
+  }
+  const createdAt = new Date().toISOString();
+  try {
+    db.prepare('INSERT OR IGNORE INTO groups (id, name, members, creator, createdAt) VALUES (?, ?, ?, ?, ?)')
+      .run(id, name, JSON.stringify(members), creator || members[0], createdAt);
+    // Emit group_create event to all sockets
+    io.emit('group_create', { id, name, members, creator: creator || members[0], createdAt });
+    res.json({ id, name, members, creator: creator || members[0], createdAt });
+  } catch (err) {
+    return res.status(500).json({ error: 'DB error' });
+  }
+});
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -140,6 +181,21 @@ io.on('connection', (socket) => {
     // Deliver to recipient and sender
     io.to(msg.receiver).emit('private_message', { ...msg, timestamp });
     io.to(msg.sender).emit('private_message', { ...msg, timestamp });
+  });
+
+  // Real-time group message support
+  socket.on('group_message', (msg) => {
+    const timestamp = msg.timestamp || new Date().toISOString();
+    // Save to DB (store group as receiver)
+    db.run(
+      'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
+      [msg.sender, msg.group, msg.content || '', msg.image || null, msg.gif || null, timestamp],
+      () => {}
+    );
+    // Broadcast to all in group except sender
+    socket.broadcast.emit('group_message', { ...msg, timestamp });
+    // Optionally, echo to sender as well:
+    socket.emit('group_message', { ...msg, timestamp });
   });
 });
 
