@@ -712,17 +712,6 @@
 </head>
 <body>
 
-  <!-- LOADING OVERLAY -->
-  <div id="loadingOverlay" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(11,13,19,0.96);transition:opacity 0.4s;">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;">
-      <div style="width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(108,99,255,0.18) 0%,transparent 70%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px #6c63ff55;">
-        <img src="logos_and_profileicons/logo6.png" alt="Loading" style="width:54px;height:54px;border-radius:16px;box-shadow:0 0 18px #e8673a88;">
-      </div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.3em;font-weight:700;color:var(--a2);text-shadow:0 2px 12px #3ecf8e55;">Connecting to chat…</div>
-      <div style="font-size:1.1em;color:var(--text-2);opacity:0.7;">Please wait <span class="loading-dots">...</span></div>
-    </div>
-  </div>
-
 <!-- HEADER -->
 <header class="app-header">
   <a href="index.html" class="logo">
@@ -923,19 +912,6 @@ function setStatus(state) {
   dot.style.background = s.color;
   dot.style.boxShadow  = `0 0 6px ${s.shadow}`;
   txt.textContent = s.label;
-
-  // Hide loading overlay on connect
-  if (state === 'connected') {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.style.opacity = '0';
-    setTimeout(() => { if (overlay) overlay.style.display = 'none'; }, 400);
-  } else {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) {
-      overlay.style.display = 'flex';
-      overlay.style.opacity = '1';
-    }
-  }
 }
 
 // ── SOCKET EVENTS ──────────────────────────────────────────────
@@ -1068,11 +1044,15 @@ async function fetchUsers() {
 }
 
 function statusColor(username) {
-  const st = userStatusMap[username] || (onlineUsers.has(username) ? 'online' : 'offline');
+  // Always show online if in onlineUsers, even if userStatusMap is stale
+  let st = userStatusMap[username];
+  if (onlineUsers.has(username)) st = 'online';
   return { online: '#3ecf8e', dnd: '#ff4d6d', away: '#fbbf24' }[st] || 'var(--text-3)';
 }
 function statusLabel(username) {
-  const st = userStatusMap[username] || (onlineUsers.has(username) ? 'online' : 'offline');
+  // Always show online if in onlineUsers, even if userStatusMap is stale
+  let st = userStatusMap[username];
+  if (onlineUsers.has(username)) st = 'online';
   return { online: 'Online', dnd: 'Do Not Disturb', away: 'Away' }[st] || 'Offline';
 }
 
@@ -1562,6 +1542,9 @@ function makeBtn(icon, title, fn) {
 
 // ── SEND MESSAGE ──────────────────────────────────────────────
 async function sendMessage() {
+    if (window._sendingMsg) return;
+    window._sendingMsg = true;
+    setTimeout(() => { window._sendingMsg = false; }, 350);
   if (!currentChatUser && !currentGroup) { toast('Select a chat first'); return; }
   const input = document.getElementById('chatInput');
   const content = input.value.trim();
@@ -2014,12 +1997,9 @@ function clearImage() {
 }
 
 // ── USER SEARCH ───────────────────────────────────────────────
-document.getElementById('userSearchInput').addEventListener('input', async e => {
+document.getElementById('userSearchInput').addEventListener('input', e => {
   userSearch = e.target.value.trim();
   renderUserList();
-  // Try to fetch avatar for searched username if only one result
-  const filtered = allUsers.filter(u => u.username !== myUsername && (userSearch.startsWith('@') ? (u.username.toLowerCase().includes(userSearch.slice(1).toLowerCase()) || (u.displayName || '').toLowerCase().includes(userSearch.slice(1).toLowerCase())) : true));
-  if (filtered.length === 1) await fetchAvatar(filtered[0].username);
 });
 
 // ── AVATAR CACHE ──────────────────────────────────────────────
