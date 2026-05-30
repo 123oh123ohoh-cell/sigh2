@@ -13,11 +13,13 @@
 <body>
         <div id="globalError" style="display:none;position:fixed;top:0;left:0;width:100vw;z-index:9999;background:#ff2222;color:#fff;text-align:center;padding:10px 0;font-weight:bold;letter-spacing:0.04em;">Network or backend error. Some features may not work.</div>
     <!-- Header -->
-    <header class="header" style="display: flex; align-items: center; justify-content: space-between; gap: 1.5em; padding: 18px 2vw;">
-        <a href="index.html" class="logo" style="display: flex; align-items: center;">
-            <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px; width:auto; display:block;">
-        </a>
-        <nav class="nav-links" style="display: flex; align-items: center; gap: 1.2em;">
+    <header class="header">
+        <!-- Hamburger button for mobile -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation" style="display:none;">
+            <span style="font-size:2em;line-height:1;">&#9776;</span>
+        </button>
+        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <nav class="nav-links">
             <a href="index.html" class="nav-link">Home</a>
             <a href="chat6.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
             <a href="#" class="nav-link">Live</a>
@@ -26,37 +28,64 @@
             <a href="premium.html" class="nav-link">Premium</a>
             <a href="arts.html" class="nav-link">Arts</a>
         </nav>
-        <div class="search-bar" style="flex: 0 1 220px; display: flex; align-items: center; margin: 0 10px;">
-            <input type="text" id="searchInput" placeholder="Search models..." style="width: 100%; min-width: 120px;">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
         </div>
         <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
         <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 10px;transition:background 0.18s;">Upload</a>
         <link rel="stylesheet" href="diamond-button.css">
-        <div style="display: flex; align-items: center; gap: 0.5em; min-width: 0;">
-            <span id="diamondDisplay" onclick="window.location.href='diamonds.html'" title="Buy diamonds; click to purchase" style="display:none;font-size:1.15em; padding: 5px 16px; min-height: 32px; min-width: 60px;">
-                <span class="diamond-btn-inner" style="font-size:1em; min-height:24px;">
-                    <span class="diamond-icon-wrap" style="height:1.3em;width:1.3em;">
-                        <img id="diamondIcon" src="logos_and_profileicons/diamond.png" alt="💎" style="height:1.3em;width:1.3em;">
-                        <span id="diamondSparkle" style="font-size:0.95em;left:-7px;top:0;">✧</span>
-                    </span>
-                    <span id="diamondAmount" style="font-size:1em;margin-left:7px;">0</span>
+        <span id="diamondDisplay" onclick="window.location.href='diamonds.html'" title="Buy diamonds; click to purchase" style="display:none;font-size:1.15em; padding: 5px 16px; min-height: 32px; min-width: 60px;">
+            <span class="diamond-btn-inner" style="font-size:1em; min-height:24px;">
+                <span class="diamond-icon-wrap" style="height:1.3em;width:1.3em;">
+                    <img id="diamondIcon" src="logos_and_profileicons/diamond.png" alt="💎" style="height:1.3em;width:1.3em;">
+                    <span id="diamondSparkle" style="font-size:0.95em;left:-7px;top:0;">✧</span>
                 </span>
+                <span id="diamondAmount" style="font-size:1em;margin-left:7px;">0</span>
             </span>
-            <div class="profile-dropdown">
-                <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
-                    <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
-                    <img id="profileAvatarFallback" src="logos_and_profileicons/defaultpfp.webp" alt="Default Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;cursor:pointer;">
-                </button>
-                <div class="dropdown-content" id="profileDropdownMenu">
-                    <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
-                    <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
-                    <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
-                    <a href="login.html" id="dropdownLogin">Log In</a>
-                    <a href="signup.html" id="dropdownSignup">Create Account</a>
-                </div>
+        </span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <img id="profileAvatarFallback" src="logos_and_profileicons/defaultpfp.webp" alt="Default Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;cursor:pointer;">
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
             </div>
         </div>
         <script>
+        // Hamburger menu toggle for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const header = document.querySelector('.header');
+            const navLinks = document.querySelector('.nav-links');
+            function isMobile() {
+                return window.innerWidth <= 600 || document.body.classList.contains('mobile-mode');
+            }
+            function updateMobileBtn() {
+                if (isMobile()) {
+                    mobileBtn.style.display = '';
+                    navLinks.style.display = '';
+                } else {
+                    mobileBtn.style.display = 'none';
+                    navLinks.classList.remove('show');
+                }
+            }
+            mobileBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                header.classList.toggle('mobile-nav-open');
+            });
+            document.addEventListener('click', function(e) {
+                if (!header.contains(e.target)) {
+                    header.classList.remove('mobile-nav-open');
+                }
+            });
+            window.addEventListener('resize', updateMobileBtn);
+            updateMobileBtn();
+        });
                         // --- Smart fetch wrapper with retry, fallback, and error UI ---
                         async function smartFetch(url, opts = {}, { fallback = null, retries = 2, timeout = 6000 } = {}) {
                             let lastErr;
