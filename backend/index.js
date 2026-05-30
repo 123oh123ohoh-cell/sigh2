@@ -5,26 +5,7 @@ app.get('/api/health', (req, res) => {
   try { dbOwnshub.prepare('SELECT 1').get(); ownshubOk = true; } catch {}
   res.json({ sigh2: sigh2Ok, ownshub: ownshubOk, status: (sigh2Ok && ownshubOk) ? 'healthy' : (sigh2Ok || ownshubOk) ? 'degraded' : 'down' });
 });
-const express = require('express');
-const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const Database = require('better-sqlite3');
-const http = require('http');
-const { Server } = require('socket.io');
-const os = require('os');
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: '*', methods: ['GET', 'POST'] }
-});
-
-const PORT = process.env.PORT || 5500;
-const SECRET = process.env.JWT_SECRET || 'supersecretkey';
-
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
 
 // ─── DATABASES ────────────────────────────────────────────────
 const dbSigh2 = new Database('./sigh2.db');
