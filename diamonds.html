@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <script src="https://js.stripe.com/v3/"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diamond Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="diamond-button.css">
+    <script src="theme-mode.js"></script>
+    <script src="user.js"></script>
+    <script src="diamonds.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+    <style>
+        body {
+            <style>
+                body {
+                    background: linear-gradient(120deg, #181818 0%, #232323 100%);
+                }
+                .diamond-hero {
+                    background: linear-gradient(120deg, #232323 70%, #181818 100%);
+                    border-radius: 32px;
+                    box-shadow: 0 8px 36px #ffd70044, 0 2px 12px #ffd70033;
+                    padding: 56px 32px 40px 32px;
+                    margin: 48px auto 32px auto;
+                    max-width: 600px;
+                    text-align: center;
+                }
+                .diamond-hero-logo {
+                    width: 70px;
+                    margin-bottom: 16px;
+                }
+                .diamond-hero-title {
+                    font-family: 'Pacifico', cursive;
+                    font-size: 2.6em;
+                    color: #ffd700;
+                    margin-bottom: 12px;
+                    letter-spacing: 1px;
+                    text-shadow: 0 2px 12px #ffd70099;
+                }
+                .diamond-hero-desc {
+                    color: #fffbe6;
+                    font-size: 1.25em;
+                    margin-bottom: 22px;
+                    font-weight: 500;
+                }
+                .diamond-svg {
+                    width: 70px;
+                    height: 70px;
+                    margin-bottom: 14px;
+                    vertical-align: middle;
+                    animation: sparkle 2.2s infinite linear;
+                    filter: drop-shadow(0 0 18px #ffd700cc);
+                }
+                @keyframes sparkle {
+                    0%, 100% { filter: drop-shadow(0 0 0 #fff0); }
+                    50% { filter: drop-shadow(0 0 32px #ffd700cc); }
+                }
+                .diamond-balance {
+                    font-size: 1.3em;
+                    margin-bottom: 28px;
+                    color: #ffd700;
+                    font-weight: 700;
+                }
+                .diamond-shop-cards {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 36px;
+                    margin-bottom: 48px;
+                }
+                @media (min-width: 700px) {
+                    .diamond-shop-cards { flex-direction: row; justify-content: center; }
+                }
+                .diamond-card {
+                    background: linear-gradient(120deg, #232323 70%, #181818 100%);
+                    border-radius: 32px;
+                    padding: 54px 32px 38px 32px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    box-shadow: 0 8px 36px #ffd70044, 0 2px 12px #ffd70033;
+                    border: 2.5px solid #ffd700;
+                    transition: box-shadow 0.2s, border 0.2s, transform 0.18s;
+                    min-width: 220px;
+                    position: relative;
+                    overflow: hidden;
+                }
+                .diamond-card .premium-badge {
+                    position: absolute;
+                    top: 18px;
+                    right: 18px;
+                    background: linear-gradient(90deg,#ffd700 0%,#fffbe6 100%);
+                    color: #232323;
+                    font-size: 1em;
+                    font-weight: 900;
+                    padding: 5px 18px;
+                    border-radius: 12px;
+                    box-shadow:0 2px 8px #ffd70055;
+                    letter-spacing:0.5px;
+                    z-index:2;
+                }
+                .diamond-card .diamond-glow {
+                    margin-bottom: 18px;
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .diamond-card .diamond-glow svg {
+                    width: 64px;
+                    height: 64px;
+                    filter: drop-shadow(0 0 32px #ffd700cc) drop-shadow(0 0 8px #fffbe6cc);
+                    animation: floatDiamond 2.2s infinite ease-in-out;
+                }
+                .diamond-card .diamond-sparkle {
+                    position: absolute;
+                    top: 8px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    font-size: 1.5em;
+                    color: #ffd700;
+                    opacity: 0.85;
+                    animation: sparkleTwinkle 1.8s infinite alternate;
+                    pointer-events: none;
+                }
+                @keyframes floatDiamond {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
+                }
+                @keyframes sparkleTwinkle {
+                    0%, 100% { opacity: 0.85; }
+                    50% { opacity: 0.2; }
+                }
+                .buy-btn {
+                    background: linear-gradient(90deg,#ffd700 0%,#fffbe6 100%);
+                    color: #232323;
+                    border: none;
+                    border-radius: 16px;
+                    padding: 20px 54px;
+                    font-size: 1.28em;
+                    font-weight: 900;
+                    cursor: pointer;
+                    box-shadow: 0 4px 24px #ffd70055;
+                    transition: background 0.18s, transform 0.18s;
+                    margin-top: 16px;
+                    letter-spacing: 0.5px;
+                }
+                .buy-btn:active { transform: scale(0.97); }
+                .diamond-benefits {
+                    max-width: 600px;
+                    margin: 0 auto 44px auto;
+                    background: linear-gradient(120deg, #232323 70%, #181818 100%);
+                    border-radius: 24px;
+                    box-shadow: 0 2px 18px #ffd70033;
+                    padding: 36px 36px 28px 36px;
+                    color: #ffd700;
+                }
+                .diamond-benefits-title {
+                    font-size: 1.32em;
+                    color: #ffd700;
+                    font-weight: 800;
+                    margin-bottom: 18px;
+                }
+                .diamond-benefits-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                }
+                .diamond-benefits-list li {
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    font-size: 1.18em;
+                    font-weight: 500;
+                }
+                .diamond-benefits-list svg {
+                    width: 1.5em;
+                    height: 1.5em;
+                    vertical-align: middle;
+                }
+            </style>
+            padding: 36px 36px 28px 36px;
+            color: #ff4d6d;
+        }
+        .diamond-benefits-title {
+            font-size: 1.32em;
+            color: #ff4d6d;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+        .diamond-benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .diamond-benefits-list li {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.18em;
+            font-weight: 500;
+        }
+        .diamond-benefits-list svg {
+            width: 1.5em;
+            height: 1.5em;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (EXACT from index2.html) -->
+    <header class="header">
+        <a href="index.html" class="logo">
+            <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px; width:auto; display:block;">
+        </a>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chat6.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+            <a href="#" class="nav-link">Live</a>
+            <a href="model.html" class="nav-link">Models</a>
+            <a href="#" class="nav-link">Categories</a>
+            <a href="premium.html" class="nav-link">Premium</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search models...">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 18px 0 18px;transition:background 0.18s;">Upload</a>
+        <span id="diamondDisplay" style="display:inline-block;vertical-align:middle;margin: right 1000px;;font-weight:700;font-size:1.08em;background:#fff2;border-radius:8px;padding:7px 14px 7px 10px;color:#ff4d6d;box-shadow:0 2px 8px #0001;">
+            <span class="diamond-btn-inner" onclick="window.location.href='diamonds.html'" title="Buy diamonds; click to purchase">
+                <span class="diamond-icon-wrap">
+                    <img id="diamondIcon" src="logos_and_profileicons/diamond.png" alt="💎">
+                    <span id="diamondSparkle">✧</span>
+                </span>
+                <span id="diamondAmount">0</span>
+            </span>
+        </span>
+        <div class="profile-dropdown">
+            <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+            </button>
+            <div class="dropdown-content" id="profileDropdownMenu">
+                <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
+                <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                <a href="login.html" id="dropdownLogin">Log In</a>
+                <a href="signup.html" id="dropdownSignup">Create Account</a>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="diamond-hero">
+            <img src="logos_and_profileicons/logo6.png" alt="Logo" class="diamond-hero-logo">
+            <div class="diamond-hero-title">Diamond Shop</div>
+            <svg class="diamond-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="32,6 58,24 48,58 16,58 6,24" fill="#ffb6e6" stroke="#ff4d6d" stroke-width="2"/>
+                <polygon points="32,6 32,58 48,58 58,24" fill="#b6e6ff" opacity="0.7"/>
+                <polygon points="32,6 32,58 16,58 6,24" fill="#ff4d6d" opacity="0.3"/>
+            </svg>
+            <div class="diamond-hero-desc">Shine bright! Buy diamonds to unlock cute perks, support your faves, and sparkle in the community ✨</div>
+            <div class="diamond-balance">Your Diamonds: <span id="userDiamonds">0</span></div>
+        </section>
+        <section class="diamond-shop-cards"></section>
+        <section class="diamond-benefits">
+            <div class="diamond-benefits-title">Why buy diamonds?</div>
+            <ul class="diamond-benefits-list">
+                <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffb6e6"/><text x="12" y="16" text-anchor="middle" font-size="14" fill="#fff">💬</text></svg> Unlock premium chat & content</li>
+                <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#b6e6ff"/><text x="12" y="16" text-anchor="middle" font-size="14" fill="#fff">🌸</text></svg> Support your favorite creators</li>
+                <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffd6e0"/><text x="12" y="16" text-anchor="middle" font-size="14" fill="#ff4d6d">✨</text></svg> Stand out with exclusive badges</li>
+                <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e0f7fa"/><text x="12" y="16" text-anchor="middle" font-size="14" fill="#ff4d6d">🎀</text></svg> Access special events & features</li>
+                <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff0f7"/><text x="12" y="16" text-anchor="middle" font-size="14" fill="#ff4d6d">⚡</text></svg> Instant delivery after purchase</li>
+            </ul>
+        </section>
+    </main>
+    <script>
+        // Diamond display logic (shared with premium.html)
+        function updateDiamondDisplay() {
+            const user = localStorage.getItem('loggedInUser');
+            let diamonds = 0;
+            if (user && typeof getDiamonds === 'function') {
+                diamonds = getDiamonds(user);
+            }
+            const diamondAmount = document.getElementById('diamondAmount');
+            if (diamondAmount) diamondAmount.textContent = diamonds;
+        }
+        document.addEventListener('DOMContentLoaded', updateDiamondDisplay);
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'userProfiles') updateDiamondDisplay();
+        });
+        async function buyDiamonds(amount, price) {
+            const username = localStorage.getItem('loggedInUser') || 'guest';
+            const res = await fetch('http://localhost:5500/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount, price, username })
+            });
+            const data = await res.json();
+            window.location = data.url;
+        }
+        // Use user.js profile system for diamonds
+        function getLoggedInUser() {
+            return localStorage.getItem('loggedInUser');
+        }
+        function updateDiamondBalance() {
+            const user = getLoggedInUser();
+            let diamonds = 0;
+            if (user && typeof getDiamonds === 'function') {
+                diamonds = getDiamonds(user);
+            }
+            document.getElementById('userDiamonds').textContent = diamonds;
+        }
+        updateDiamondBalance();
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'userProfiles') updateDiamondBalance();
+        });
+    </script>
+</body>
+</html>

@@ -7,6 +7,202 @@
     <link rel="stylesheet" href="styles.css">
 <script src="theme-mode.js"></script>
     <style>
+                                /* Diamond shine animation for cards */
+                                .card-diamond-wrap {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    position: relative;
+                                    margin-left: 6px;
+                                }
+                                .card-diamond-img {
+                                    height: 1.3em;
+                                    width: 1.3em;
+                                    vertical-align: middle;
+                                    filter: drop-shadow(0 0 6px #ffb6e6cc);
+                                    margin: 0 0 0 2px;
+                                    transition: filter 0.18s, transform 0.18s;
+                                    transform: rotate(-18deg);
+                                }
+                                .card-diamond-sparkle {
+                                    position: absolute;
+                                    left: -10px;
+                                    top: 0px;
+                                    font-size: 1em;
+                                    color: #ffb6e6;
+                                    opacity: 0.7;
+                                    pointer-events: none;
+                                    animation: sparkleFade 2.4s cubic-bezier(.4,0,.2,1) infinite alternate;
+                                }
+                                body { background: linear-gradient(120deg,#101014 70%,#181825 100%); min-height:100vh; font-family: 'Segoe UI', 'Inter', 'Arial', sans-serif; }
+                                .premium-main-title {
+                                    color: #fff;
+                                    font-size: 2.3em;
+                                    font-weight: 800;
+                                    text-align: center;
+                                    margin: 44px 0 16px 0;
+                                    letter-spacing: 1.2px;
+                                    text-shadow: 0 2px 12px #000a;
+                                }
+                                .premium-cards-row {
+                                    display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin: 0 auto 32px auto; max-width: 1100px;
+                                }
+                                .premium-card {
+                                    background: rgba(24,24,28,0.82);
+                                    border-radius: 18px;
+                                    box-shadow: 0 6px 32px #000e, 0 1.5px 8px #3ecf4a22, 0 0.5px 2px #fff1;
+                                    padding: 34px 26px 30px 26px;
+                                    width: 262px;
+                                    text-align: center;
+                                    color: #f7f7fa;
+                                    position: relative;
+                                    border: 1.5px solid rgba(62,207,74,0.13);
+                                    backdrop-filter: blur(7px) saturate(1.2);
+                                    transition: transform 0.16s, box-shadow 0.16s, border 0.16s, background 0.16s;
+                                }
+                                .premium-card:hover {
+                                    transform: scale(1.045);
+                                    box-shadow: 0 8px 36px #3ecf4a55, 0 4px 24px #000a;
+                                    border: 1.5px solid #3ecf4a;
+                                    background: rgba(24,24,28,0.96);
+                                    z-index:2;
+                                }
+                                .premium-card .badge {
+                                    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+                                    background: linear-gradient(90deg,#ffb347 0%,#ffd700 100%);
+                                    color: #222; font-size: 1em; font-weight: 900; padding: 5px 22px; border-radius: 12px; box-shadow:0 2px 8px #ffd6e055; letter-spacing:0.5px;
+                                }
+                                .premium-card .badge.value { background: linear-gradient(90deg,#ffe066 0%,#b6e6ff 100%); color:#222; }
+                                .premium-card .badge.popular { background: linear-gradient(90deg,#ff7e3a 0%,#ffd700 100%); color:#fff; }
+                                .premium-card .price {
+                                    font-size: 2.2em; font-weight: 900; color: #ffd700; margin: 18px 0 6px 0; letter-spacing:0.5px;
+                                }
+                                .premium-card .per {
+                                    font-size: 1.1em; color: #fff; opacity:0.7; margin-bottom: 10px;
+                                }
+                                .premium-card .card-features {
+                                    text-align:left; margin: 18px 0 18px 0; font-size:1.08em; line-height:1.7; min-height:120px;
+                                }
+                                .premium-card .card-features li { margin-bottom: 2px; }
+                                .premium-card .buy-btn {
+                                                                        position: relative;
+                                                                        overflow: hidden;
+                                    margin-top: 28px;
+                                    background: linear-gradient(90deg,#23232b 60%,#3ecf4a 100%);
+                                    color: #fff;
+                                    border: none;
+                                    border-radius: 14px;
+                                    padding: 56px 0;
+                                    font-size: 2.7em;
+                                    font-weight: 1200;
+                                    cursor: pointer;
+                                    box-shadow:0 6px 28px #3ecf4a99, 0 2px 8px #000a;
+                                    width: 100%;
+                                    min-width: 260px;
+                                    max-width: 420px;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    transition:background 0.16s,transform 0.12s,box-shadow 0.12s,filter 0.12s;
+                                    letter-spacing: 0.06em;
+                                    text-transform: uppercase;
+                                    outline: none;
+                                }
+                                .premium-card .buy-btn:active, .tier-free-btn:active {
+                                    transform: scale(0.94);
+                                    box-shadow: 0 0 0 18px #3ecf4a33, 0 2px 24px #3ecf4a99;
+                                    filter: brightness(1.22) saturate(1.28);
+                                }
+                                .premium-card .buy-btn .ripple {
+                                    position: absolute;
+                                    border-radius: 50%;
+                                    transform: scale(0);
+                                    animation: ripple-effect 0.5s linear;
+                                    background: rgba(62,207,74,0.25);
+                                    pointer-events: none;
+                                    z-index: 2;
+                                }
+                                @keyframes ripple-effect {
+                                    to {
+                                        transform: scale(2.8);
+                                        opacity: 0;
+                                    }
+                                }
+                                }
+                                .premium-card .buy-btn:hover, .tier-free-btn:hover {
+                                    background: linear-gradient(90deg,#3ecf4a 0%,#23232b 100%);
+                                    filter: brightness(1.12) saturate(1.13);
+                                    box-shadow:0 8px 36px #3ecf4a99, 0 2px 8px #000a;
+                                }
+                                .premium-card .buy-btn:disabled { background: #aaa; color: #666; cursor: not-allowed; }
+                                .premium-card .diamonds {
+                                    font-size: 1.09em; color: #3ecf4a; margin: 10px 0 0 0; font-weight: 600; letter-spacing:0.01em;
+                                }
+                                .premium-card .owned-badge {
+                                    display:block; margin:10px auto 0 auto; background:linear-gradient(90deg,#23232b 0%,#3ecf4a 100%); color:#fff; font-weight:700; border-radius:7px; padding:4px 16px; font-size:0.98em; box-shadow:0 2px 8px #3ecf4a33; width:max-content;
+                                }
+                                .premium-cards-row .premium-card:last-child { border-color: #3ecf4a; }
+                                .premium-cards-row .premium-card:nth-child(2) { border-color: #23232b; }
+                                .premium-cards-row .premium-card:first-child { border-color: #23232b; }
+                                .premium-cards-row .premium-card .card-icon { font-size:2.2em; margin-bottom:8px; }
+                                .premium-balance-bar {
+                                    display: flex; align-items: center; justify-content: center;
+                                    font-size: 1.13em; font-weight: 600; color: #e0e0e0; margin: 30px 0 16px 0;
+                                }
+                                .premium-balance-bar img { height: 1.2em; width: 1.2em; margin: 0 6px 0 2px; filter: drop-shadow(0 0 6px #3ecf4a99); }
+                                .premium-cta {
+                                    text-align:center; margin:48px 0 0 0;
+                                }
+                                .premium-cta-btn { background:linear-gradient(90deg,#23232b 60%,#3ecf4a 100%); color:#fff; font-size:1.18em; font-weight:700; border:none; border-radius:8px; padding:14px 36px; box-shadow:0 2px 8px #3ecf4a33; cursor:pointer; transition:background 0.16s,transform 0.16s; margin-top:16px; }
+                                .premium-cta-btn:hover { background:linear-gradient(90deg,#3ecf4a 0%,#23232b 100%); transform:scale(1.03); }
+                        body { background: linear-gradient(120deg,#181825 60%,#ffd6e0 200%); min-height:100vh; }
+                        .premium-banner {
+                            margin-bottom: 18px;
+                            animation: fadeInDown 1.2s cubic-bezier(.4,0,.2,1);
+                        }
+                        @keyframes fadeInDown {
+                            0% { opacity:0; transform:translateY(-40px); }
+                            100% { opacity:1; transform:translateY(0); }
+                        }
+                        .tiers-container { animation: fadeInUp 1.2s cubic-bezier(.4,0,.2,1); }
+                        @keyframes fadeInUp {
+                            0% { opacity:0; transform:translateY(40px); }
+                            100% { opacity:1; transform:translateY(0); }
+                        }
+                        .tier-card {
+                            position:relative;
+                            overflow:hidden;
+                        }
+                        .tier-card .tier-glow {
+                            position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;
+                            z-index:0; opacity:0.18;
+                            background: radial-gradient(circle at 60% 30%, #fff6 0%, #ffd6e0 60%, #fff0 100%);
+                            animation: glowPulse 2.8s infinite alternate cubic-bezier(.4,0,.2,1);
+                        }
+                        @keyframes glowPulse {
+                            0% { opacity:0.13; }
+                            100% { opacity:0.22; }
+                        }
+                        .tier-title {
+                            display:flex; align-items:center; justify-content:center; gap:7px;
+                        }
+                        .tier-title .tier-icon {
+                            font-size:1.3em; filter:drop-shadow(0 2px 8px #fff8);
+                        }
+                        .tier-features li::before {
+                            content:'✨'; margin-right:7px; color:#ffd6e0; font-size:0.98em;
+                        }
+                        .comparison-table {
+                            width:100%; max-width:700px; margin:40px auto 0 auto; border-collapse:collapse; background:#23232b99; border-radius:16px; overflow:hidden; box-shadow:0 2px 18px #ffd6e055;
+                        }
+                        .comparison-table th, .comparison-table td {
+                            padding:13px 10px; text-align:center; font-size:1.04em; border-bottom:1px solid #ffd6e022;
+                        }
+                        .comparison-table th { background:#ffd6e0; color:#222; font-weight:800; }
+                        .comparison-table tr:last-child td { border-bottom:none; }
+                        .comparison-table .yes { color:#3ecf8e; font-weight:900; font-size:1.1em; }
+                        .comparison-table .no { color:#ff4d6d; font-weight:900; font-size:1.1em; }
+                        .cta-section { text-align:center; margin:48px 0 0 0; }
+                        .cta-btn { background:linear-gradient(90deg,#ffb6e6 0%,#ffd700 100%); color:#222; font-size:1.25em; font-weight:900; border:none; border-radius:12px; padding:18px 44px; box-shadow:0 2px 18px #ffd6e055; cursor:pointer; transition:background 0.18s,transform 0.18s; margin-top:18px; }
+                        .cta-btn:hover { background:linear-gradient(90deg,#ffd700 0%,#ffb6e6 100%); transform:scale(1.04); }
                 .profile-dropdown .dropdown-content {
                     display: none;
                 }
@@ -14,26 +210,44 @@
                 .profile-dropdown.show .dropdown-content {
                     display: block;
                 }
-        .tiers-container { display: flex; justify-content: center; gap: 32px; margin-top: 60px; }
-        .tier-card { background: #181818; border-radius: 16px; box-shadow: 0 2px 12px #0008; padding: 32px 24px; width: 220px; text-align: center; color: #fff; transition: transform 0.2s; cursor: pointer; }
-        .tier-card:hover { transform: scale(1.05); box-shadow: 0 4px 24px #000a; }
-        .tier-title { font-size: 1.5em; margin-bottom: 12px; font-weight: bold; }
-        .tier-free-btn { margin-top: 18px; background: linear-gradient(90deg,#ffb347,#ffd700); color: #222; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        .diamond-balance {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15em; font-weight: 700; color: #fff; margin: 32px 0 18px 0;
+        }
+        .diamond-balance img { height: 1.2em; width: 1.2em; margin: 0 6px 0 2px; filter: drop-shadow(0 0 6px #ffb6e6cc); }
+        .tiers-container { display: flex; justify-content: center; gap: 36px; margin-top: 40px; flex-wrap: wrap; }
+        .tier-card {
+            border-radius: 20px; box-shadow: 0 4px 32px #ffd6e055, 0 2px 12px #0008;
+            padding: 36px 26px 30px 26px; width: 260px; text-align: center; color: #fff;
+            transition: transform 0.22s, box-shadow 0.22s; cursor: pointer; position: relative;
+            background: linear-gradient(135deg, #23232b 60%, #fff0 100%);
+        }
+        .tier-card.bronze { border: 2.5px solid #cd7f32; background: linear-gradient(135deg,#3a2c1a 60%,#cd7f32 100%); }
+        .tier-card.silver { border: 2.5px solid #c0c0c0; background: linear-gradient(135deg,#23232b 60%,#c0c0c0 100%); }
+        .tier-card.gold { border: 2.5px solid #ffd700; background: linear-gradient(135deg,#23232b 60%,#ffd700 100%); }
+        .tier-card:hover { transform: scale(1.045); box-shadow: 0 8px 36px #ffd6e099, 0 4px 24px #000a; z-index:2; }
+        .tier-title { font-size: 1.7em; margin-bottom: 10px; font-weight: bold; letter-spacing:0.5px; }
+        .tier-badge { position: absolute; top: 18px; right: 18px; background: #fff2; color: #fff; font-size: 0.95em; padding: 3px 13px; border-radius: 8px; font-weight: 700; letter-spacing:0.5px; box-shadow:0 2px 8px #ffd6e055; }
+        .tier-badge.owned { background: linear-gradient(90deg,#ffb6e6 0%,#ffd700 100%); color: #222; }
+        .tier-features { text-align:left; margin: 18px 0 18px 0; font-size:1.04em; line-height:1.7; }
+        .tier-features li { margin-bottom: 2px; }
+        .tier-free-btn { margin-top: 10px; background: linear-gradient(90deg,#ffb347,#ffd700); color: #222; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1.08em; font-weight: bold; cursor: pointer; box-shadow:0 2px 8px #ffd6e055; transition:background 0.18s; }
         .tier-free-btn:disabled { background: #aaa; color: #666; cursor: not-allowed; }
+        .get-diamonds-link { display:block; margin-top:10px; color:#ffb6e6; font-weight:600; text-decoration:underline; cursor:pointer; font-size:0.98em; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Header (copied from index.html for consistency) -->
+    <!-- Header (EXACT from index2.html) -->
     <header class="header">
         <a href="index.html" class="logo">
-            <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">
-            own's hub
+            <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px; width:auto; display:block;">
         </a>
         <nav class="nav-links">
-            <a href="chat2.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chat6.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
             <a href="#" class="nav-link">Live</a>
-            <a href="#" class="nav-link">Models</a>
+            <a href="model.html" class="nav-link">Models</a>
             <a href="#" class="nav-link">Categories</a>
             <a href="premium.html" class="nav-link">Premium</a>
             <a href="arts.html" class="nav-link">Arts</a>
@@ -41,6 +255,18 @@
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search models...">
         </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 18px 0 18px;transition:background 0.18s;">Upload</a>
+        <link rel="stylesheet" href="diamond-button.css">
+        <span id="diamondDisplay" onclick="window.location.href='diamonds.html'" title="Buy diamonds; click to purchase" style="font-size:1.15em; padding: 5px 16px; min-height: 32px; min-width: 60px;">
+            <span class="diamond-btn-inner" style="font-size:1em; min-height:24px;">
+                <span class="diamond-icon-wrap" style="height:1.3em;width:1.3em;">
+                    <img id="diamondIcon" src="logos_and_profileicons/diamond.png" alt="💎" style="height:1.3em;width:1.3em;">
+                    <span id="diamondSparkle" style="font-size:0.95em;left:-7px;top:0;">✧</span>
+                </span>
+                <span id="diamondAmount" style="font-size:1em;margin-left:7px;">0</span>
+            </span>
+        </span>
         <div class="profile-dropdown">
             <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
                 <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
@@ -48,7 +274,6 @@
             </button>
             <div class="dropdown-content" id="profileDropdownMenu">
                 <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
-                <a href="#" id="publicProfileLink" style="display:none;">View Public Profile</a>
                 <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
                 <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
                 <a href="login.html" id="dropdownLogin">Log In</a>
@@ -56,6 +281,21 @@
             </div>
         </div>
         <script>
+        // Diamonds currency logic (EXACT from index2.html)
+        function updateDiamondDisplay() {
+            const user = localStorage.getItem('loggedInUser');
+            if (!user) {
+                document.getElementById('diamondAmount').textContent = '0';
+                return;
+            }
+            document.getElementById('diamondAmount').textContent = getDiamonds(user);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDiamondDisplay();
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'userProfiles') updateDiamondDisplay();
+            });
+        });
                 // Dropdown toggle logic (copied from index.html)
                 document.addEventListener('DOMContentLoaded', function() {
                     const dropdownBtn = document.getElementById('profileDropdownBtn');
@@ -156,57 +396,150 @@
         </script>
     </header>
     <main class="main-content">
-        <div class="premium-banner">
-            <h3>👤 Unlock Premium Features</h3>
-            <p>HD quality, private shows, unlimited tokens, and VIP access to all models</p>
-        </div>
-        <section class="section">
-            <h2 class="section-title" style="justify-content:center;">Choose Your Premium Tier</h2>
-            <div class="tiers-container" style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap;">
-                <div class="tier-card" id="bronzeTier" style="background:var(--card-bg);color:var(--text-light);border:1.5px solid #cd7f32;">
-                    <div class="tier-title" style="color:#cd7f32;">👤 Bronze</div>
-                    <div>All features, free forever</div>
-                    <button class="tier-free-btn" onclick="claimPremium('Bronze')">Free</button>
+        <!-- Unified Premium Gallery & Tiers Section (All 6 cards in one row) -->
+        <section class="premium-tiers-section" style="position:relative;z-index:2;margin:48px auto 32px auto;max-width:1200px;">
+            <h2 class="section-title" style="text-align:center;margin-bottom:32px;">Choose Your Premium Tier</h2>
+            <div class="unified-cards-row" style="display:flex;gap:36px;justify-content:center;flex-wrap:wrap;align-items:stretch;">
+                <div class="collection-img-card fade-in-premium" id="bronzeTier" style="position:relative;overflow:hidden;border-radius:24px;box-shadow:0 8px 36px #cd7f3233,0 2px 12px #0002;min-width:260px;max-width:320px;flex:1 1 260px;background:linear-gradient(120deg,#3a2c1acc 60%,#cd7f3222 100%);display:flex;flex-direction:column;justify-content:flex-end;border:2.5px solid #cd7f32;">
+                    <img src="cum/IMG_0888.jpeg" alt="bg" style="position:absolute;z-index:0;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.13;pointer-events:none;mix-blend-mode:lighten;filter: blur(1.5px) grayscale(0.2);">
+                    <div style="font-size:2.2em;margin-bottom:8px;display:flex;align-items:center;gap:7px;justify-content:center;">
+                        <span style='color:#cd7f32;'>Bronze</span>
+                        <span class="card-diamond-wrap">
+                            <img class="card-diamond-img" src="logos_and_profileicons/diamond.png" alt="💎">
+                            <span class="card-diamond-sparkle">✧</span>
+                        </span>
+                    </div>
+                    <div style="color:#bfa77a;font-size:1.04em;margin-bottom:6px;text-align:center;">Perfect for new users. Enjoy all core features and premium support at the best value.</div>
+                                        <ul class="card-features" style="margin: 18px 0 10px 0; padding: 0 0 0 18px; text-align:left; font-size:1.08em; line-height:1.7; min-height:120px; color:#fff;">
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>All core site features</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Premium support</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Ad-free experience</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Early access to new models</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Basic customization options</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Access to standard galleries</li>
+                                        </ul>
+                    <div style="color:#fff;font-size:1.1em;margin-bottom:8px;text-align:center;">All features, entry tier</div>
+                    <div style="margin:10px 0 16px 0;font-size:1.1em;color:#ffb6e6;text-align:center;">500 Diamonds</div>
+                    <button class="tier-free-btn buy-btn" onclick="createRipple(event);claimPremium('Bronze',500)" style="display:block;margin:0 auto;">Buy</button>
                 </div>
-                <div class="tier-card" id="silverTier" style="background:var(--card-bg);color:var(--text-light);border:1.5px solid #c0c0c0;">
-                    <div class="tier-title" style="color:#c0c0c0;">👤 Silver</div>
-                    <div>All features, free forever</div>
-                    <button class="tier-free-btn" onclick="claimPremium('Silver')">Free</button>
+                <div class="collection-img-card fade-in-premium" id="silverTier" style="position:relative;overflow:hidden;border-radius:24px;box-shadow:0 8px 36px #c0c0c033,0 2px 12px #0002;min-width:260px;max-width:320px;flex:1 1 260px;background:linear-gradient(120deg,#23232bcc 60%,#c0c0c022 100%);display:flex;flex-direction:column;justify-content:flex-end;border:2.5px solid #c0c0c0;">
+                    <img src="cum/IMG_0899.jpeg" alt="bg" style="position:absolute;z-index:0;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.13;pointer-events:none;mix-blend-mode:lighten;filter: blur(1.5px) grayscale(0.2);">
+                    <div style="font-size:2.2em;margin-bottom:8px;display:flex;align-items:center;gap:7px;justify-content:center;">
+                        <span style='color:#c0c0c0;'>Silver</span>
+                        <span class="card-diamond-wrap">
+                            <img class="card-diamond-img" src="logos_and_profileicons/diamond.png" alt="💎">
+                            <span class="card-diamond-sparkle">✧</span>
+                        </span>
+                    </div>
+                    <div style="color:#bfc7d6;font-size:1.04em;margin-bottom:6px;text-align:center;">A step up for power users. Unlock advanced features, faster support, and exclusive content.</div>
+                                        <ul class="card-features" style="margin: 18px 0 10px 0; padding: 0 0 0 18px; text-align:left; font-size:1.08em; line-height:1.7; min-height:120px; color:#fff;">
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Everything in Bronze</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Advanced customization</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Priority support</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Exclusive model previews</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Access to premium galleries</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Monthly bonus diamonds</li>
+                                        </ul>
+                    <div style="color:#fff;font-size:1.1em;margin-bottom:8px;text-align:center;">All features, mid tier</div>
+                    <div style="margin:10px 0 16px 0;font-size:1.1em;color:#b6e6ff;text-align:center;">900 Diamonds</div>
+                    <button class="tier-free-btn buy-btn" onclick="createRipple(event);claimPremium('Silver',900)" style="display:block;margin:0 auto;">Buy</button>
                 </div>
-                <div class="tier-card" id="goldTier" style="background:var(--card-bg);color:var(--text-light);border:1.5px solid #ffd700;">
-                    <div class="tier-title" style="color:#ffd700;">👤 Gold</div>
-                    <div>All features, free forever</div>
-                    <button class="tier-free-btn" onclick="claimPremium('Gold')">Free</button>
+                <div class="collection-img-card fade-in-premium" id="goldTier" style="position:relative;overflow:hidden;border-radius:24px;box-shadow:0 8px 36px #ffd70033,0 2px 12px #0002;min-width:260px;max-width:320px;flex:1 1 260px;background:linear-gradient(120deg,#23232bcc 60%,#ffd70022 100%);display:flex;flex-direction:column;justify-content:flex-end;border:2.5px solid #ffd700;">
+                    <img src="cum/IMG_0900.jpeg" alt="bg" style="position:absolute;z-index:0;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0.13;pointer-events:none;mix-blend-mode:lighten;filter: blur(1.5px) grayscale(0.2);">
+                    <div style="font-size:2.2em;margin-bottom:8px;display:flex;align-items:center;gap:7px;justify-content:center;">
+                        <span style='color:#ffd700;'>Gold</span>
+                        <span class="card-diamond-wrap">
+                            <img class="card-diamond-img" src="logos_and_profileicons/diamond.png" alt="💎">
+                            <span class="card-diamond-sparkle">✧</span>
+                        </span>
+                    </div>
+                    <div style="color:#ffe6b6;font-size:1.04em;margin-bottom:6px;text-align:center;">The ultimate experience. Get every feature, priority support, and VIP-only perks for true enthusiasts.</div>
+                                        <ul class="card-features" style="margin: 18px 0 10px 0; padding: 0 0 0 18px; text-align:left; font-size:1.08em; line-height:1.7; min-height:120px; color:#fff;">
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Everything in Silver</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>VIP-only events & content</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Highest priority support</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Personalized recommendations</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Exclusive VIP badge</li>
+                                            <li><span style="color:#3ecf4a;font-size:1.1em;margin-right:7px;">✔</span>Double monthly bonus diamonds</li>
+                                        </ul>
+                    <div style="color:#fff;font-size:1.1em;margin-bottom:8px;text-align:center;">All features, top tier</div>
+                    <div style="margin:10px 0 16px 0;font-size:1.1em;color:#ffe6b6;text-align:center;">1200 Diamonds</div>
+                    <button class="tier-free-btn buy-btn" onclick="createRipple(event);claimPremium('Gold',1200)" style="display:block;margin:0 auto;">Buy</button>
+                <script>
+                // Satisfying ripple effect for Buy buttons
+                function createRipple(event) {
+                    const button = event.currentTarget;
+                    const circle = document.createElement("span");
+                    const diameter = Math.max(button.clientWidth, button.clientHeight);
+                    const radius = diameter / 2;
+                    circle.style.width = circle.style.height = `${diameter}px`;
+                    circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+                    circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+                    circle.classList.add("ripple");
+                    // Remove any old ripple
+                    const oldRipple = button.querySelector('.ripple');
+                    if (oldRipple) oldRipple.remove();
+                    button.appendChild(circle);
+                }
+                </script>
                 </div>
             </div>
         </section>
+        <style>
+        .fade-in-premium {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            animation: fadeInPremium 1.6s cubic-bezier(.4,0,.2,1) forwards;
+        }
+        .fade-in-premium:nth-child(2) { animation-delay: 0.3s; }
+        .fade-in-premium:nth-child(3) { animation-delay: 0.6s; }
+        .fade-in-premium:nth-child(4) { animation-delay: 0.9s; }
+        .fade-in-premium:nth-child(5) { animation-delay: 1.2s; }
+        .fade-in-premium:nth-child(6) { animation-delay: 1.5s; }
+        @keyframes fadeInPremium {
+            0% { opacity:0; transform:translateY(40px) scale(0.98); }
+            100% { opacity:1; transform:translateY(0) scale(1); }
+        }
+        </style>
     </main>
-    <script>
-    async function claimPremium(tier) {
-        const loggedInUser = localStorage.getItem('loggedInUser');
-        const token = localStorage.getItem('token');
-        if (!loggedInUser || !token) {
-            alert('You need an account to claim premium! Please log in or sign up.');
-            window.location.href = 'login.html';
-            return;
+        <script>
+        // Requires user.js for diamond logic
+        async function claimPremium(tier, cost) {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const token = localStorage.getItem('token');
+            if (!loggedInUser || !token) {
+                alert('You need an account to buy premium! Please log in or sign up.');
+                window.location.href = 'login.html';
+                return;
+            }
+            if (typeof getDiamonds !== 'function' || typeof setDiamonds !== 'function') {
+                alert('Diamond system not loaded. Please try again later.');
+                return;
+            }
+            let diamonds = getDiamonds(loggedInUser);
+            if (diamonds < cost) {
+                alert('You need ' + cost + ' diamonds for this tier, but you only have ' + diamonds + '.');
+                return;
+            }
+            setDiamonds(loggedInUser, diamonds - cost);
+            localStorage.setItem('premiumTier', tier);
+            try {
+                const res = await fetch('https://ownshub.onrender.com/api/premium', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ premiumTier: tier })
+                });
+                if (!res.ok) throw new Error('Failed to update premium on backend');
+            } catch {
+                alert('Failed to update premium on backend, but it is set locally.');
+            }
+            alert('Congratulations! You now have ' + tier + ' premium.');
+            window.location.href = 'profile.html';
         }
-        localStorage.setItem('premiumTier', tier);
-        try {
-            const res = await fetch('https://ownshub.onrender.com/api/premium', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({ premiumTier: tier })
-            });
-            if (!res.ok) throw new Error('Failed to update premium on backend');
-        } catch {
-            alert('Failed to update premium on backend, but it is set locally.');
-        }
-        alert('Congratulations! You now have ' + tier + ' premium.');
-        window.location.href = 'profile.html';
-    }
+        </script>
     </script>
     <!-- Legacy appearance migration: defer to global theme-mode.js -->
     <script>

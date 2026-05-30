@@ -1,0 +1,79 @@
+/* Diamonds Button Styles */
+#diamondDisplay {
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    margin-right: 6px;
+    background: var(--card-bg);
+    border-radius: 999px;
+    padding: 2px 2px;
+    color: var(--text-light);
+    box-shadow: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid var(--border-color);
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 400;
+    gap: 0;
+}
+#diamondDisplay:hover {
+    background: var(--hover-bg);
+    border-color: var(--primary-red);
+    transform: scale(1.02);
+}
+#diamondDisplay .diamond-btn-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    min-width: 0;
+    position: relative;
+    vertical-align: middle;
+    width: auto;
+}
+#diamondDisplay .diamond-icon-wrap {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    height: 1.18em;
+    width: 1.18em;
+    margin-top: -5px;
+}
+#diamondIcon {
+    height: 1.18em;
+    width: 1.18em;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 2px #ff4d6d88);
+    margin: 0;
+    transition: filter 0.18s, transform 0.18s;
+    transform: rotate(-18deg);
+}
+#diamondSparkle {
+    position: absolute;
+    left: -8px;
+    top: 0px;
+    font-size: 0.85em;
+    color: #ffb6e6;
+    opacity: 0.7;
+    pointer-events: none;
+    animation: sparkleFade 2.4s cubic-bezier(.4,0,.2,1) infinite alternate;
+}
+#diamondAmount {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-light);
+    letter-spacing: 0.01em;
+    min-width: 12px;
+    text-align: center;
+    line-height: 1.1;
+    text-shadow: none;
+    margin-left: 6px;
+}
+@keyframes sparkleFade {
+    0% { opacity: 0.2; transform: scale(0.8) rotate(-10deg); }
+    60% { opacity: 1; transform: scale(1.1) rotate(10deg); }
+    100% { opacity: 0.2; transform: scale(0.8) rotate(-10deg); }
+}

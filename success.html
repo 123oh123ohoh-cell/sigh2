@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="user.js"></script>
+    <script src="diamonds.js"></script>
+    <style>
+        body { background: #181818; color: #ffd700; text-align: center; font-family: 'Netflix Sans', Arial, sans-serif; }
+        .success-container { margin: 80px auto; max-width: 400px; background: #232323; border-radius: 24px; box-shadow: 0 4px 24px #ffd70033; padding: 48px 32px; }
+        .success-title { font-size: 2em; margin-bottom: 18px; color: #ffd700; }
+        .success-msg { font-size: 1.2em; margin-bottom: 24px; color: #fffbe6; }
+        .diamond-amount { font-size: 1.5em; color: #ffd700; font-weight: bold; margin-bottom: 18px; }
+        .back-btn { background: linear-gradient(90deg,#ffd700 0%,#fffbe6 100%); color: #232323; border: none; border-radius: 16px; padding: 16px 40px; font-size: 1.1em; font-weight: 900; cursor: pointer; box-shadow: 0 2px 8px #ffd70055; margin-top: 18px; }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-title">Payment Successful!</div>
+        <div class="success-msg">Thank you for your purchase.<br>Your diamonds will be added to your account.</div>
+        <div class="diamond-amount" id="diamondAmountMsg"></div>
+        <button class="back-btn" onclick="window.location.href='diamonds.html'">Back to Shop</button>
+    </div>
+    <script>
+    // Parse query params
+    function getQueryParam(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+    const amount = parseInt(getQueryParam('amount'), 10);
+    const username = getQueryParam('username');
+    if (amount && username) {
+        if (typeof addDiamonds === 'function') addDiamonds(username, amount);
+        document.getElementById('diamondAmountMsg').textContent = `+${amount} Diamonds added!`;
+        // Optionally, fetch server-side balance and sync
+        // fetch(`http://localhost:5500/user-balance?username=${encodeURIComponent(username)}`)
+        //   .then(r => r.json()).then(data => setDiamonds(username, data.diamonds));
+    } else {
+        document.getElementById('diamondAmountMsg').textContent = '';
+    }
+    </script>
+</body>
+</html>
