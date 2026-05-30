@@ -65,6 +65,101 @@
                                 <input type="email" id="accountEmail">
                             </label>
                             <button type="submit">Save Account</button>
+                                                <div style="display:flex;gap:16px;margin:18px 0 0 0;">
+                                                        <button id="accountDeveloperBtn" type="button" class="mode-btn theme-mode-btn" style="min-width:120px;min-height:44px;padding:0 22px;display:none;align-items:center;justify-content:center;border-radius:22px;margin-right:8px;">
+                                                            <span style="display:flex;align-items:center;gap:10px;">
+                                                                <span style="font-size:1.3em;line-height:1;">&#128187;</span>
+                                                                <span style="font-size:1.08em;font-weight:600;letter-spacing:0.01em;">Developer</span>
+                                                            </span>
+                                                        </button>
+                                                        <button id="accountDiamondsBtn" type="button" class="mode-btn theme-mode-btn" style="min-width:120px;min-height:44px;padding:0 22px;display:none;align-items:center;justify-content:center;border-radius:22px;">
+                                                            <span style="display:flex;align-items:center;gap:10px;">
+                                                                <span style="font-size:1.3em;line-height:1;">&#128142;</span>
+                                                                <span style="font-size:1.08em;font-weight:600;letter-spacing:0.01em;">Diamonds</span>
+                                                            </span>
+                                                        </button>
+                                                        <style>
+                                                        #accountDeveloperBtn.active, #accountDeveloperBtn.active:hover {
+                                                            background:linear-gradient(135deg,#2ecc40 60%,#27ae60 100%)!important;
+                                                            border-color:#2ecc40!important;
+                                                            color:#fff!important;
+                                                        }
+                                                        #accountDiamondsBtn.active, #accountDiamondsBtn.active:hover {
+                                                            background:linear-gradient(135deg,#2ecc40 60%,#27ae60 100%)!important;
+                                                            border-color:#2ecc40!important;
+                                                            color:#fff!important;
+                                                        }
+                                                        </style>
+                                                        <script>
+                                                        // Typing buffer for secret toggles
+                                                        let revealBuffer = '';
+                                                        document.addEventListener('keydown', function(e) {
+                                                            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+                                                            revealBuffer += e.key.toLowerCase();
+                                                            if (revealBuffer.length > 16) revealBuffer = revealBuffer.slice(-16);
+                                                            if (revealBuffer.endsWith('developer')) {
+                                                                document.getElementById('accountDeveloperBtn').style.display = '';
+                                                                updateDevBtn();
+                                                            }
+                                                            if (revealBuffer.endsWith('diamonds')) {
+                                                                document.getElementById('accountDiamondsBtn').style.display = '';
+                                                                updateDiamondsBtn();
+                                                            }
+                                                        });
+
+                                                        function updateDevBtn() {
+                                                            const btn = document.getElementById('accountDeveloperBtn');
+                                                            const enabled = localStorage.getItem('developerMode') === 'true';
+                                                            if (enabled) {
+                                                                btn.classList.add('active');
+                                                                btn.setAttribute('aria-pressed', 'true');
+                                                            } else {
+                                                                btn.classList.remove('active');
+                                                                btn.setAttribute('aria-pressed', 'false');
+                                                            }
+                                                        }
+                                                        function updateDiamondsBtn() {
+                                                            const btn = document.getElementById('accountDiamondsBtn');
+                                                            const username = localStorage.getItem('loggedInUser');
+                                                            let enabled = false;
+                                                            if (username && typeof getUserProfile === 'function') {
+                                                                try {
+                                                                    const profile = getUserProfile(username);
+                                                                    enabled = !!profile.diamondsEnabled;
+                                                                } catch {}
+                                                            }
+                                                            if (enabled) {
+                                                                btn.classList.add('active');
+                                                                btn.setAttribute('aria-pressed', 'true');
+                                                            } else {
+                                                                btn.classList.remove('active');
+                                                                btn.setAttribute('aria-pressed', 'false');
+                                                            }
+                                                        }
+                                                        document.getElementById('accountDeveloperBtn').onclick = function() {
+                                                            const enabled = localStorage.getItem('developerMode') === 'true';
+                                                            localStorage.setItem('developerMode', enabled ? 'false' : 'true');
+                                                            updateDevBtn();
+                                                        };
+                                                        document.getElementById('accountDiamondsBtn').onclick = function() {
+                                                            const username = localStorage.getItem('loggedInUser');
+                                                            if (!username || typeof updateUserProfile !== 'function') return;
+                                                            let enabled = false;
+                                                            try {
+                                                                const profile = getUserProfile(username);
+                                                                enabled = !!profile.diamondsEnabled;
+                                                            } catch {}
+                                                            updateUserProfile(username, { diamondsEnabled: !enabled });
+                                                            setTimeout(updateDiamondsBtn, 100);
+                                                        };
+                                                        // Initialize button state on load
+                                                        document.addEventListener('DOMContentLoaded', function() {
+                                                            updateDevBtn();
+                                                            updateDiamondsBtn();
+                                                        });
+                                                        </script>
+                                                    </button>
+                                                </div>
                         </form>
                         <div id="accountSavedMsg" style="display:none;color:green;margin-top:12px;font-weight:bold;">Account saved!</div>
                     </div>
@@ -127,6 +222,14 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="appearance-block" style="margin-top:14px;">
+                                <span class="appearance-label">Special Features</span>
+                                <div class="mode-toggle" role="group" aria-label="Special features">
+                                    <button type="button" class="mode-btn special-mode-btn" id="diamondsModeBtn" data-special="diamonds" aria-label="Diamonds mode" style="display:none;">
+                                        <span>Diamonds</span>
+                                    </button>
+                                </div>
+                            </div>
                             <button type="submit">Save Appearance</button>
                         </form>
                         <div id="appearanceSavedMsg" style="display:none;color:green;margin-top:12px;font-weight:bold;">Appearance saved!</div>
@@ -157,9 +260,87 @@
         });
     });
 
+    // Diamonds switch logic (hidden by default, reveal with secret key sequence)
+    function getDiamondsEnabled() {
+        const username = localStorage.getItem('loggedInUser');
+        if (!username || typeof getUserProfile !== 'function') return false;
+        const profile = getUserProfile(username);
+        return !!profile.diamondsEnabled;
+    }
+    function setDiamondsEnabled(enabled) {
+        const username = localStorage.getItem('loggedInUser');
+        if (!username || typeof updateUserProfile !== 'function') return;
+        updateUserProfile(username, { diamondsEnabled: !!enabled });
+    }
+    function updateDiamondsButton() {
+        const btn = document.getElementById('diamondsModeBtn');
+        if (!btn) return;
+        btn.classList.toggle('active', getDiamondsEnabled());
+        btn.setAttribute('aria-pressed', getDiamondsEnabled() ? 'true' : 'false');
+        btn.setAttribute('data-state', getDiamondsEnabled() ? 'on' : 'off');
+    }
+    // Secret key sequence to reveal switches
+    let keyBuffer = '';
+    document.addEventListener('keydown', function(e) {
+        keyBuffer += e.key.toLowerCase();
+        if (keyBuffer.length > 12) keyBuffer = keyBuffer.slice(-12);
+        if (keyBuffer.endsWith('diamonds')) {
+            const switchEl = document.getElementById('enableDiamondsSwitch');
+            const labelEl = document.getElementById('diamondsSwitchLabel');
+            if (switchEl && labelEl) {
+                switchEl.style.display = '';
+                labelEl.style.display = '';
+            }
+        }
+        if (keyBuffer.endsWith('developer')) {
+            const devSwitch = document.getElementById('enableDeveloperSwitch');
+            const devLabel = document.getElementById('developerSwitchLabel');
+            if (devSwitch && devLabel) {
+                devSwitch.style.display = '';
+                devLabel.style.display = '';
+            }
+        }
+    });
+    // Initialize switches on load (but keep hidden)
+    function getDeveloperEnabled() {
+        return localStorage.getItem('developerMode') === 'true';
+    }
+    function setDeveloperEnabled(enabled) {
+        localStorage.setItem('developerMode', enabled ? 'true' : 'false');
+        window.dispatchEvent(new Event('storage')); // sync across tabs
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const switchEl = document.getElementById('enableDiamondsSwitch');
+        if (switchEl) {
+            switchEl.checked = getDiamondsEnabled();
+            switchEl.addEventListener('change', function() {
+                setDiamondsEnabled(switchEl.checked);
+            });
+        }
+        const devSwitch = document.getElementById('enableDeveloperSwitch');
+        if (devSwitch) {
+            devSwitch.checked = getDeveloperEnabled();
+            devSwitch.addEventListener('change', function() {
+                setDeveloperEnabled(devSwitch.checked);
+            });
+        }
+    });
+    // Reveal button by typing 'diamonds'
+    let diamondsKeyBuffer = '';
+    document.addEventListener('keydown', function(e) {
+        diamondsKeyBuffer += e.key.toLowerCase();
+        if (diamondsKeyBuffer.length > 8) diamondsKeyBuffer = diamondsKeyBuffer.slice(-8);
+        if (diamondsKeyBuffer.endsWith('diamonds')) {
+            const btn = document.getElementById('diamondsModeBtn');
+            if (btn) btn.style.display = '';
+        }
+    });
     // Account form
     document.getElementById('accountForm').onsubmit = function(e) {
         e.preventDefault();
+        // Save diamonds switch state
+        const switchEl = document.getElementById('enableDiamondsSwitch');
+        if (switchEl) setDiamondsEnabled(switchEl.checked);
         document.getElementById('accountSavedMsg').style.display = 'block';
         setTimeout(function(){
             document.getElementById('accountSavedMsg').style.display = 'none';

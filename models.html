@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlamHub - Free HD Videos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme-mode.js"></script>
+  <script src="user.js"></script>
+  <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+</head>
+<body>
+    <!-- Header (EXACT copy from index.html) -->
+    <header class="header" style="display: flex; align-items: center; justify-content: space-between; gap: 1.5em; padding: 18px 2vw;">
+      <a href="index.html" class="logo" style="display: flex; align-items: center;">
+        <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px; width:auto; display:block;">
+      </a>
+      <nav class="nav-links" style="display: flex; align-items: center; gap: 1.2em;">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="chat6.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+        <a href="#" class="nav-link">Live</a>
+        <a href="models.html" class="nav-link">Models</a>
+        <a href="#" class="nav-link">Categories</a>
+        <a href="premium.html" class="nav-link">Premium</a>
+        <a href="arts.html" class="nav-link">Arts</a>
+      </nav>
+      <div class="search-bar" style="flex: 0 1 220px; display: flex; align-items: center; margin: 0 10px;">
+        <input type="text" id="searchInput" placeholder="Search models..." style="width: 100%; min-width: 120px;">
+      </div>
+      <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+      <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 10px;transition:background 0.18s;">Upload</a>
+      <link rel="stylesheet" href="diamond-button.css">
+      <div style="display: flex; align-items: center; gap: 0.5em; min-width: 0;">
+        <span id="diamondDisplay" onclick="window.location.href='diamonds.html'" title="Buy diamonds; click to purchase" style="display:none;font-size:1.15em; padding: 5px 16px; min-height: 32px; min-width: 60px;">
+          <span class="diamond-btn-inner" style="font-size:1em; min-height:24px;">
+            <span class="diamond-icon-wrap" style="height:1.3em;width:1.3em;">
+              <img id="diamondIcon" src="logos_and_profileicons/diamond.png" alt="💎" style="height:1.3em;width:1.3em;">
+              <span id="diamondSparkle" style="font-size:0.95em;left:-7px;top:0;">✧</span>
+            </span>
+            <span id="diamondAmount" style="font-size:1em;margin-left:7px;">0</span>
+          </span>
+        </span>
+        <div class="profile-dropdown">
+          <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+            <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+            <img id="profileAvatarFallback" src="logos_and_profileicons/defaultpfp.webp" alt="Default Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;cursor:pointer;">
+          </button>
+          <div class="dropdown-content" id="profileDropdownMenu">
+            <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+            <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
+            <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+            <a href="login.html" id="dropdownLogin">Log In</a>
+            <a href="signup.html" id="dropdownSignup">Create Account</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Add space above carousel -->
+    <div style="height:80px;"></div>
+    <!-- Featured Banner Carousel (auto-rotating) -->
+  <div id="featuredCarousel" style="width:100vw;max-width:100vw;overflow:hidden;position:relative;padding:40px 0 18px 0;background:linear-gradient(90deg,#2a0033 0%,#ffd700 100%);height:380px;">
+    <div class="carousel-slide" style="min-width:600px;max-width:600px;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#000 60%,#ff9800 100%);box-shadow:0 8px 40px #ff980099,0 2px 16px #000c;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch;">
+      <img class="video-hover" src="girlfriend/girl1.jpg" alt="Featured" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+      <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ff9800,#ff5722);color:#fff;font-size:1.1em;padding:4px 18px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;letter-spacing:1px;text-shadow:0 1px 4px #000a;">PRO</div>
+      <div style="position:absolute;top:12px;right:18px;z-index:6;background:#000c;color:#ff9800;font-size:1.1em;padding:4px 18px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;text-shadow:0 1px 4px #000a;">GlamHub</div>
+      <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:linear-gradient(90deg,#000,#ff9800cc);color:#fff;font-size:1em;padding:4px 16px;border-radius:12px;font-weight:700;box-shadow:0 2px 12px #000c;display:flex;gap:14px;align-items:center;text-shadow:0 1px 4px #000a;"><span>👁 1.2M</span><span>👍 98%</span></div>
+      <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-weight:900;padding:8px 24px;border-radius:18px;font-size:1.2em;box-shadow:0 2px 12px #ffd70088;letter-spacing:1px;">Featured: Girl 1</div>
+      <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#000c;color:#ff9800;font-size:1.1em;padding:4px 16px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;text-shadow:0 1px 4px #000a;">✔ Verified</div>
+      <div style="position:absolute;top:12px;right:80px;z-index:5;background:linear-gradient(90deg,#ff5722,#ff9800);color:#fff;font-size:1.1em;padding:4px 16px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff5722cc;text-shadow:0 1px 4px #000a;">🔥 Trending</div>
+      <div style="position:absolute;top:12px;left:80px;z-index:5;background:linear-gradient(90deg,#ff9800,#000);color:#fff;font-size:1.1em;padding:4px 16px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;text-shadow:0 1px 4px #000a;">★ Exclusive</div>
+    </div>
+    <div class="carousel-slide" style="min-width:600px;max-width:600px;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;border-radius:22px;overflow:hidden;background:#181818;box-shadow:0 6px 32px #ff7ecb55,0 2px 12px #ff7ecb55;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch;">
+      <img class="video-hover" src="raw/preview.jpg" alt="Featured" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+      <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ff7ecb,#ffb6e6);color:#fff;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;letter-spacing:1px;">VIP</div>
+      <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ff7ecb;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">GlamHub</div>
+      <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(255,126,203,0.85);color:#fff;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #ff7ecb88;display:flex;gap:12px;align-items:center;"><span>👁 1.5M</span><span>👍 97%</span></div>
+      <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:linear-gradient(90deg,#ff7ecb,#ffb6e6);color:#fff;font-weight:900;padding:8px 24px;border-radius:18px;font-size:1.2em;box-shadow:0 2px 12px #ff7ecb88;letter-spacing:1px;">Trending: Preview</div>
+      <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff7ecb;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+      <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ffd700;color:#222;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">🔥 Hot</div>
+      <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ New</div>
+    </div>
+    <div class="carousel-slide" style="min-width:600px;max-width:600px;position:absolute;left:0;top:0;right:0;bottom:0;margin:auto;border-radius:22px;overflow:hidden;background:#181818;box-shadow:0 6px 32px #ff4d6d55,0 2px 12px #ff4d6d55;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch;">
+      <img class="video-hover" src="gf/girl3.jpg" alt="Featured" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+      <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffb6e6);color:#fff;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff4d6d88;letter-spacing:1px;">EXCLUSIVE</div>
+      <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ff4d6d;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff4d6d88;">GlamHub</div>
+      <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(255,77,109,0.85);color:#fff;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #ff4d6d88;display:flex;gap:12px;align-items:center;"><span>👁 2.2M</span><span>👍 99%</span></div>
+      <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:linear-gradient(90deg,#ff4d6d,#ffb6e6);color:#fff;font-weight:900;padding:8px 24px;border-radius:18px;font-size:1.2em;box-shadow:0 2px 12px #ff4d6d88;letter-spacing:1px;">Exclusive: Girl 3</div>
+      <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+      <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ffd700;color:#222;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">🔥 Hot</div>
+      <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ New</div>
+    </div>
+  </div>
+
+  <style>
+    .video-hover {
+      transition: transform 0.32s cubic-bezier(.22,1.12,.58,1.01), box-shadow 0.32s cubic-bezier(.22,1.12,.58,1.01);
+      will-change: transform, box-shadow;
+    }
+    .video-hover.hover-animate,
+    .video-hover:focus-visible {
+      transform: scale(1.08) rotate(-1.5deg);
+      z-index: 2;
+      box-shadow: 0 8px 32px #ffd70088, 0 2px 12px #0008;
+    }
+  </style>
+  <script src="carousel.js"></script>
+  <script src="video-hover.js"></script>
+  <script>
+    // Add/remove hover-animate class for bigger/animated effect
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.video-hover').forEach(function(img) {
+        img.addEventListener('mouseenter', function() {
+          img.classList.add('hover-animate');
+        });
+        img.addEventListener('mouseleave', function() {
+          img.classList.remove('hover-animate');
+        });
+        img.addEventListener('focus', function() {
+          img.classList.add('hover-animate');
+        });
+        img.addEventListener('blur', function() {
+          img.classList.remove('hover-animate');
+        });
+      });
+    });
+  </script>
+  <main>
+    <!-- Premium Filter Bar -->
+    <div style="display:flex;gap:18px;align-items:center;margin-bottom:32px;justify-content:center;">
+      <span style="background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-weight:900;padding:8px 24px;border-radius:18px;font-size:1.2em;box-shadow:0 2px 12px #ffd70088;letter-spacing:1px;">PREMIUM</span>
+      <span style="background:#222;color:#ffd700;font-weight:700;padding:8px 18px;border-radius:14px;font-size:1.1em;box-shadow:0 2px 8px #0008;">Full HD</span>
+      <span style="background:#222;color:#ffd700;font-weight:700;padding:8px 18px;border-radius:14px;font-size:1.1em;box-shadow:0 2px 8px #0008;">4K</span>
+      <span style="background:#222;color:#ffd700;font-weight:700;padding:8px 18px;border-radius:14px;font-size:1.1em;box-shadow:0 2px 8px #0008;">Ad-Free</span>
+      <span style="background:#ffd700;color:#222;font-weight:900;padding:8px 18px;border-radius:14px;font-size:1.1em;box-shadow:0 2px 8px #ffd70088;">Exclusive</span>
+    </div>
+    <div>
+      <!-- BEGIN: Only Cards With Timestamps -->
+      <div class="yt-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:22px 16px;width:100vw;min-height:calc(100vh - 220px);padding:0 0 48px 0;box-sizing:border-box;">
+        <style>
+        @media (min-width: 900px) {
+          .yt-grid > div {
+            grid-template-columns: repeat(6, 1fr) !important;
+          }
+        }
+        </style>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(135deg,#000 60%,#ff9800 100%);box-shadow:0 6px 32px #ff980099,0 2px 12px #000c;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch;">
+          <img class="video-hover" src="girlfriend/girl1.jpg" alt="Girl 1" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ff9800,#ff5722);color:#fff;font-size:1.1em;padding:4px 18px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;letter-spacing:1px;text-shadow:0 1px 4px #000a;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#000c;color:#ff9800;font-size:1.1em;padding:4px 18px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;text-shadow:0 1px 4px #000a;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:linear-gradient(90deg,#000,#ff9800cc);color:#fff;font-size:1em;padding:4px 16px;border-radius:12px;font-weight:700;box-shadow:0 2px 12px #000c;display:flex;gap:14px;align-items:center;text-shadow:0 1px 4px #000a;"><span>👁 1.2M</span><span>👍 98%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:linear-gradient(90deg,#ff9800,#ff5722);color:#fff;font-size:1.15em;padding:4px 14px;border-radius:10px;font-weight:700;box-shadow:0 2px 12px #ff9800cc;text-shadow:0 1px 4px #000a;">12:34</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#000c;color:#ff9800;font-size:1.1em;padding:4px 16px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;text-shadow:0 1px 4px #000a;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:linear-gradient(90deg,#ff5722,#ff9800);color:#fff;font-size:1.1em;padding:4px 16px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff5722cc;text-shadow:0 1px 4px #000a;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:linear-gradient(90deg,#ff9800,#000);color:#fff;font-size:1.1em;padding:4px 16px;border-radius:14px;font-weight:900;box-shadow:0 2px 12px #ff9800cc;text-shadow:0 1px 4px #000a;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ff7ecb55,0 2px 8px #ff7ecb55;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch;">
+          <img class="video-hover" src="gf/girl1.jpg" alt="GF Girl 1" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ff7ecb,#ffb6e6);color:#fff;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;letter-spacing:1px;">VIP</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ff7ecb;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(255,126,203,0.85);color:#fff;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #ff7ecb88;display:flex;gap:12px;align-items:center;"><span>👁 1.5M</span><span>👍 97%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#ff7ecb;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #ff7ecb88;">09:44</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff7ecb;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ffd700;color:#222;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">🔥 Hot</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ New</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ff4d6d55,0 2px 8px #ff4d6d55;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch;">
+          <img class="video-hover" src="raw/1913348.jpg" alt="Raw 1913348" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ff4d6d,#ffb6e6);color:#fff;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff4d6d88;letter-spacing:1px;">EXCLUSIVE</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ff4d6d;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff4d6d88;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(255,77,109,0.85);color:#fff;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #ff4d6d88;display:flex;gap:12px;align-items:center;"><span>👁 2.2M</span><span>👍 99%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#ff4d6d;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #ff4d6d88;">08:55</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ffd700;color:#222;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">🔥 Hot</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ New</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;display:flex;flex-direction:column;justify-content:stretch;align-items:stretch;">
+          <img class="video-hover" src="girlfriend/girl7.jpg" alt="Girl 7" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.4M</span><span>👍 97%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">13:02</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="gf/girl8.jpg" alt="GF Girl 8" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.6M</span><span>👍 98%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">12:58</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="raw/78.jpg" alt="Raw 78" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.9M</span><span>👍 99%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">11:44</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="raw/3.jpg" alt="Raw 3" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.5M</span><span>👍 95%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">10:21</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="raw/7.jpg" alt="Raw 7" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.7M</span><span>👍 96%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">09:12</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="raw/1913348.jpg" alt="Raw 1913348" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.8M</span><span>👍 98%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">08:55</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="girlfriend/girl8.jpg" alt="Girl 8" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.1M</span><span>👍 97%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">11:22</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="gf/girl3.jpg" alt="GF Girl 3" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.7M</span><span>👍 99%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">08:45</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="gf/girl7.jpg" alt="GF Girl 7" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.3M</span><span>👍 96%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">09:12</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="raw/preview.jpg" alt="Preview" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 2.1M</span><span>👍 97%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">10:21</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="raw/7.jpg" alt="Raw 7" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.5M</span><span>👍 95%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">07:55</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="raw/3.jpg" alt="Raw 3" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.4M</span><span>👍 94%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">06:33</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="gf/girl1.jpg" alt="GF Girl 1" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.8M</span><span>👍 98%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">08:12</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+        <div class="yt-card" style="position:relative;overflow:hidden;border-radius:18px;background:#181818;box-shadow:0 4px 24px #ffd70055,0 2px 8px #0005;">
+          <img class="video-hover" src="gf/girl7.jpg" alt="GF Girl 7" style="width:100%;height:100%;aspect-ratio:1.585/1;object-fit:cover;display:block;padding:0;margin:0;border:none;flex:1 1 auto;">
+          <div style="position:absolute;top:12px;left:18px;z-index:6;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;letter-spacing:1px;">PRO</div>
+          <div style="position:absolute;top:12px;right:18px;z-index:6;background:#222c;color:#ffd700;font-size:1em;padding:2px 14px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffd70088;">GlamHub</div>
+          <div style="position:absolute;bottom:48px;right:18px;z-index:6;background:rgba(0,0,0,0.85);color:#ffd700;font-size:0.98em;padding:2px 12px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px #0008;display:flex;gap:12px;align-items:center;"><span>👁 1.2M</span><span>👍 97%</span></div>
+          <div style="position:absolute;bottom:12px;right:16px;z-index:4;background:#000c;color:#fff;font-size:1.1em;padding:2px 10px;border-radius:8px;font-weight:700;box-shadow:0 2px 8px #0008;">09:44</div>
+          <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;background:#fff;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #fff8;">✔ Verified</div>
+          <div style="position:absolute;top:12px;right:80px;z-index:5;background:#ff7ecb;color:#fff;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ff7ecb88;">🔥 Trending</div>
+          <div style="position:absolute;top:12px;left:80px;z-index:5;background:#ffb6e6;color:#ff4d6d;font-size:1em;padding:2px 12px;border-radius:12px;font-weight:900;box-shadow:0 2px 8px #ffb6e688;">★ Exclusive</div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+  </main>
+
+  <footer style="margin-top:48px;text-align:center;padding:32px 0 12px 0;background:#181818;color:#aaa;">
+      <!-- Floating Join Premium Button -->
+      <a href="#" style="position:fixed;bottom:32px;right:32px;z-index:1000;background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-weight:900;padding:18px 38px;border-radius:32px;font-size:1.3em;box-shadow:0 4px 32px #ffd70088,0 2px 8px #0008;text-decoration:none;transition:transform 0.18s;letter-spacing:1px;">Join Premium</a>
+    <div style="font-size:1.1em;">&copy; 2026 YouTube</div>
+  </footer>
+
+  <script src="youtube-clone.js"></script>
+</body>
+</html>

@@ -367,12 +367,13 @@ body.donk-mode .settings-content::before {
 
 /* Prevent Donk Mode theme from affecting settings.html */
 body.donk-mode.settings-page .profile-container,
+body.donk-mode.settings-page .profile-container,
 body.donk-mode.settings-page .settings-layout,
 body.donk-mode.settings-page .settings-sidebar,
 body.donk-mode.settings-page .settings-content,
 body.donk-mode.settings-page .settings-panel,
 body.donk-mode.settings-page .profile-form {
-    all: unset;
+    /* Remove all: unset to restore pointer events and interactivity */
 }
 
 /* Final settings theme overrides */

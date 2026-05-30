@@ -1,0 +1,291 @@
+/* Premium Adult Video Site Theme */
+body {
+  margin: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #1a0022 0%, #2a0033 60%, #ffd700 100%);
+  color: #f1e6f7;
+}
+.main-nav {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  background: linear-gradient(90deg, #181818 0%, #2a0033 60%, #ffd700 100%);
+  box-shadow: 0 2px 16px #0008;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 2000;
+}
+.main-nav a {
+  color: #ffd700;
+  font-size: 1.2em;
+  font-weight: 900;
+  text-decoration: none;
+  margin-right: 32px;
+  letter-spacing: -1px;
+  transition: color 0.18s;
+}
+.main-nav a:hover {
+  color: #ff4d6d;
+}
+.premium-bar {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 32px;
+  justify-content: center;
+}
+.premium-bar span {
+  background: linear-gradient(90deg,#ffd700,#ffb800);
+  color: #222;
+  font-weight: 900;
+  padding: 8px 24px;
+  border-radius: 18px;
+  font-size: 1.2em;
+  box-shadow: 0 2px 12px #ffd70088;
+  letter-spacing: 1px;
+}
+.premium-bar .alt {
+  background: #222;
+  color: #ffd700;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 14px;
+  font-size: 1.1em;
+  box-shadow: 0 2px 8px #0008;
+}
+.featured-carousel {
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: auto;
+  display: flex;
+  gap: 32px;
+  padding: 32px 0 12px 0;
+  background: linear-gradient(90deg,#2a0033 0%,#ffd700 100%);
+}
+.featured-card {
+  min-width: 420px;
+  max-width: 420px;
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 32px #ffd70088;
+}
+.featured-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  filter: saturate(1.3) brightness(1.08);
+}
+.featured-card .label {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  background: linear-gradient(90deg,#ffd700,#ffb800);
+  color: #222;
+  font-weight: 900;
+  padding: 8px 24px;
+  border-radius: 18px;
+  font-size: 1.2em;
+  box-shadow: 0 2px 12px #ffd70088;
+  letter-spacing: 1px;
+}
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px 12px;
+}
+.video-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #181818;
+  box-shadow: 0 4px 24px #ffd70055,0 2px 8px #0005;
+  transition: box-shadow 0.18s, transform 0.18s;
+  cursor: pointer;
+}
+.video-card:hover {
+  box-shadow: 0 0 32px #ff4d6dbb, 0 6px 24px #000a;
+  transform: translateY(-6px) scale(1.04);
+  z-index: 2;
+}
+.video-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  background: #222;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 2px 12px #ff4d6d44;
+}
+.video-card .badge {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  z-index: 6;
+  background: linear-gradient(90deg,#ffd700,#ffb800);
+  color: #222;
+  font-size: 1em;
+  padding: 2px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px #ffd70088;
+  letter-spacing: 1px;
+}
+.video-card .brand {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  z-index: 6;
+  background: #222c;
+  color: #ffd700;
+  font-size: 1em;
+  padding: 2px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px #ffd70088;
+}
+.video-card .stats {
+  position: absolute;
+  bottom: 48px;
+  right: 18px;
+  z-index: 6;
+  background: rgba(0,0,0,0.85);
+  color: #ffd700;
+  font-size: 0.98em;
+  padding: 2px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #0008;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.video-card .duration {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  z-index: 4;
+  background: #000c;
+  color: #fff;
+  font-size: 1.1em;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #0008;
+}
+.video-card .verified {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background: #fff;
+  color: #ff4d6d;
+  font-size: 1em;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px #fff8;
+}
+.video-card .trending {
+  position: absolute;
+  top: 12px;
+  right: 80px;
+  z-index: 5;
+  background: #ff7ecb;
+  color: #fff;
+  font-size: 1em;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px #ff7ecb88;
+}
+.video-card .exclusive {
+  position: absolute;
+  top: 12px;
+  left: 80px;
+  z-index: 5;
+  background: #ffb6e6;
+  color: #ff4d6d;
+  font-size: 1em;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px #ffb6e688;
+}
+.video-card .play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 3;
+  pointer-events: none;
+}
+.video-card .play svg {
+  width: 56px;
+  height: 56px;
+}
+.video-card .live {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  z-index: 4;
+  background: #ff4d6d;
+  color: #fff;
+  font-size: 1em;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px #ff4d6d88;
+  animation: pulseLive 1.2s infinite alternate;
+}
+@keyframes pulseLive {
+  0% { box-shadow:0 0 8px #ff4d6d88,0 2px 8px #ff4d6d88; }
+  100% { box-shadow:0 0 24px #ff4d6d,0 2px 16px #ff4d6d; }
+}
+.video-card .hd {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 4;
+  background: #222c;
+  color: #fff;
+  font-size: 1em;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px #fff8;
+}
+.video-card-info {
+  padding: 14px 16px 10px 16px;
+  position: relative;
+}
+.video-card-title {
+  color: #ff4d6d;
+  font-size: 1.45em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  text-shadow: 0 2px 8px #ff4d6d88;
+}
+.video-card-meta {
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  font-size: 1.1em;
+  text-shadow: 0 1px 6px #ff7ecb88;
+}
+.video-card-desc {
+  font-size: 1em;
+  color: #fff;
+  opacity: 0.92;
+  text-shadow: 0 1px 6px #ffb6e688;
+}
+@media (max-width: 900px) {
+  .main-nav { flex-direction: column; height: auto; padding: 12px; }
+  .premium-bar { flex-direction: column; gap: 8px; }
+  .featured-carousel { flex-direction: column; gap: 18px; }
+  .video-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}

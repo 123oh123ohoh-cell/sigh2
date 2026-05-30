@@ -19,7 +19,13 @@ function getUserProfile(username) {
       followers: [],
       following: [],
       avatar: '',
+      diamondsEnabled: false // diamonds OFF by default
     };
+    saveUserProfiles(profiles);
+  }
+  // Ensure diamondsEnabled is always present (for legacy users)
+  if (typeof profiles[username].diamondsEnabled === 'undefined') {
+    profiles[username].diamondsEnabled = false;
     saveUserProfiles(profiles);
   }
   return profiles[username];

@@ -115,19 +115,28 @@ function renderArtsGallery(arts) {
 }
 
 async function fetchAndRenderArts() {
+    let errorLog = [];
+    let arts = [];
     try {
         const res = await fetch('https://ownshub.onrender.com/api/arts');
-        const arts = await res.json();
+        arts = await res.json();
         // Sync backend data to localStorage
         localStorage.setItem('arts', JSON.stringify(arts));
-        renderArtsGallery(arts);
-    } catch {
+    } catch (e) {
+        errorLog.push('backend fail: ' + e);
         // If backend fails, try to use localStorage data
-        let localArts = [];
         try {
-            localArts = JSON.parse(localStorage.getItem('arts') || '[]');
-        } catch {}
-        renderArtsGallery(localArts);
+            arts = JSON.parse(localStorage.getItem('arts') || '[]');
+        } catch (e2) { errorLog.push('localStorage fail: ' + e2); }
+    }
+    renderArtsGallery(arts);
+    // If arts are missing, retry after a delay (auto-recovery)
+    if (!arts || !arts.length) {
+        setTimeout(fetchAndRenderArts, 3000);
+    }
+    // Log errors for debugging
+    if (errorLog.length && window.console) {
+        console.warn('Arts load errors:', errorLog);
     }
 }
 

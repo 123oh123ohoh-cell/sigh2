@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" href="diamond-button.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ow ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+<script src="theme-mode.js"></script>
+<script src="user.js"></script>
+    <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" style="display: flex; align-items: center; justify-content: space-between; gap: 1.5em; padding: 18px 2vw;">
+        <a href="index.html" class="logo" style="display: flex; align-items: center;">
+            <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px; width:auto; display:block;">
+        </a>
+        <nav class="nav-links" style="display: flex; align-items: center; gap: 1.2em;">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chat6.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+            <a href="#" class="nav-link">Live</a>
+            <a href="models.html" class="nav-link">Models</a>
+            <a href="#" class="nav-link">Categories</a>
+            <a href="premium.html" class="nav-link">Premium</a>
+            <a href="arts.html" class="nav-link">Arts</a>
+        </nav>
+        <div class="search-bar" style="flex: 0 1 220px; display: flex; align-items: center; margin: 0 10px;">
+            <input type="text" id="searchInput" placeholder="Search models..." style="width: 100%; min-width: 120px;">
+        </div>
+        <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+        <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 10px;transition:background 0.18s;">Upload</a>
+        <link rel="stylesheet" href="diamond-button.css">
+        <div style="display: flex; align-items: center; gap: 0.5em; min-width: 0;">
+            <span id="diamondDisplay" onclick="window.location.href='diamonds.html'" title="Buy diamonds; click to purchase" style="font-size:1.15em; padding: 5px 16px; min-height: 32px; min-width: 60px;">
+                <span class="diamond-btn-inner" style="font-size:1em; min-height:24px;">
+                    <span class="diamond-icon-wrap" style="height:1.3em;width:1.3em;">
+                        <img id="diamondIcon" src="logos_and_profileicons/diamond.png" alt="💎" style="height:1.3em;width:1.3em;">
+                        <span id="diamondSparkle" style="font-size:0.95em;left:-7px;top:0;">✧</span>
+                    </span>
+                    <span id="diamondAmount" style="font-size:1em;margin-left:7px;">0</span>
+                </span>
+            </span>
+            <div class="profile-dropdown">
+                <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+                    <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                    <img id="profileAvatarFallback" src="logos_and_profileicons/defaultpfp.webp" alt="Default Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;cursor:pointer;">
+                </button>
+                <div class="dropdown-content" id="profileDropdownMenu">
+                    <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+                    <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
+                    <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+                    <a href="login.html" id="dropdownLogin">Log In</a>
+                    <a href="signup.html" id="dropdownSignup">Create Account</a>
+                </div>
+            </div>
+        </div>
+        <script>
+                // Avatar loading logic for nav bar (copied from index.html)
+                async function loadNavAvatar() {
+                    const avatarImg = document.getElementById('profileAvatarIcon');
+                    const fallback = document.getElementById('profileAvatarFallback');
+                    let username = localStorage.getItem('loggedInUser');
+                    let avatar = '';
+                    let token = localStorage.getItem('token');
+                    // 1. Try sigh2 backend
+                    if (username && token) {
+                        try {
+                            let res = await fetch('https://sigh2.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+                            if (res.ok) {
+                                let data = await res.json();
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 2. Try ownshub backend if not found
+                    if (!avatar && username && token) {
+                        try {
+                            let res = await fetch('https://ownshub.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+                            if (res.ok) {
+                                let data = await res.json();
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 3. Try localStorage cache
+                    if (!avatar) {
+                        try {
+                            let cached = localStorage.getItem('lastSavedProfile');
+                            if (cached) {
+                                let data = JSON.parse(cached);
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 4. Try user.js (userProfiles)
+                    if (!avatar && typeof getUserProfile === 'function' && username) {
+                        try {
+                            let data = getUserProfile(username);
+                            if (data && data.avatar && data.avatar.trim()) avatar = data.avatar;
+                        } catch (e) {}
+                    }
+                    // 5. Try sessionStorage cache
+                    if (!avatar) {
+                        try {
+                            let cached = sessionStorage.getItem('lastSavedProfile');
+                            if (cached) {
+                                let data = JSON.parse(cached);
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 6. Fallback defaultpfp.webp
+                    if (!avatar) avatar = 'logos_and_profileicons/defaultpfp.webp';
+                    // Set avatar
+                    if (avatar && avatarImg) {
+                        avatarImg.src = avatar;
+                        avatarImg.style.display = '';
+                        if (fallback) fallback.style.display = 'none';
+                    } else {
+                        if (avatarImg) avatarImg.style.display = 'none';
+                        if (fallback) fallback.style.display = '';
+                    }
+                }
+                document.addEventListener('DOMContentLoaded', function() {
+                    loadNavAvatar();
+                    // Make fallback avatar clickable to open dropdown
+                    const fallback = document.getElementById('profileAvatarFallback');
+                    const btn = document.getElementById('profileDropdownBtn');
+                    if (fallback && btn) {
+                        fallback.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            btn.click();
+                        });
+                    }
+                });
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'loggedInUser' || e.key === 'token' || e.key === 'lastSavedProfile') {
+                        loadNavAvatar();
+                    }
+                });
+        // Use global syncGlobalProfileHeader for nav avatar logic
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.syncGlobalProfileHeader === 'function') {
+                window.syncGlobalProfileHeader();
+            }
+        });
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'loggedInUser' || e.key === 'token') {
+                if (typeof window.syncGlobalProfileHeader === 'function') {
+                    window.syncGlobalProfileHeader();
+                }
+            }
+        });
+        </script>
+        <!-- Legacy appearance migration: defer to global theme-mode.js -->
+        <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.applySavedAppearance === 'function') {
+                window.applySavedAppearance();
+            }
+        });
+        </script>
+                <script>
+                // Diamonds currency logic
+                function updateDiamondDisplay() {
+                    const user = localStorage.getItem('loggedInUser');
+                    if (!user) {
+                        document.getElementById('diamondAmount').textContent = '0';
+                        return;
+                    }
+                    document.getElementById('diamondAmount').textContent = getDiamonds(user);
+                }
+                document.addEventListener('DOMContentLoaded', function() {
+                    updateDiamondDisplay();
+                    window.addEventListener('storage', function(e) {
+                        if (e.key === 'userProfiles') updateDiamondDisplay();
+                    });
+                });
+                </script>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title" style="background:linear-gradient(90deg,#ff7ecb 0%,#ff4d6d 45%,#ff1f4b 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:0 4px 18px rgba(255,45,117,0.28);letter-spacing:0.02em;">Live Hot Shows</h1>
+                <p class="hero-subtitle">Connect with thousands of beautiful models in real-time. Premium HD shows, private sessions, and exclusive content.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="openPlayer(1)">🔥 Start Watching</button>
+                    <a href="premium.html" class="btn-secondary" style="display:inline-block;text-decoration:none;">💎 Go Premium</a>
+                </div>
+            </div>
+            <div class="hero-video">
+                <iframe width="560" height="315" src="https://txxx.tube/embed/18948929/" title="Featured Cleaning Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Categories -->
+        <div class="categories">
+            <button class="category-btn active" onclick="filterByCategory('All')">All Models</button>
+            <button class="category-btn" onclick="filterByCategory('New Girls')">New Girls</button>
+            <button class="category-btn" onclick="filterByCategory('Mature')">Mature</button>
+            <button class="category-btn" onclick="filterByCategory('HD Shows')">HD Shows</button>
+            <button class="category-btn" onclick="filterByCategory('Backend')">HD Shows</button>
+            <button class="category-btn" onclick="filterByCategory('Databases')">Private</button>
+            <button class="category-btn" onclick="filterByCategory('Data Science')">Live Now</button>
+            <button class="category-btn" onclick="filterByCategory('DevOps')">Couples</button>
+            <button class="category-btn" onclick="filterByCategory('Mobile')">Asian</button>
+            <button class="category-btn" onclick="filterByCategory('Tools')">Ebony</button>
+            <button class="category-btn" onclick="filterByCategory('Cloud')">Latin</button>
+        </div>
+
+        <!-- Premium Banner -->
+        <div class="premium-banner">
+            <h3>💎 Unlock Premium Features</h3>
+            <p>HD quality, private shows, unlimited tokens, and VIP access to all models</p>
+        </div>
+
+        <!-- Video Sections -->
+
+
+        <section class="section">
+            <h2 class="section-title">🔥 Live Now</h2>
+            <div class="video-row" id="trendingRow"></div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">💻 New Girls</h2>
+            <div class="video-row" id="programmingRow"></div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">🚀 Mature</h2>
+            <div class="video-row" id="webdevRow"></div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">📊 HD Shows</h2>
+            <div class="video-row" id="datascienceRow"></div>
+        </section>
+    </main>
+            <!-- Arts Section (now at bottom) -->
+            <section class="section" id="artsSection">
+                <h2 class="section-title">🎨 Arts</h2>
+                <div id="artsGallery" class="arts-gallery"></div>
+                <div id="postArtContainer" style="margin-top:24px;text-align:center;"></div>
+            </section>
+    <script src="arts.js"></script>
+    <!-- Player Modal -->
+    <div id="playerModal" class="player-modal">
+        <div class="player-container">
+            <div class="player-header">
+                <h2 id="playerTitle" class="player-title">Video Title</h2>
+                <button class="close-btn" onclick="closePlayer()">&times;</button>
+            </div>
+            <div class="player-content">
+                <div class="player-video">
+                    <iframe id="playerIframe" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>
+                </div>
+                <div class="player-info">
+                    <div class="player-meta">
+                        <span id="playerViews">0 views</span>
+                        <span id="playerRating" class="player-rating">⭐ 5.0</span>
+                        <span id="playerDuration">45 min</span>
+                    </div>
+                    <p id="playerDescription" class="player-description">
+                        Video description goes here...
+                    </p>
+                    <div class="player-actions">
+                        <button class="action-btn primary">👍 Like</button>
+                        <button class="action-btn">👎 Dislike</button>
+                        <button class="action-btn">📤 Share</button>
+                        <button class="action-btn">📥 Download</button>
+                        <button class="action-btn">⭐ Watchlist</button>
+                        <button class="action-btn">🚩 Report</button>
+                    </div>
+                    <!-- Comments Section -->
+                    <div class="comments-section">
+                        <h3>Comments</h3>
+                        <form id="commentForm">
+                            <textarea id="commentInput" placeholder="Add a comment..." required></textarea>
+                            <button type="submit">Post</button>
+                        </form>
+                        <div id="commentsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <h4 style="font-weight:900; font-size:2.1rem; letter-spacing:2.5px; text-shadow:0 2px 10px #ffd6e0, 0 1px 0 #fff4; background:linear-gradient(90deg,#ffb6e6 10%,#ffd6e0 60%,#fff0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 6px #ffd6e0); padding-right:2px; display:inline-flex; align-items:center;">ow <span style="font-size:1.1em;margin-left:4px;">❤️</span></h4>
+        <div class="footer-links">
+            <a href="#" class="footer-link">About</a>
+            <a href="#" class="footer-link">Safety</a>
+            <a href="#" class="footer-link">Terms</a>
+            <a href="#" class="footer-link">Privacy</a>
+            <a href="#" class="footer-link">Contact</a>
+        </div>
+        <p>&copy; 2024 own's hub. All rights reserved. Premium entertainment for everyone.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</main>
+
+</body>
+</html>

@@ -108,9 +108,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('avatarPreview').src = avatarUrl;
                     document.getElementById('avatarPreview').style.display = '';
                     renderProfileSummary(profile, username);
-                    document.getElementById('profileSavedMsg').textContent = 'Profile saved!';
-                    document.getElementById('profileSavedMsg').style.display = 'block';
-                    setTimeout(() => { document.getElementById('profileSavedMsg').style.display = 'none'; }, 2000);
+
+                    // Save to localStorage and sessionStorage (cache)
+                    try {
+                        localStorage.setItem('lastSavedProfile', JSON.stringify(profile));
+                        sessionStorage.setItem('lastSavedProfile', JSON.stringify(profile));
+                    } catch (e) {}
+
+                    // Save using user.js if available
+                    try {
+                        if (typeof updateUserProfile === 'function') {
+                            updateUserProfile(username, profile);
+                        }
+                    } catch (e) {}
+
+                    // Attempt to POST to localhost (if running)
+                    try {
+                        fetch('http://localhost:3000/api/profile', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(profile)
+                        });
+                    } catch (e) {}
+
+                    // Redirect to public profile after save
+                    window.location.href = `public-profile.html?user=${encodeURIComponent(username)}`;
                 });
             } else {
                 alert('Failed to save profile.');

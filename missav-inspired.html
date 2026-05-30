@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MissAV Inspired</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+  <style>
+    body {
+      margin: 0;
+      background: #181818;
+      font-family: 'Roboto', Arial, sans-serif;
+      color: #fff;
+    }
+    header {
+      background: linear-gradient(90deg,#232323 80%,#ff5c5c22 100%);
+      padding: 0 0 0 32px;
+      display: flex;
+      align-items: center;
+      height: 68px;
+      box-shadow: 0 2px 12px #000a;
+      border-bottom: 2px solid #ff5c5c;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-size: 2.1em;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ff5c5c;
+      margin-right: 32px;
+      text-shadow: 0 2px 8px #000a;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+    nav {
+      margin-left: 0;
+      display: flex;
+      gap: 24px;
+      flex: 1 1 auto;
+        .search-bar {
+          display: flex;
+          align-items: center;
+          margin-left: auto;
+          margin-right: 24px;
+          background: #232323;
+          border-radius: 18px;
+          padding: 2px 10px 2px 12px;
+          box-shadow: 0 2px 8px #0004;
+          border: 1px solid #444;
+          height: 38px;
+        }
+        .search-bar input {
+          background: transparent;
+          border: none;
+          color: #fff;
+          font-size: 1em;
+          outline: none;
+          padding: 4px 8px;
+          width: 180px;
+        }
+        .search-bar button {
+          background: #ff5c5c;
+          border: none;
+          color: #fff;
+          font-size: 1.1em;
+          border-radius: 12px;
+          padding: 4px 12px;
+          margin-left: 6px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .search-bar button:hover {
+          background: #ff7e7e;
+        }
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1em;
+      padding: 8px 0;
+      transition: color 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    nav a.active, nav a:hover {
+      color: #ff5c5c;
+      border-bottom: 2px solid #ff5c5c;
+    }
+    .main-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 28px 18px;
+      padding: 40px 4vw 64px 4vw;
+      width: 100vw;
+      min-height: calc(100vh - 68px);
+      background: linear-gradient(180deg,#181818 80%,#232323 100%);
+      box-sizing: border-box;
+    }
+    .video-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      background: linear-gradient(135deg,#232323 80%,#ff5c5c22 100%);
+      box-shadow: 0 4px 18px #ff5c5c33, 0 2px 8px #000a;
+      transition: transform 0.18s;
+    }
+    .video-card:hover {
+      transform: translateY(-6px) scale(1.025);
+      box-shadow: 0 12px 32px #ff5c5c77, 0 4px 16px #000e;
+    }
+    .video-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.97) contrast(1.09);
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+    }
+    .video-title {
+      margin: 0;
+      padding: 14px 16px 0 16px;
+      font-size: 1.13em;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 4px #000a;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .video-meta {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 18px;
+      padding: 0 16px 14px 16px;
+      font-size: 0.99em;
+      color: #bbb;
+    }
+    .video-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: #ff5c5c;
+      color: #fff;
+      font-size: 1em;
+      padding: 3px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px #ff5c5c88;
+      z-index: 6;
+      letter-spacing: 1px;
+    }
+    .video-timestamp {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: #232323cc;
+      color: #fff;
+      font-size: 1.05em;
+      padding: 3px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px #0008;
+      z-index: 4;
+    }
+    @media (max-width: 700px) {
+      .main-grid {
+        padding: 18px 2vw 32px 2vw;
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+        height: auto;
+        padding: 12px 0;
+      }
+      nav {
+        margin-left: 0;
+        margin-top: 8px;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">MissAV</div>
+    <nav>
+      <a href="#" class="active">Home</a>
+      <a href="#">Categories</a>
+      <a href="#">Actresses</a>
+      <a href="#">Series</a>
+      <a href="#">Uncensored</a>
+    </nav>
+    <form class="search-bar" action="#" method="get">
+      <input type="text" placeholder="Search videos, actresses..." name="q">
+      <button type="submit">🔍</button>
+    </form>
+  </header>
+  <main class="main-grid">
+    <div class="video-card">
+      <img src="girlfriend/girl1.jpg" alt="Video 1">
+      <div class="video-badge">HD</div>
+      <div class="video-title">Glamorous Model Seduction</div>
+      <div class="video-meta"><span>👁 1.2M</span><span>👍 98%</span></div>
+      <div class="video-timestamp">12:34</div>
+    </div>
+    <div class="video-card">
+      <img src="gf/girl1.jpg" alt="Video 2">
+      <div class="video-badge">4K</div>
+      <div class="video-title">Intimate Night with Star</div>
+      <div class="video-meta"><span>👁 1.5M</span><span>👍 97%</span></div>
+      <div class="video-timestamp">09:44</div>
+    </div>
+    <div class="video-card">
+      <img src="raw/1913348.jpg" alt="Video 3">
+      <div class="video-badge">PRO</div>
+      <div class="video-title">Exclusive Passion</div>
+      <div class="video-meta"><span>👁 2.2M</span><span>👍 99%</span></div>
+      <div class="video-timestamp">08:55</div>
+    </div>
+    <div class="video-card">
+      <img src="public-profile/girl2.jpg" alt="Video 4">
+      <div class="video-badge">HD</div>
+      <div class="video-title">Sultry Tease</div>
+      <div class="video-meta"><span>👁 1.1M</span><span>👍 96%</span></div>
+      <div class="video-timestamp">10:21</div>
+    </div>
+    <div class="video-card">
+      <img src="raw/1913350.jpg" alt="Video 5">
+      <div class="video-badge">4K</div>
+      <div class="video-title">Midnight Fantasy</div>
+      <div class="video-meta"><span>👁 1.8M</span><span>👍 97%</span></div>
+      <div class="video-timestamp">11:02</div>
+    </div>
+    <div class="video-card">
+      <img src="gf/girl2.jpg" alt="Video 6">
+      <div class="video-badge">PRO</div>
+      <div class="video-title">VIP Model Experience</div>
+      <div class="video-meta"><span>👁 2.0M</span><span>👍 98%</span></div>
+      <div class="video-timestamp">13:17</div>
+    </div>
+  </main>
+</body>
+</html>

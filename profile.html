@@ -43,6 +43,92 @@
         </nav>
     </header>
     <main class="profile-main">
+    <!-- Global Error UI (dev mode only) -->
+    <div id="globalError" style="display:none;position:fixed;top:0;left:0;width:100vw;z-index:9999;background:#ff4d4d;color:#fff;padding:16px 0;text-align:center;font-weight:700;font-size:1.15em;box-shadow:0 2px 12px #0005;letter-spacing:0.5px;"></div>
+    <!-- Health Status Footer (dev mode only) -->
+    <footer id="devHealthFooter" style="display:none;width:100vw;text-align:center;padding:12px 0 8px 0;background:#181818;color:#bbb;font-size:1em;letter-spacing:0.2px;opacity:0.93;position:fixed;bottom:0;left:0;z-index:999;">
+        <span id="healthStatus">Checking backend health...</span>
+    </footer>
+
+    <script>
+    // --- Global Smart Fetch Wrapper ---
+    async function smartFetch(url, opts = {}, fallbackUrls = []) {
+        let errors = [];
+        let res = null;
+        let lastErr = null;
+        const urls = [url, ...fallbackUrls];
+        for (let i = 0; i < urls.length; i++) {
+            try {
+                res = await fetch(urls[i], opts);
+                if (res.ok) return res;
+                errors.push(`Error ${res.status} on ${urls[i]}`);
+            } catch (e) {
+                errors.push(`Network error on ${urls[i]}`);
+                lastErr = e;
+            }
+        }
+        if (isDeveloperMode()) showGlobalError(errors.join(' | ') || 'Request failed.');
+        throw lastErr || new Error(errors.join(' | '));
+    }
+
+    // --- Global Error Handler ---
+    function showGlobalError(msg, timeout = 6000) {
+        const el = document.getElementById('globalError');
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = '';
+        if (timeout) {
+            setTimeout(() => { el.style.display = 'none'; }, timeout);
+        }
+    }
+
+    // --- Health Check UI ---
+    async function updateHealthStatus() {
+        const el = document.getElementById('healthStatus');
+        if (!el) return;
+        try {
+            const res = await fetch('/api/health');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    el.textContent = 'Backend: Healthy';
+                    el.style.color = '#6f6';
+                } else {
+                    el.textContent = 'Backend: Degraded';
+                    el.style.color = '#ffd700';
+                }
+            } else {
+                el.textContent = 'Backend: Unreachable';
+                el.style.color = '#ff4d4d';
+            }
+        } catch {
+            el.textContent = 'Backend: Offline';
+            el.style.color = '#ff4d4d';
+        }
+    }
+
+    // --- Developer Mode Logic ---
+    function isDeveloperMode() {
+        return localStorage.getItem('developerMode') === 'true';
+    }
+    function updateDevUIVisibility() {
+        const devFooter = document.getElementById('devHealthFooter');
+        const globalError = document.getElementById('globalError');
+        if (isDeveloperMode()) {
+            if (devFooter) devFooter.style.display = '';
+        } else {
+            if (devFooter) devFooter.style.display = 'none';
+            if (globalError) globalError.style.display = 'none';
+        }
+    }
+    window.addEventListener('storage', updateDevUIVisibility);
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDevUIVisibility();
+        if (isDeveloperMode()) updateHealthStatus();
+    });
+    setInterval(function() { if (isDeveloperMode()) updateHealthStatus(); }, 20000);
+    </script>
+
         <div class="profile-container">
             <h2>Your Profile</h2>
             <div id="profileInfo"></div>

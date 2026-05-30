@@ -1,3 +1,14 @@
+// Unify user info sync and caching
+function smartSyncUser(username, token, extra) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('loggedInUser', username);
+    if (extra && extra.deviceType) localStorage.setItem('lastLoginDevice', extra.deviceType);
+    if (extra && typeof extra.isIPad !== 'undefined') localStorage.setItem('lastLoginIsIPad', String(extra.isIPad));
+    if (extra && typeof extra.isMobile !== 'undefined') localStorage.setItem('lastLoginIsMobile', String(extra.isMobile));
+    if (typeof updateUserProfile === 'function') {
+        updateUserProfile(username, { username });
+    }
+}
 // --- User Auth & Comments Logic ---
 
 function detectLoginDevice() {
@@ -28,21 +39,80 @@ if (signupForm) {
         const username = document.getElementById('signupUsername').value.trim();
         const password = document.getElementById('signupPassword').value;
         if (!username || !password) return alert('Please fill all fields.');
+        // UI: show spinner, disable form
+        const progress = document.getElementById('signupProgress');
+        const msg = document.getElementById('signupMsg');
+        signupForm.querySelectorAll('input,button').forEach(el => el.disabled = true);
+        if (progress) { progress.style.display = ''; msg.textContent = 'Creating your account...'; }
+        const device = (typeof detectLoginDevice === 'function') ? detectLoginDevice() : { deviceType: 'unknown' };
+        const payload = JSON.stringify({ username, password, device });
+        let errors = [];
+        let successData = null;
+        const endpoints = [
+            'https://sigh2.onrender.com/api/signup',
+            'https://ownshub.onrender.com/api/signup'
+        ];
+        const postSignup = async (url) => {
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: payload
+                });
+                const data = await res.json();
+                if (res.ok && data.token) return { ok: true, data };
+                return { ok: false, error: data.error || 'Signup failed' };
+            } catch (err) {
+                return { ok: false, error: 'Backend not reachable: ' + url };
+            }
+        };
+        const signupPromises = endpoints.map(postSignup);
+        let firstSuccess = null;
         try {
-            const res = await fetch('https://sigh2.onrender.com/api/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const data = await res.json();
-            if (!res.ok) return alert(data.error || 'Signup failed');
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('loggedInUser', data.username);
-            alert('Account created! You are now logged in.');
-            window.location.href = 'index.html';
+            const results = await Promise.allSettled(signupPromises);
+            for (const r of results) {
+                if (r.status === 'fulfilled' && r.value.ok && !firstSuccess) {
+                    firstSuccess = r.value.data;
+                } else if (r.status === 'fulfilled' && !r.value.ok) {
+                    errors.push(r.value.error);
+                } else if (r.status === 'rejected') {
+                    errors.push('Request failed');
+                }
+            }
         } catch (err) {
-            alert('Signup failed. Backend not reachable?');
+            errors.push('Unknown error');
         }
+        if (!firstSuccess) {
+            if (progress) { progress.style.display = 'none'; }
+            signupForm.querySelectorAll('input,button').forEach(el => el.disabled = false);
+            alert(errors.join('\n') || 'Signup failed.');
+            return;
+        }
+        // Unified sync
+        smartSyncUser(firstSuccess.username, firstSuccess.token, device);
+        // Save minimal profile to localStorage/user.js immediately
+        const minimalProfile = { username: firstSuccess.username, displayName: firstSuccess.username, avatar: '', bio: '', followers: 0, following: 0 };
+        try {
+            localStorage.setItem('lastSavedProfile', JSON.stringify(minimalProfile));
+            if (typeof updateUserProfile === 'function') updateUserProfile(firstSuccess.username, minimalProfile);
+        } catch {}
+        // Wait for backend profile row to exist before redirecting
+        let profileReady = false;
+        if (progress) { msg.textContent = 'Finalizing your profile...'; }
+        for (let i = 0; i < 6; i++) { // Try for up to ~3 seconds
+            try {
+                const res = await fetch('https://sigh2.onrender.com/api/profile?user=' + encodeURIComponent(firstSuccess.username));
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.displayName) { profileReady = true; break; }
+                }
+            } catch {}
+            await new Promise(r => setTimeout(r, 500));
+        }
+        if (progress) { progress.style.display = 'none'; }
+        signupForm.querySelectorAll('input,button').forEach(el => el.disabled = false);
+        alert('Account created! You are now logged in.');
+        window.location.href = 'index.html';
     });
 }
 
@@ -53,65 +123,97 @@ if (loginForm) {
         e.preventDefault();
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
-        const loginDevice = detectLoginDevice();
-        let loginSuccess = false;
-        let lastError = '';
-        // Try sigh2 backend first
-        try {
-            const res = await fetch('https://sigh2.onrender.com/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, loginDevice })
-            });
-            const data = await res.json();
-            if (res.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('loggedInUser', data.username);
-                localStorage.setItem('lastLoginDevice', loginDevice.deviceType);
-                localStorage.setItem('lastLoginIsIPad', String(loginDevice.isIPad));
-                localStorage.setItem('lastLoginIsMobile', String(loginDevice.isMobile));
-                alert('Login successful!');
-                window.location.href = 'index.html';
-                loginSuccess = true;
-                return;
-            } else {
-                lastError = data.error || 'Login failed';
-            }
-        } catch (err) {
-            lastError = 'Login failed. sigh2 backend not reachable?';
-        }
-        // If not found, try old backend
-        if (!loginSuccess) {
+        const loginDevice = (typeof detectLoginDevice === 'function') ? detectLoginDevice() : { deviceType: 'unknown' };
+        let errors = [];
+        let firstSuccess = null;
+        const endpoints = [
+            'https://sigh2.onrender.com/api/login',
+            'https://ownshub.onrender.com/api/login'
+        ];
+        const postLogin = async (url) => {
             try {
-                const res = await fetch('https://ownshub.onrender.com/api/login', {
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password, loginDevice })
                 });
                 const data = await res.json();
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('loggedInUser', data.username);
-                    localStorage.setItem('lastLoginDevice', loginDevice.deviceType);
-                    localStorage.setItem('lastLoginIsIPad', String(loginDevice.isIPad));
-                    localStorage.setItem('lastLoginIsMobile', String(loginDevice.isMobile));
-                    alert('Login successful! (old database)');
-                    window.location.href = 'index.html';
-                    return;
-                } else {
-                    lastError = data.error || 'Login failed';
-                }
+                if (res.ok && data.token) return { ok: true, data };
+                return { ok: false, error: data.error || 'Login failed' };
             } catch (err) {
-                lastError = 'Login failed. Backend not reachable?';
+                return { ok: false, error: 'Backend not reachable: ' + url };
             }
+        };
+        const loginPromises = endpoints.map(postLogin);
+        try {
+            const results = await Promise.allSettled(loginPromises);
+            for (const r of results) {
+                if (r.status === 'fulfilled' && r.value.ok && !firstSuccess) {
+                    firstSuccess = r.value.data;
+                } else if (r.status === 'fulfilled' && !r.value.ok) {
+                    errors.push(r.value.error);
+                } else if (r.status === 'rejected') {
+                    errors.push('Request failed');
+                }
+            }
+        } catch (err) {
+            errors.push('Unknown error');
         }
-        alert(lastError);
+        if (!firstSuccess) {
+            alert(errors.join('\n') || 'Login failed.');
+            return;
+        }
+        // Unified sync
+        smartSyncUser(firstSuccess.username, firstSuccess.token, loginDevice);
+        alert('Login successful!');
+        window.location.href = 'index.html';
     });
 }
 
-// Profile dropdown logic
+
+// Robust profile loader and saver
+async function smartLoadProfile(username) {
+    // Try sigh2, then ownshub, then localStorage/user.js
+    let profile = null;
+    let errors = [];
+    try {
+        const res = await fetch('https://sigh2.onrender.com/api/profile?user=' + encodeURIComponent(username));
+        if (res.ok) profile = await res.json();
+    } catch (e) { errors.push('sigh2 failed'); }
+    if (!profile || !profile.displayName) {
+        try {
+            const res = await fetch('https://ownshub.onrender.com/api/profile?user=' + encodeURIComponent(username));
+            if (res.ok) profile = await res.json();
+        } catch (e) { errors.push('ownshub failed'); }
+    }
+    if ((!profile || !profile.displayName) && typeof getUserProfile === 'function') {
+        try { profile = getUserProfile(username); } catch {}
+    }
+    return profile || { username };
+}
+
+async function smartSaveProfile(token, profileData) {
+    // Save to sigh2 and ownshub, then localStorage/user.js
+    const endpoints = [
+        'https://sigh2.onrender.com/api/profile',
+        'https://ownshub.onrender.com/api/profile'
+    ];
+    for (const url of endpoints) {
+        try {
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify(profileData)
+            });
+        } catch {}
+    }
+    if (typeof updateUserProfile === 'function') {
+        updateUserProfile(profileData.username, profileData);
+    }
+}
+
+// Profile dropdown logic (unchanged)
 document.addEventListener('DOMContentLoaded', function() {
-    // theme-mode.js wires this dropdown on pages where it is loaded.
     if (typeof window.applySavedAppearance === 'function') {
         return;
     }

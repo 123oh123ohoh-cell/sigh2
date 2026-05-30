@@ -1,19 +1,112 @@
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  let sigh2Ok = false, ownshubOk = false;
+  try { dbSigh2.prepare('SELECT 1').get(); sigh2Ok = true; } catch {}
+  try { dbOwnshub.prepare('SELECT 1').get(); ownshubOk = true; } catch {}
+  res.json({ sigh2: sigh2Ok, ownshub: ownshubOk, status: (sigh2Ok && ownshubOk) ? 'healthy' : (sigh2Ok || ownshubOk) ? 'degraded' : 'down' });
+});
+const express = require('express');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const Database = require('better-sqlite3');
+const http = require('http');
+const { Server } = require('socket.io');
+const os = require('os');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: '*', methods: ['GET', 'POST'] }
+});
+
+const PORT = process.env.PORT || 5500;
+const SECRET = process.env.JWT_SECRET || 'supersecretkey';
+
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+
+// ─── DATABASES ────────────────────────────────────────────────
+const dbSigh2 = new Database('./sigh2.db');
+const dbOwnshub = new Database('./ownshub.db');
+
+// Helper: run on both DBs for writes
+function runOnBothDbs(sql, params) {
+  dbSigh2.prepare(sql).run(...params);
+  dbOwnshub.prepare(sql).run(...params);
+}
+// Helper: get from sigh2, fallback to ownshub
+function getFromDbs(sql, params) {
+  let row = dbSigh2.prepare(sql).get(...params);
+  if (!row) row = dbOwnshub.prepare(sql).get(...params);
+  return row;
+}
+// Helper: all from sigh2, fallback to ownshub
+function allFromDbs(sql, params) {
+  let rows = dbSigh2.prepare(sql).all(...params);
+  if (!rows || !rows.length) rows = dbOwnshub.prepare(sql).all(...params);
+  return rows;
+}
+
 // ─── GROUPS ─────────────────────────────────────────────────
-// Create groups table if not exists
+// Create tables in both DBs
 try {
-  db.prepare(`CREATE TABLE IF NOT EXISTS groups (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-    members TEXT,
-    creator TEXT,
-    createdAt TEXT
-  )`).run();
-} catch (e) { console.error('DB migration error (groups):', e); }
+  [dbSigh2, dbOwnshub].forEach(db => {
+    db.prepare(`CREATE TABLE IF NOT EXISTS groups (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      members TEXT,
+      creator TEXT,
+      createdAt TEXT
+    )`).run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE,
+      password TEXT
+    )`).run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS profiles (
+      username TEXT PRIMARY KEY,
+      displayName TEXT,
+      pronouns TEXT,
+      customPronouns TEXT,
+      bio TEXT,
+      avatar TEXT,
+      followers INTEGER DEFAULT 0,
+      following INTEGER DEFAULT 0,
+      premiumTier TEXT DEFAULT NULL
+    )`).run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sender TEXT,
+      receiver TEXT,
+      content TEXT,
+      image TEXT,
+      gif TEXT,
+      timestamp TEXT
+    )`).run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS arts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT,
+      image TEXT,
+      title TEXT,
+      description TEXT,
+      category TEXT,
+      date TEXT
+    )`).run();
+    db.prepare(`CREATE TABLE IF NOT EXISTS comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      videoId INTEGER,
+      username TEXT,
+      text TEXT,
+      date TEXT
+    )`).run();
+  });
+} catch (e) { console.error('DB migration error (all):', e); }
 
 // Get all groups
 app.get('/api/groups', (req, res) => {
   try {
-    const rows = db.prepare('SELECT * FROM groups ORDER BY createdAt DESC').all();
+    const rows = allFromDbs('SELECT * FROM groups ORDER BY createdAt DESC', []);
     // Parse members JSON for each group
     const groups = rows.map(g => ({ ...g, members: JSON.parse(g.members || '[]') }));
     res.json(groups);
@@ -30,8 +123,7 @@ app.post('/api/groups', (req, res) => {
   }
   const createdAt = new Date().toISOString();
   try {
-    db.prepare('INSERT OR IGNORE INTO groups (id, name, members, creator, createdAt) VALUES (?, ?, ?, ?, ?)')
-      .run(id, name, JSON.stringify(members), creator || members[0], createdAt);
+    runOnBothDbs('INSERT OR IGNORE INTO groups (id, name, members, creator, createdAt) VALUES (?, ?, ?, ?, ?)', [id, name, JSON.stringify(members), creator || members[0], createdAt]);
     // Emit group_create event to all sockets
     io.emit('group_create', { id, name, members, creator: creator || members[0], createdAt });
     res.json({ id, name, members, creator: creator || members[0], createdAt });
@@ -205,13 +297,22 @@ app.get('/', (req, res) => res.send('OwnsHub Backend API running!'));
 
 // Auth
 app.post('/api/signup', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, device } = req.body;
   if (!username || !password) return res.status(400).json({ error: 'Missing fields' });
   const row = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
   if (row) return res.status(409).json({ error: 'Username exists' });
   const hash = bcrypt.hashSync(password, 10);
+  const now = new Date().toISOString();
   try {
-    db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run(username, hash);
+    const tx = db.transaction(() => {
+      db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run(username, hash);
+      // Auto-create profile row with registration date and device info
+      db.prepare(`INSERT INTO profiles (username, displayName, bio, avatar, followers, following, premiumTier, customPronouns, pronouns, lastLogin, lastDevice, registeredAt)
+        VALUES (?, ?, '', '', 0, 0, NULL, '', '', ?, ?, ?)
+        ON CONFLICT(username) DO NOTHING`)
+        .run(username, username, now, device && device.deviceType ? device.deviceType : '', now);
+    });
+    tx();
     const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
     res.json({ token, username });
   } catch (err) {
@@ -221,11 +322,16 @@ app.post('/api/signup', (req, res) => {
 
 
 app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, device } = req.body;
   try {
     const row = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
     if (!row) return res.status(401).json({ error: 'Invalid credentials' });
     if (!bcrypt.compareSync(password, row.password)) return res.status(401).json({ error: 'Invalid credentials' });
+    // Update last login and device info in profile
+    try {
+      db.prepare('UPDATE profiles SET lastLogin = ?, lastDevice = ? WHERE username = ?')
+        .run(new Date().toISOString(), device && device.deviceType ? device.deviceType : '', username);
+    } catch {}
     const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
     res.json({ token, username });
   } catch (err) {
@@ -279,19 +385,35 @@ app.get('/api/profile', (req, res) => {
   const username = req.query.user;
   try {
     let row;
-    if (username) {
-      row = db.prepare('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier FROM profiles WHERE username = ?').get(username);
-      res.json(row || {});
-    } else {
-      authenticateToken(req, res, () => {
+    let user = username;
+    if (!user && req.headers['authorization']) {
+      // Try to get from token
+      return authenticateToken(req, res, () => {
         try {
-          row = db.prepare('SELECT displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier FROM profiles WHERE username = ?').get(req.user.username);
+          user = req.user.username;
+          row = db.prepare('SELECT * FROM profiles WHERE username = ?').get(user);
+          if (!row) {
+            // Auto-create profile if missing
+            db.prepare('INSERT INTO profiles (username, displayName, registeredAt) VALUES (?, ?, ?)')
+              .run(user, user, new Date().toISOString());
+            row = db.prepare('SELECT * FROM profiles WHERE username = ?').get(user);
+          }
           res.json(row || {});
         } catch (err) {
           return res.status(500).json({ error: 'DB error' });
         }
       });
-      return;
+    } else if (user) {
+      row = db.prepare('SELECT * FROM profiles WHERE username = ?').get(user);
+      if (!row) {
+        // Auto-create profile if missing
+        db.prepare('INSERT INTO profiles (username, displayName, registeredAt) VALUES (?, ?, ?)')
+          .run(user, user, new Date().toISOString());
+        row = db.prepare('SELECT * FROM profiles WHERE username = ?').get(user);
+      }
+      res.json(row || {});
+    } else {
+      return res.status(400).json({ error: 'No user specified' });
     }
   } catch (err) {
     return res.status(500).json({ error: 'DB error' });
@@ -305,10 +427,10 @@ app.post('/api/profile', authenticateToken, (req, res) => {
     const row = db.prepare('SELECT followers, following FROM profiles WHERE username = ?').get(username);
     const followers = row ? row.followers || 0 : 0;
     const following = row ? row.following || 0 : 0;
-    db.prepare(`INSERT INTO profiles (username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    db.prepare(`INSERT INTO profiles (username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier, lastLogin, lastDevice, registeredAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?)
       ON CONFLICT(username) DO UPDATE SET displayName=excluded.displayName, pronouns=excluded.pronouns, customPronouns=excluded.customPronouns, bio=excluded.bio, avatar=excluded.avatar, premiumTier=excluded.premiumTier`)
-      .run(username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier);
+      .run(username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier, new Date().toISOString());
     res.json({ success: true });
   } catch (err) {
     return res.status(500).json({ error: 'DB error' });

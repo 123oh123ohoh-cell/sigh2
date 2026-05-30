@@ -125,8 +125,8 @@
         <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
         <div class="profile-dropdown">
             <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
-                <img id="profileAvatarIcon" src="logos_and_profileicons/default-profile.png" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;" onerror="this.onerror=null;this.src='logos_and_profileicons/default-profile.png';">
-                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+                <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+                <img id="profileAvatarFallback" src="logos_and_profileicons/defaultpfp.webp" alt="Default Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;cursor:pointer;">
             </button>
             <div class="dropdown-content" id="profileDropdownMenu">
                 <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
@@ -136,6 +136,89 @@
             </div>
         </div>
         <script>
+                // Avatar loading logic for nav bar (copied from index.html)
+                async function loadNavAvatar() {
+                    const avatarImg = document.getElementById('profileAvatarIcon');
+                    const fallback = document.getElementById('profileAvatarFallback');
+                    let username = localStorage.getItem('loggedInUser');
+                    let avatar = '';
+                    let token = localStorage.getItem('token');
+                    // 1. Try sigh2 backend
+                    if (username && token) {
+                        try {
+                            let res = await fetch('https://sigh2.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+                            if (res.ok) {
+                                let data = await res.json();
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 2. Try ownshub backend if not found
+                    if (!avatar && username && token) {
+                        try {
+                            let res = await fetch('https://ownshub.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+                            if (res.ok) {
+                                let data = await res.json();
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 3. Try localStorage cache
+                    if (!avatar) {
+                        try {
+                            let cached = localStorage.getItem('lastSavedProfile');
+                            if (cached) {
+                                let data = JSON.parse(cached);
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 4. Try user.js (userProfiles)
+                    if (!avatar && typeof getUserProfile === 'function' && username) {
+                        try {
+                            let data = getUserProfile(username);
+                            if (data && data.avatar && data.avatar.trim()) avatar = data.avatar;
+                        } catch (e) {}
+                    }
+                    // 5. Try sessionStorage cache
+                    if (!avatar) {
+                        try {
+                            let cached = sessionStorage.getItem('lastSavedProfile');
+                            if (cached) {
+                                let data = JSON.parse(cached);
+                                if (data.avatar && data.avatar.trim()) avatar = data.avatar;
+                            }
+                        } catch (e) {}
+                    }
+                    // 6. Fallback defaultpfp.webp
+                    if (!avatar) avatar = 'logos_and_profileicons/defaultpfp.webp';
+                    // Set avatar
+                    if (avatar && avatarImg) {
+                        avatarImg.src = avatar;
+                        avatarImg.style.display = '';
+                        if (fallback) fallback.style.display = 'none';
+                    } else {
+                        if (avatarImg) avatarImg.style.display = 'none';
+                        if (fallback) fallback.style.display = '';
+                    }
+                }
+                document.addEventListener('DOMContentLoaded', function() {
+                    loadNavAvatar();
+                    // Make fallback avatar clickable to open dropdown
+                    const fallback = document.getElementById('profileAvatarFallback');
+                    const btn = document.getElementById('profileDropdownBtn');
+                    if (fallback && btn) {
+                        fallback.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            btn.click();
+                        });
+                    }
+                });
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'loggedInUser' || e.key === 'token' || e.key === 'lastSavedProfile') {
+                        loadNavAvatar();
+                    }
+                });
         document.addEventListener('DOMContentLoaded', function() {
             async function updateDropdownMenu() {
                 const loggedInUser = localStorage.getItem('loggedInUser');
@@ -222,6 +305,91 @@
         <div id="artsGallery" class="arts-gallery"></div>
         <div id="postArtContainer" class="post-art-section"></div>
     </main>
+    <!-- Global Error UI (dev mode only) -->
+    <div id="globalError" style="display:none;position:fixed;top:0;left:0;width:100vw;z-index:9999;background:#ff4d4d;color:#fff;padding:16px 0;text-align:center;font-weight:700;font-size:1.15em;box-shadow:0 2px 12px #0005;letter-spacing:0.5px;"></div>
+    <!-- Health Status Footer (dev mode only) -->
+    <footer id="devHealthFooter" style="display:none;width:100vw;text-align:center;padding:12px 0 8px 0;background:#181818;color:#bbb;font-size:1em;letter-spacing:0.2px;opacity:0.93;position:fixed;bottom:0;left:0;z-index:999;">
+        <span id="healthStatus">Checking backend health...</span>
+    </footer>
+
+    <script>
+    // --- Global Smart Fetch Wrapper ---
+    async function smartFetch(url, opts = {}, fallbackUrls = []) {
+        let errors = [];
+        let res = null;
+        let lastErr = null;
+        const urls = [url, ...fallbackUrls];
+        for (let i = 0; i < urls.length; i++) {
+            try {
+                res = await fetch(urls[i], opts);
+                if (res.ok) return res;
+                errors.push(`Error ${res.status} on ${urls[i]}`);
+            } catch (e) {
+                errors.push(`Network error on ${urls[i]}`);
+                lastErr = e;
+            }
+        }
+        if (isDeveloperMode()) showGlobalError(errors.join(' | ') || 'Request failed.');
+        throw lastErr || new Error(errors.join(' | '));
+    }
+
+    // --- Global Error Handler ---
+    function showGlobalError(msg, timeout = 6000) {
+        const el = document.getElementById('globalError');
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = '';
+        if (timeout) {
+            setTimeout(() => { el.style.display = 'none'; }, timeout);
+        }
+    }
+
+    // --- Health Check UI ---
+    async function updateHealthStatus() {
+        const el = document.getElementById('healthStatus');
+        if (!el) return;
+        try {
+            const res = await fetch('/api/health');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    el.textContent = 'Backend: Healthy';
+                    el.style.color = '#6f6';
+                } else {
+                    el.textContent = 'Backend: Degraded';
+                    el.style.color = '#ffd700';
+                }
+            } else {
+                el.textContent = 'Backend: Unreachable';
+                el.style.color = '#ff4d4d';
+            }
+        } catch {
+            el.textContent = 'Backend: Offline';
+            el.style.color = '#ff4d4d';
+        }
+    }
+
+    // --- Developer Mode Logic ---
+    function isDeveloperMode() {
+        return localStorage.getItem('developerMode') === 'true';
+    }
+    function updateDevUIVisibility() {
+        const devFooter = document.getElementById('devHealthFooter');
+        const globalError = document.getElementById('globalError');
+        if (isDeveloperMode()) {
+            if (devFooter) devFooter.style.display = '';
+        } else {
+            if (devFooter) devFooter.style.display = 'none';
+            if (globalError) globalError.style.display = 'none';
+        }
+    }
+    window.addEventListener('storage', updateDevUIVisibility);
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDevUIVisibility();
+        if (isDeveloperMode()) updateHealthStatus();
+    });
+    setInterval(function() { if (isDeveloperMode()) updateHealthStatus(); }, 20000);
+    </script>
     <script src="arts.js"></script>
 </body>
 </html>

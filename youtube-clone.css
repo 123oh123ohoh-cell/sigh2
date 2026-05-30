@@ -1,0 +1,205 @@
+/* YouTube homepage static clone: layout, icons, spacing, hover, responsive */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+body {
+  margin: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #1a0022 0%, #2a0033 60%, #ff4d6d 100%);
+  color: #f1f1f1;
+}
+.yt-header {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  background: linear-gradient(90deg, #2a0033 0%, #ff4d6d 100%);
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.yt-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-right: 32px;
+}
+.yt-logo img {
+  height: 24px;
+  margin-right: 6px;
+}
+.yt-logo span {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -1px;
+}
+.yt-menu-btn {
+  background: none;
+  border: none;
+  margin-right: 16px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.yt-menu-btn:hover {
+  background: #303030;
+}
+.yt-search-bar {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.yt-search-bar input {
+  width: 500px;
+  max-width: 90vw;
+  padding: 8px 16px;
+  border: 1px solid #303030;
+  border-radius: 2px 0 0 2px;
+  background: #121212;
+  color: #fff;
+  font-size: 1em;
+  outline: none;
+}
+.yt-search-bar button {
+  padding: 8px 18px;
+  border: 1px solid #303030;
+  border-left: none;
+  background: #222;
+  color: #fff;
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+}
+.yt-header-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 24px;
+}
+.yt-header-icons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+.yt-header-icons button:hover {
+  background: #303030;
+}
+.yt-profile {
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+}
+.yt-profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #303030;
+}
+.yt-sidebar {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: 240px;
+  height: calc(100vh - 56px);
+  background: linear-gradient(180deg, #2a0033 0%, #ff7ecb 100%);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 10;
+  transition: width 0.2s;
+}
+.yt-sidebar.collapsed {
+  width: 72px;
+}
+.yt-sidebar a {
+  color: #f1f1f1;
+  text-decoration: none;
+  font-size: 1.08em;
+  padding: 10px 32px;
+  border-radius: 10px;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 40px;
+}
+.yt-sidebar a.active, .yt-sidebar a:hover {
+  background: #383838;
+}
+.yt-sidebar svg {
+  min-width: 24px;
+  min-height: 24px;
+}
+.yt-main {
+  margin-left: 240px;
+  padding: 32px 32px 0 32px;
+  transition: margin-left 0.2s;
+  min-height: 100vh;
+  background: linear-gradient(135deg,rgba(255,77,109,0.08) 0%,rgba(255,182,230,0.10) 100%);
+}
+.yt-sidebar.collapsed ~ .yt-main {
+  margin-left: 72px;
+}
+.yt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px 12px;
+}
+.yt-card {
+  background: #181818;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px #ff4d6d55, 0 2px 8px #0005;
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.18s;
+  position: relative;
+}
+.yt-card:hover {
+  box-shadow: 0 0 32px #ff4d6dbb, 0 6px 24px #000a;
+  transform: translateY(-6px) scale(1.04);
+  z-index: 2;
+}
+.yt-thumb {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  background: #222;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 2px 12px #ff4d6d44;
+}
+.yt-card-info {
+  padding: 14px 16px 10px 16px;
+  position: relative;
+}
+.yt-card-title {
+  font-size: 1.15em;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px #ff4d6d88;
+}
+.yt-card-meta {
+  font-size: 1.08em;
+  color: #fff;
+  margin-bottom: 4px;
+  font-weight: 700;
+  text-shadow: 0 1px 6px #ff7ecb88;
+}
+.yt-card-desc {
+  font-size: 1em;
+  color: #fff;
+  opacity: 0.92;
+  text-shadow: 0 1px 6px #ffb6e688;
+}
+@media (max-width: 900px) {
+  .yt-sidebar { display: none; }
+  .yt-main { margin-left: 0; }
+  .yt-search-bar input { width: 90vw; }
+}
