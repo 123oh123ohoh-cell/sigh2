@@ -160,69 +160,7 @@ try {
     username TEXT UNIQUE,
     password TEXT
   )`).run();
-  db.prepare(`CREATE TABLE IF NOT EXISTS profiles (
-    username TEXT PRIMARY KEY,
-    displayName TEXT,
-    pronouns TEXT,
-    customPronouns TEXT,
-    bio TEXT,
-    avatar TEXT,
-    followers INTEGER DEFAULT 0,
-    following INTEGER DEFAULT 0,
-    premiumTier TEXT DEFAULT NULL
-  )`).run();
-  db.prepare(`CREATE TABLE IF NOT EXISTS messages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sender TEXT,
-    receiver TEXT,
-    content TEXT,
-    image TEXT,
-    gif TEXT,
-    timestamp TEXT
-  )`).run();
-  db.prepare(`CREATE TABLE IF NOT EXISTS arts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    image TEXT,
-    title TEXT,
-    description TEXT,
-    category TEXT,
-    date TEXT
-  )`).run();
-  db.prepare(`CREATE TABLE IF NOT EXISTS comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    videoId INTEGER,
-    username TEXT,
-    text TEXT,
-    date TEXT
-  )`).run();
-  // Migrations (safe to run every time)
-  try { db.prepare('ALTER TABLE profiles ADD COLUMN followers INTEGER DEFAULT 0').run(); } catch {}
-  try { db.prepare('ALTER TABLE profiles ADD COLUMN following INTEGER DEFAULT 0').run(); } catch {}
-  try { db.prepare('ALTER TABLE profiles ADD COLUMN premiumTier TEXT DEFAULT NULL').run(); } catch {}
-  try { db.prepare('ALTER TABLE arts ADD COLUMN category TEXT').run(); } catch {}
-  try { db.prepare('ALTER TABLE messages ADD COLUMN image TEXT').run(); } catch {}
-  try { db.prepare('ALTER TABLE messages ADD COLUMN gif TEXT').run(); } catch {}
-} catch (e) { console.error('DB migration error:', e); }
-
-// ─── AUTH HELPER ──────────────────────────────────────────────
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'No token' });
-  jwt.verify(token, SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Invalid token' });
-    req.user = user;
-    next();
-  });
-}
-
-// ─── SOCKET.IO ────────────────────────────────────────────────
-const userStatus = {};
-const onlineUsers = new Set();
-
-io.on('connection', (socket) => {
-  let username = null;
+});
 
   socket.on('join', (user) => {
     username = user;
