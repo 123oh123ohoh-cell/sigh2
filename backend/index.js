@@ -167,16 +167,7 @@ app.post('/api/groups', (req, res) => {
 // ...existing code...
 
 // ─── DATABASE ─────────────────────────────────────────────────
-const db = new Database('./ownshub.db');
-
-// Table creation and migrations
-try {
-  db.prepare(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password TEXT
-  )`).run();
-}
+// ...existing code...
 
   socket.on('join', (user) => {
     username = user;
