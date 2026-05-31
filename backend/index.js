@@ -37,6 +37,9 @@ app.use(express.json({ limit: '10mb' }));
 const dbSigh2 = new Database('/data/sigh2.db');
 const dbOwnshub = new Database('/data/ownshub.db');
 
+// Use ownshub DB for user/profile/message endpoints
+const db = dbOwnshub;
+
 // ─── HEALTH ENDPOINT FOR STORAGE ──────────────────────────
 app.get('/api/storage-health', (req, res) => {
   try {
