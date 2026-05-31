@@ -1,14 +1,14 @@
 // ─── PERSISTENT STORAGE CHECK ─────────────────────────────
 const fs = require('fs');
-const DATA_PATH = '/data';
+const DATA_PATH = './data';
 try {
   if (!fs.existsSync(DATA_PATH)) {
     fs.mkdirSync(DATA_PATH, { recursive: true });
-    console.log('Created /data directory for persistent storage.');
+    console.log('Created ./data directory for persistent storage.');
   }
   fs.accessSync(DATA_PATH, fs.constants.W_OK);
 } catch (e) {
-  console.warn('WARNING: /data directory is not writable or could not be created. Persistent storage may not work!');
+  console.warn('WARNING: ./data directory is not writable or could not be created. Persistent storage may not work!');
 }
 
 // ─── IMPORTS ────────────────────────────────────────────────
@@ -36,8 +36,8 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // ─── DATABASES ────────────────────────────────────────────────
-const dbSigh2 = new Database('/data/sigh2.db');
-const dbOwnshub = new Database('/data/ownshub.db');
+const dbSigh2 = new Database('./data/sigh2.db');
+const dbOwnshub = new Database('./data/ownshub.db');
 
 // Use ownshub DB for user/profile/message endpoints
 const db = dbOwnshub;
