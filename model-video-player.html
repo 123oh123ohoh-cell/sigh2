@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Model Video Player - GlamHub</title>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="diamond-button.css">
+</head>
+<body>
+	<header class="header">
+		<a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px;"></a>
+		<a href="models.html">Back to Models</a>
+	</header>
+	<main class="video-main-layout">
+		<div class="video-viewer-main">
+			<div class="video-player-box">
+				<video id="mainVideo" controls poster="" class="main-video-element">
+					<source id="videoSource" src="" type="video/mp4">
+					Your browser does not support the video tag.
+				</video>
+			</div>
+			<div class="video-info-box">
+				<h1 id="videoTitle" class="video-title"></h1>
+				<div class="video-meta-row">
+					<div class="creator-avatar"><img id="creatorAvatar" src="logos_and_profileicons/defaultpfp.webp" alt="Creator"></div>
+					<div class="creator-info">
+						<span id="videoCreator" class="creator-name"></span>
+						<button class="subscribe-btn">Subscribe</button>
+					</div>
+					<div class="video-actions">
+						<span id="videoLikes" class="likes-count"></span>
+						<button class="like-btn" title="Like">👍</button>
+						<button class="dislike-btn" title="Dislike">👎</button>
+						<button class="share-btn" title="Share">🔗</button>
+						<button class="save-btn" title="Save">💾</button>
+					</div>
+				</div>
+				<div class="video-description-box">
+					<div id="videoDescription" class="video-description"></div>
+					<div id="videoTags" class="video-tags"></div>
+				</div>
+			</div>
+			<section class="comments-section">
+				<h2>Comments</h2>
+				<div id="comments"></div>
+				<form id="commentForm" class="comment-form">
+					<input type="text" id="commentInput" placeholder="Add a comment...">
+					<button type="submit">Post</button>
+				</form>
+			</section>
+		</div>
+		<aside class="sidebar-recommendations">
+			<h3>Recommended Videos</h3>
+			<div id="recommendedVideos" class="recommended-videos-list"></div>
+		</aside>
+	</main>
+	<style>
+	body {
+		background: #181818;
+		color: #fff;
+		font-family: 'Netflix Sans', Arial, sans-serif;
+	}
+	.video-main-layout {
+		display: flex;
+		flex-direction: row;
+		max-width: 1400px;
+		margin: 32px auto;
+		gap: 32px;
+		padding: 0 16px;
+	}
+	.video-viewer-main {
+		flex: 2 1 0;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+	.video-player-box {
+		background: #000;
+		border-radius: 18px;
+		box-shadow: 0 2px 16px #000a;
+		padding: 0;
+		overflow: hidden;
+	}
+	.main-video-element {
+		width: 100%;
+		max-height: 540px;
+		border-radius: 18px;
+		background: #000;
+		display: block;
+	}
+	.video-info-box {
+		background: #232323;
+		border-radius: 14px;
+		padding: 18px 22px 14px 22px;
+		box-shadow: 0 2px 12px #0006;
+	}
+	.video-title {
+		font-size: 2em;
+		font-weight: 700;
+		color: #ffd700;
+		margin: 0 0 10px 0;
+	}
+	.video-meta-row {
+		display: flex;
+		align-items: center;
+		gap: 18px;
+		margin-bottom: 10px;
+	}
+	.creator-avatar img {
+		width: 54px;
+		height: 54px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid #ffd700;
+	}
+	.creator-info {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.creator-name {
+		font-size: 1.1em;
+		font-weight: 600;
+		color: #ffd700;
+	}
+	.subscribe-btn {
+		background: linear-gradient(90deg,#ff2222,#ff9800);
+		color: #fff;
+		border: none;
+		border-radius: 8px;
+		padding: 6px 18px;
+		font-weight: 700;
+		font-size: 1em;
+		cursor: pointer;
+		margin-top: 2px;
+		box-shadow: 0 2px 8px #ff980088;
+		transition: background 0.18s;
+	}
+	.subscribe-btn:hover {
+		background: linear-gradient(90deg,#ff9800,#ff2222);
+	}
+	.video-actions {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-left: auto;
+	}
+	.likes-count {
+		color: #ff9800;
+		font-weight: 700;
+		font-size: 1.1em;
+	}
+	.like-btn, .dislike-btn, .share-btn, .save-btn {
+		background: #232323;
+		color: #ffd700;
+		border: none;
+		border-radius: 8px;
+		padding: 6px 12px;
+		font-size: 1.1em;
+		cursor: pointer;
+		transition: background 0.18s;
+	}
+	.like-btn:hover, .dislike-btn:hover, .share-btn:hover, .save-btn:hover {
+		background: #ffd700;
+		color: #232323;
+	}
+	.video-description-box {
+		margin-top: 10px;
+		background: #181818;
+		border-radius: 10px;
+		padding: 12px 16px;
+		color: #eee;
+		font-size: 1.08em;
+	}
+	.video-tags {
+		margin-top: 8px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.video-tags span {
+		background: #ffd700;
+		color: #232323;
+		border-radius: 6px;
+		padding: 3px 12px;
+		font-size: 0.98em;
+		font-weight: 600;
+	}
+	.comments-section {
+		background: #232323;
+		border-radius: 14px;
+		padding: 18px 22px 14px 22px;
+		box-shadow: 0 2px 12px #0006;
+		margin-top: 18px;
+	}
+	.comments-section h2 {
+		color: #ffd700;
+		margin-bottom: 12px;
+	}
+	#comments {
+		margin-bottom: 18px;
+	}
+	.comment-form {
+		display: flex;
+		gap: 12px;
+	}
+	.comment-form input[type="text"] {
+		flex: 1;
+		padding: 8px 12px;
+		border-radius: 8px;
+		border: none;
+		font-size: 1em;
+	}
+	.comment-form button {
+		background: #ffd700;
+		color: #222;
+		font-weight: 700;
+		padding: 8px 18px;
+		border-radius: 8px;
+		border: none;
+		font-size: 1em;
+		cursor: pointer;
+		transition: background 0.18s;
+	}
+	.comment-form button:hover {
+		background: #ff9800;
+		color: #fff;
+	}
+	.sidebar-recommendations {
+		flex: 1 1 320px;
+		max-width: 380px;
+		background: #232323;
+		border-radius: 14px;
+		padding: 18px 12px 18px 12px;
+		box-shadow: 0 2px 12px #0006;
+		height: fit-content;
+	}
+	.sidebar-recommendations h3 {
+		color: #ffd700;
+		margin-bottom: 12px;
+		font-size: 1.2em;
+	}
+	.recommended-videos-list {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+	@media (max-width: 1100px) {
+		.video-main-layout {
+			flex-direction: column;
+			gap: 0;
+		}
+		.sidebar-recommendations {
+			max-width: 100%;
+			margin-top: 32px;
+		}
+	}
+	</style>
+	<script src="video-mock-data.js"></script>
+	<script src="model-video-player.js"></script>
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player - GlamHub</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="diamond-button.css">
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px; width:auto; display:block;">
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="chat2.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+      <a href="#" class="nav-link">Live</a>
+      <a href="models.html" class="nav-link">Models</a>
+      <a href="#" class="nav-link">Categories</a>
+      <a href="premium.html" class="nav-link">Premium</a>
+      <a href="arts.html" class="nav-link">Arts</a>
+    </nav>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search models...">
+    </div>
+    <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
+    <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 18px 0 18px;transition:background 0.18s;">Upload</a>
+    <div class="profile-dropdown">
+      <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
+        <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
+        <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
+      </button>
+      <div class="dropdown-content" id="profileDropdownMenu">
+        <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
+        <a href="settings.html" id="settingsLink" style="display:none;">Settings</a>
+        <a href="signout.html" id="signoutLink" style="display:none;">Sign Out</a>
+        <a href="login.html" id="dropdownLogin">Log In</a>
+        <a href="signup.html" id="dropdownSignup">Create Account</a>
+      </div>
+    </div>
+  </header>
+  <main class="ph-main-layout">
+    <div class="ph-content">
+      <div class="ph-video-box">
+        <video id="mainVideo" controls poster="" class="ph-main-video" autoplay>
+          <source id="videoSource" src="" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="ph-video-info">
+        <h1 id="videoTitle" class="ph-title"></h1>
+        <div class="ph-meta-row">
+          <span id="videoViews" class="ph-views">1,234,567 views</span>
+          <span class="ph-dot">•</span>
+          <span id="videoDate" class="ph-date">May 2026</span>
+          <span class="ph-dot">•</span>
+          <span class="ph-duration">12:34</span>
+          <span class="ph-premium-badge">PREMIUM</span>
+        </div>
+        <div class="ph-categories-row">
+          <span class="ph-category">Amateur</span>
+          <span class="ph-category">Blonde</span>
+          <span class="ph-category">POV</span>
+          <span class="ph-category">Big Tits</span>
+        </div>
+        <div class="ph-stats-bar">
+          <div class="ph-percent-bar">
+            <div class="ph-percent-bar-like" style="width: 92%;"></div>
+            <div class="ph-percent-bar-dislike" style="width: 8%;"></div>
+          </div>
+          <span class="ph-percent-label">92% <span class="ph-like-icon">👍</span></span>
+          <span class="ph-dot">•</span>
+          <span class="ph-favorites">2,345 Favorites</span>
+          <span class="ph-dot">•</span>
+          <span class="ph-comments-count">123 Comments</span>
+        </div>
+        <div class="ph-actions-row">
+          <button class="ph-btn ph-like"><span id="videoLikes">👍 0</span></button>
+          <button class="ph-btn ph-dislike">👎</button>
+          <button class="ph-btn ph-share">Share</button>
+          <button class="ph-btn ph-save">Save</button>
+          <button class="ph-btn ph-report">Report</button>
+          <button class="ph-btn ph-download">Download</button>
+          <button class="ph-btn ph-gift">Gift</button>
+          <button class="ph-btn ph-clip">Create Clip</button>
+          <button class="ph-btn ph-flag">Flag</button>
+        </div>
+        <div class="ph-uploader-card">
+          <img id="creatorAvatar" src="logos_and_profileicons/defaultpfp.webp" class="ph-uploader-avatar" alt="Creator">
+          <div class="ph-uploader-details">
+            <div class="ph-uploader-header">
+              <span id="videoCreator" class="ph-uploader-name"></span>
+              <span class="ph-uploader-badge">Verified <span class="ph-check">✔</span></span>
+              <span class="ph-model-badge">Pornstar</span>
+              <span class="ph-pro-badge">PRO</span>
+            </div>
+            <div class="ph-uploader-links">
+              <a href="#" class="ph-uploader-link">More from this model</a>
+              <a href="#" class="ph-uploader-link">All Pornstars</a>
+            </div>
+            <div class="ph-uploader-stats">
+              <span>1.2M Subscribers</span>
+              <span class="ph-dot">•</span>
+              <span>234 Videos</span>
+              <span class="ph-dot">•</span>
+              <span>Joined Jan 2020</span>
+            </div>
+          </div>
+          <div class="ph-uploader-actions">
+            <button class="ph-btn ph-subscribe">Subscribe</button>
+            <button class="ph-btn ph-message">Message</button>
+            <button class="ph-btn ph-tip">Send Tip</button>
+          </div>
+        </div>
+        <div class="ph-description-box">
+          <div id="videoDescription" class="ph-description"></div>
+          <div id="videoTags" class="ph-tags"></div>
+        </div>
+        <div class="ph-social-row">
+          <span>Share on:</span>
+          <button class="ph-social-btn ph-fb">Facebook</button>
+          <button class="ph-social-btn ph-x">X</button>
+          <button class="ph-social-btn ph-telegram">Telegram</button>
+          <button class="ph-social-btn ph-whatsapp">WhatsApp</button>
+          <button class="ph-social-btn ph-reddit">Reddit</button>
+          <button class="ph-social-btn ph-email">Email</button>
+        </div>
+        <div class="ph-upnext-row">
+          <span class="ph-upnext-label">Up Next</span>
+          <label class="ph-autoplay-toggle"><input type="checkbox" checked> Autoplay</label>
+        </div>
+      </div>
+      <section class="ph-comments-section">
+        <h2>Comments</h2>
+        <div id="comments"></div>
+        <form id="commentForm" class="ph-comment-form">
+          <input type="text" id="commentInput" placeholder="Add a public comment...">
+          <button type="submit">Post</button>
+        </form>
+      </section>
+    </div>
+    <aside class="ph-sidebar">
+      <h3>Recommended for you</h3>
+      <div id="recommendedVideos" class="ph-recommended-list"></div>
+    </aside>
+  </main>
+  <style>
+    body {
+      background: #181818;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .ph-main-layout {
+      display: flex;
+      flex-direction: row;
+      max-width: 1400px;
+      margin: 32px auto;
+      gap: 32px;
+      padding: 0 16px;
+    }
+    .ph-content {
+      flex: 2 1 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .ph-video-box {
+      background: #000;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px #000a;
+      padding: 0;
+      overflow: hidden;
+    }
+    .ph-main-video {
+      width: 100%;
+      max-height: 540px;
+      border-radius: 10px;
+      background: #000;
+      display: block;
+    }
+    .ph-video-info {
+      background: #232323;
+      border-radius: 8px;
+      padding: 18px 22px 14px 22px;
+      box-shadow: 0 2px 12px #0006;
+    }
+    .ph-title {
+      font-size: 2em;
+      font-weight: 700;
+      color: #ffb100;
+      margin: 0 0 10px 0;
+    }
+    .ph-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #bbb;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+    .ph-dot {
+      font-size: 1.2em;
+      color: #ffb100;
+    }
+    .ph-premium-badge {
+      background: #ffb100;
+      color: #232323;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.95em;
+      font-weight: 700;
+      margin-left: 10px;
+      display: inline-block;
+    }
+    .ph-categories-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .ph-category {
+      background: #232323;
+      color: #ffb100;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.98em;
+      font-weight: 700;
+      border: 1px solid #ffb100;
+      display: inline-block;
+    }
+    .ph-stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .ph-percent-bar {
+      width: 180px;
+      height: 10px;
+      background: #333;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+    }
+    .ph-percent-bar-like {
+      background: #ffb100;
+      height: 100%;
+    }
+    .ph-percent-bar-dislike {
+      background: #ff2222;
+      height: 100%;
+    }
+    .ph-percent-label {
+      color: #ffb100;
+      font-weight: 700;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ph-like-icon {
+      font-size: 1.1em;
+    }
+    .ph-favorites, .ph-comments-count {
+      color: #bbb;
+      font-size: 0.98em;
+      font-weight: 600;
+    }
+    .ph-uploader-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      background: #181818;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      box-shadow: 0 2px 8px #0004;
+    }
+    .ph-uploader-details {
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ph-uploader-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    .ph-pro-badge {
+      background: #ff2222;
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.9em;
+      font-weight: 700;
+      margin-left: 6px;
+      display: inline-block;
+    }
+    .ph-uploader-links {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 2px;
+    }
+    .ph-uploader-link {
+      color: #ffb100;
+      text-decoration: underline;
+      font-size: 0.98em;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .ph-uploader-link:hover {
+      color: #ff2222;
+    }
+    .ph-uploader-stats {
+      color: #bbb;
+      font-size: 0.98em;
+      font-weight: 600;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .ph-uploader-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-left: 18px;
+    }
+    .ph-btn.ph-tip {
+      background: #ffb100;
+      color: #232323;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-weight: 700;
+      border: none;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .ph-btn.ph-tip:hover {
+      background: #ff2222;
+      color: #fff;
+    }
+    .ph-upnext-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 18px;
+      background: #232323;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 1.1em;
+      color: #ffb100;
+      font-weight: 700;
+    }
+    .ph-upnext-label {
+      font-size: 1.1em;
+      font-weight: 700;
+      color: #ffb100;
+    }
+    .ph-autoplay-toggle {
+      font-size: 1em;
+      color: #bbb;
+      font-weight: 600;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ph-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .ph-btn {
+      background: #232323;
+      color: #ffb100;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 1.1em;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.18s, color 0.18s;
+    }
+    .ph-btn:hover {
+      background: #ffb100;
+      color: #232323;
+    }
+    .ph-uploader-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .ph-uploader-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ffb100;
+    }
+    .ph-uploader-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ph-uploader-name {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #ffb100;
+    }
+    .ph-uploader-badge {
+      background: #ffb100;
+      color: #232323;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.9em;
+      font-weight: 700;
+      margin-top: 2px;
+      display: inline-block;
+    }
+    .ph-check {
+      color: #232323;
+      font-size: 1em;
+      margin-left: 2px;
+    }
+    .ph-model-badge {
+      background: #ff2222;
+      color: #fff;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.9em;
+      font-weight: 700;
+      margin-top: 2px;
+      margin-left: 6px;
+      display: inline-block;
+    }
+    .ph-subscribe {
+      background: linear-gradient(90deg,#ffb100,#ff2222);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 18px;
+      font-weight: 700;
+      font-size: 1em;
+      cursor: pointer;
+      margin-left: auto;
+      box-shadow: 0 2px 8px #ffb10088;
+      transition: background 0.18s;
+    }
+    .ph-subscribe:hover {
+      background: linear-gradient(90deg,#ff2222,#ffb100);
+    }
+    .ph-message {
+      background: #ffb100;
+      color: #232323;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-weight: 700;
+      margin-left: 10px;
+      border: none;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .ph-message:hover {
+      background: #ff2222;
+      color: #fff;
+    }
+    .ph-description-box {
+      margin-top: 10px;
+      background: #181818;
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: #eee;
+      font-size: 1.08em;
+    }
+    .ph-tags {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ph-tags span {
+      background: #ffb100;
+      color: #232323;
+      border-radius: 6px;
+      padding: 3px 12px;
+      font-size: 0.98em;
+      font-weight: 600;
+    }
+    .ph-social-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .ph-social-btn {
+      background: #232323;
+      color: #ffb100;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 1em;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.18s, color 0.18s;
+    }
+    .ph-social-btn:hover {
+      background: #ffb100;
+      color: #232323;
+    }
+    .ph-comments-section {
+      background: #232323;
+      border-radius: 8px;
+      padding: 18px 22px 14px 22px;
+      box-shadow: 0 2px 12px #0006;
+      margin-top: 18px;
+    }
+    .ph-comments-section h2 {
+      color: #ffb100;
+      margin-bottom: 12px;
+    }
+    #comments {
+      margin-bottom: 18px;
+    }
+    .ph-comment-form {
+      display: flex;
+      gap: 12px;
+    }
+    .ph-comment-form input[type="text"] {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+    .ph-comment-form button {
+      background: #ffb100;
+      color: #222;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .ph-comment-form button:hover {
+      background: #ff2222;
+      color: #fff;
+    }
+    .ph-sidebar {
+      flex: 1 1 320px;
+      max-width: 380px;
+      background: #232323;
+      border-radius: 8px;
+      padding: 18px 12px 18px 12px;
+      box-shadow: 0 2px 12px #0006;
+      height: fit-content;
+    }
+    .ph-sidebar h3 {
+      color: #ffb100;
+      margin-bottom: 12px;
+      font-size: 1.2em;
+    }
+    .ph-recommended-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .ph-rec-card {
+      display: flex;
+      gap: 12px;
+      background: #181818;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0003;
+      padding: 8px 8px 8px 0;
+      cursor: pointer;
+      align-items: flex-start;
+      transition: background 0.18s;
+    }
+    .ph-rec-card:hover {
+      background: #232323;
+    }
+    .ph-rec-thumb {
+      width: 120px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #000;
+    }
+    .ph-rec-info {
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ph-rec-title {
+      color: #ffb100;
+      font-weight: 700;
+      font-size: 1.05em;
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .ph-rec-meta {
+      color: #bbb;
+      font-size: 0.97em;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .ph-rec-duration {
+      background: #232323;
+      color: #ffb100;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.95em;
+      font-weight: 700;
+      margin-left: auto;
+    }
+    .ph-rec-uploader {
+      color: #ffb100;
+      font-size: 0.97em;
+      font-weight: 600;
+    }
+    .ph-rec-views {
+      color: #bbb;
+      font-size: 0.97em;
+    }
+    .ph-rec-badge {
+      background: #ff2222;
+      color: #fff;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.92em;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+    @media (max-width: 1100px) {
+      .ph-main-layout {
+        flex-direction: column;
+        gap: 0;
+      }
+      .ph-sidebar {
+        max-width: 100%;
+        margin-top: 32px;
+      }
+    }
+  </style>
+  <script src="video-mock-data.js"></script>
+  <script src="model-video-player.js"></script>
+</body>
+</html>
