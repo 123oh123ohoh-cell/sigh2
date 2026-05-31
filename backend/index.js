@@ -40,6 +40,10 @@ const dbOwnshub = new Database('/data/ownshub.db');
 // Use ownshub DB for user/profile/message endpoints
 const db = dbOwnshub;
 
+// Track online users and their status
+const onlineUsers = new Set();
+const userStatus = {};
+
 // ─── HEALTH ENDPOINT FOR STORAGE ──────────────────────────
 app.get('/api/storage-health', (req, res) => {
   try {
