@@ -18,7 +18,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Database = require('better-sqlite3');
 const http = require('http');
-const { Server } = require('socket.io');
 const os = require('os');
 
 // ─── APP & SERVER ───────────────────────────────────────────
@@ -165,20 +164,7 @@ app.post('/api/groups', (req, res) => {
     return res.status(500).json({ error: 'DB error' });
   }
 });
-const { Server } = require('socket.io');
-const os = require('os');
-
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: '*', methods: ['GET', 'POST'] }
-});
-
-const PORT = process.env.PORT || 5500;
-const SECRET = process.env.JWT_SECRET || 'supersecretkey';
-
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+// ...existing code...
 
 // ─── DATABASE ─────────────────────────────────────────────────
 const db = new Database('./ownshub.db');
@@ -388,16 +374,69 @@ app.get('/api/profile', (req, res) => {
 
 app.post('/api/profile', authenticateToken, (req, res) => {
   const username = req.user.username;
-  const { displayName, pronouns, customPronouns, bio, avatar, premiumTier } = req.body;
+  let { displayName, pronouns, customPronouns, bio, avatar, premiumTier } = req.body;
+  // Normalize and trim input
+  if (typeof displayName === 'string') displayName = displayName.trim();
+  if (typeof pronouns === 'string') pronouns = pronouns.trim().toLowerCase();
+  if (typeof customPronouns === 'string') customPronouns = customPronouns.trim();
+  if (typeof bio === 'string') bio = bio.trim();
+  // Input validation
+  if (displayName !== undefined && (typeof displayName !== 'string' || displayName.length < 1 || displayName.length > 64 || !displayName.replace(/\s/g, ''))) {
+    return res.status(400).json({ error: 'Display name must be 1-64 non-whitespace characters.' });
+  }
+  if (bio !== undefined && (typeof bio !== 'string' || bio.length > 512)) {
+    return res.status(400).json({ error: 'Bio must be 512 characters or less.' });
+  }
+  if (pronouns !== undefined && (typeof pronouns !== 'string' || pronouns.length > 32)) {
+    return res.status(400).json({ error: 'Pronouns must be 32 characters or less.' });
+  }
+  if (customPronouns !== undefined && (typeof customPronouns !== 'string' || customPronouns.length > 32)) {
+    return res.status(400).json({ error: 'Custom pronouns must be 32 characters or less.' });
+  }
   try {
-    const row = db.prepare('SELECT followers, following FROM profiles WHERE username = ?').get(username);
+    // Always preserve current followers/following counts
+    const row = db.prepare('SELECT * FROM profiles WHERE username = ?').get(username);
     const followers = row ? row.followers || 0 : 0;
     const following = row ? row.following || 0 : 0;
-    db.prepare(`INSERT INTO profiles (username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier, lastLogin, lastDevice, registeredAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?)
-      ON CONFLICT(username) DO UPDATE SET displayName=excluded.displayName, pronouns=excluded.pronouns, customPronouns=excluded.customPronouns, bio=excluded.bio, avatar=excluded.avatar, premiumTier=excluded.premiumTier`)
-      .run(username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier, new Date().toISOString());
-    res.json({ success: true });
+    // Only update fields that are provided and different, never overwrite with undefined/null
+    const updateFields = [];
+    const updateValues = [];
+    if (row) {
+      if (displayName !== undefined && displayName !== row.displayName) { updateFields.push('displayName = ?'); updateValues.push(displayName); }
+      if (pronouns !== undefined && pronouns !== row.pronouns) { updateFields.push('pronouns = ?'); updateValues.push(pronouns); }
+      if (customPronouns !== undefined && customPronouns !== row.customPronouns) { updateFields.push('customPronouns = ?'); updateValues.push(customPronouns); }
+      if (bio !== undefined && bio !== row.bio) { updateFields.push('bio = ?'); updateValues.push(bio); }
+      if (avatar !== undefined && avatar !== row.avatar) { updateFields.push('avatar = ?'); updateValues.push(avatar); }
+      if (premiumTier !== undefined && premiumTier !== row.premiumTier) { updateFields.push('premiumTier = ?'); updateValues.push(premiumTier); }
+      // Always update followers/following to DB value
+      updateFields.push('followers = ?'); updateValues.push(followers);
+      updateFields.push('following = ?'); updateValues.push(following);
+      updateFields.push('lastLogin = NULL');
+      updateFields.push('lastDevice = NULL');
+      updateFields.push('registeredAt = COALESCE(registeredAt, ?)'); updateValues.push(new Date().toISOString());
+      if (updateFields.length > 0) {
+        db.prepare(`UPDATE profiles SET ${updateFields.join(', ')} WHERE username = ?`).run(...updateValues, username);
+      }
+    } else {
+      // Insert new profile
+      db.prepare(`INSERT INTO profiles (username, displayName, pronouns, customPronouns, bio, avatar, followers, following, premiumTier, lastLogin, lastDevice, registeredAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?)
+      `).run(
+        username,
+        displayName || '',
+        pronouns || '',
+        customPronouns || '',
+        bio || '',
+        avatar || '',
+        followers,
+        following,
+        premiumTier || null,
+        new Date().toISOString()
+      );
+    }
+    // Return the latest profile data after save
+    const updated = db.prepare('SELECT * FROM profiles WHERE username = ?').get(username);
+    res.json({ success: true, profile: updated });
   } catch (err) {
     return res.status(500).json({ error: 'DB error' });
   }
