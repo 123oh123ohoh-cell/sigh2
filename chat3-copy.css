@@ -1,0 +1,96 @@
+.app-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 58px;
+	background: rgba(11,13,19,0.98);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	padding: 0 24px;
+	border-bottom: 1px solid var(--border);
+	box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+	backdrop-filter: blur(10px);
+}
+/* Force header to be visible and on top */
+/* Strong header bar, always visible, with fallback color */
+.app-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 58px;
+	background: #181c2e;
+	background: var(--bg-2, #181c2e);
+	z-index: 2000;
+	display: flex;
+	align-items: center;
+	padding: 0 24px;
+	border-bottom: 2px solid #23263a;
+	border-bottom: 2px solid var(--border, #23263a);
+	box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18), 0 1.5px 0 0 #23263a;
+	backdrop-filter: blur(12px);
+	transition: background 0.2s, box-shadow 0.2s;
+}
+
+body, html {
+	padding: 0;
+	margin: 0;
+	width: 100vw;
+	height: 100vh;
+	box-sizing: border-box;
+}
+
+/* Ensure .app-main is offset by header height */
+.app-main {
+	margin-top: 58px !important;
+}
+/* ── DESIGN TOKENS ─────────────────────────────────── */
+/* Mobile UI override for .mobile-ui class (JS-detected, not just media query) */
+body.mobile-ui .app-main {
+	flex-direction: column !important;
+}
+body.mobile-ui .sidebar {
+	height: 56px !important;
+	width: 100% !important;
+	flex-direction: row !important;
+	border-right: none !important;
+	border-bottom: 1px solid var(--border) !important;
+}
+body.mobile-ui .sidebar-search,
+body.mobile-ui .section-label,
+body.mobile-ui .new-group-btn {
+	display: none !important;
+}
+body.mobile-ui .list-panel {
+	display: flex !important;
+	flex-direction: row !important;
+	overflow-x: auto !important;
+	overflow-y: hidden !important;
+	gap: 0 !important;
+}
+body.mobile-ui .list-item {
+	flex-direction: column !important;
+	min-width: 54px !important;
+	max-width: 54px !important;
+	padding: 4px 2px !important;
+	align-items: center !important;
+	gap: 2px !important;
+}
+body.mobile-ui .avatar {
+	width: 34px !important;
+	height: 34px !important;
+}
+body.mobile-ui .item-info {
+	display: none !important;
+}
+body.mobile-ui .unread-badge {
+	position: absolute !important;
+	top: 2px !important;
+	right: 2px !important;
+}
+body.mobile-ui .chat-main {
+	flex: 1 !important;
+	height: calc(100vh - var(--header-h) - 56px) !important;
+}

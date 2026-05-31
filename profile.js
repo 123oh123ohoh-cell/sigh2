@@ -1,6 +1,6 @@
 // Utility: Immediately update all caches and user.js with avatar
 function setUserAvatarEverywhere(username, avatar) {
-    if (!username || !avatar) return;
+    if (!username || !avatar || !avatar.startsWith('data:image/')) return;
     try {
         localStorage.setItem('profileAvatar:' + username.toLowerCase(), avatar);
         sessionStorage.setItem('profileAvatar:' + username.toLowerCase(), avatar);
@@ -25,15 +25,18 @@ function renderProfileSummary(data, username) {
         let color = '#ffd700';
         if (data.premiumTier === 'Silver') color = '#c0c0c0';
         if (data.premiumTier === 'Bronze') color = '#cd7f32';
-        premiumBadge = `<span style="margin-left:8px;padding:2px 10px;border-radius:8px;background:${color};color:#181818;font-size:0.95em;font-weight:bold;vertical-align:middle;">${data.premiumTier} Premium</span>`;
+        premiumBadge = `<span style=\"margin-left:8px;padding:2px 10px;border-radius:8px;background:${color};color:#181818;font-size:0.95em;font-weight:bold;vertical-align:middle;\">${data.premiumTier} Premium</span>`;
     }
     const avatarUrl = data.avatar && data.avatar.trim() ? data.avatar : 'logos_and_profileicons/default-profile.png';
+    // Follower count
+    let followerCount = (data.followers && Array.isArray(data.followers)) ? data.followers.length : 0;
     summary.innerHTML = `
-        <div style="display:flex;align-items:center;gap:18px;">
-            <img class='profile-avatar' src='${avatarUrl}' alt='Avatar' onerror="this.onerror=null;this.src='logos_and_profileicons/default-profile.png';">
+        <div style=\"display:flex;align-items:center;gap:18px;\">
+            <img class='profile-avatar' src='${avatarUrl}' alt='Avatar' onerror=\"this.onerror=null;this.src='logos_and_profileicons/default-profile.png';\">
             <div>
                 <div><strong>${data.displayName || username}</strong> ${premiumBadge}</div>
                 ${pronouns ? `<div style='font-size:0.98em;color:var(--text-dark);'>${pronouns}</div>` : ''}
+                <div style='font-size:0.95em;color:#888;'>Followers: <b>${followerCount}</b></div>
             </div>
         </div>
         ${data.bio ? `<div style='margin-top:10px;'>${data.bio}</div>` : ''}
@@ -41,6 +44,52 @@ function renderProfileSummary(data, username) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // EXTREME PERSISTENCE: On every page load, restore avatar from all possible sources and re-save to all storages if found
+    try {
+        const username = localStorage.getItem('loggedInUser');
+        if (username) {
+            let avatar = null;
+            // Try all sources for a valid base64 avatar
+            let sources = [
+                localStorage.getItem('profileAvatar:' + username.toLowerCase()),
+                sessionStorage.getItem('profileAvatar:' + username.toLowerCase())
+            ];
+            try {
+                let last = JSON.parse(localStorage.getItem('lastSavedProfile'));
+                if (last && last.avatar && last.avatar.startsWith('data:image/')) sources.push(last.avatar);
+            } catch {}
+            try {
+                let last = JSON.parse(sessionStorage.getItem('lastSavedProfile'));
+                if (last && last.avatar && last.avatar.startsWith('data:image/')) sources.push(last.avatar);
+            } catch {}
+            if (typeof getUserProfile === 'function') {
+                try {
+                    let userjs = getUserProfile(username);
+                    if (userjs && userjs.avatar && userjs.avatar.startsWith('data:image/')) sources.push(userjs.avatar);
+                } catch {}
+            }
+            // Pick the first valid base64 avatar
+            avatar = sources.find(a => a && a.startsWith('data:image/'));
+            if (avatar) {
+                // Re-save to all storages for redundancy
+                localStorage.setItem('profileAvatar:' + username.toLowerCase(), avatar);
+                sessionStorage.setItem('profileAvatar:' + username.toLowerCase(), avatar);
+                try {
+                    let last = JSON.parse(localStorage.getItem('lastSavedProfile')) || {};
+                    last.avatar = avatar;
+                    localStorage.setItem('lastSavedProfile', JSON.stringify(last));
+                } catch {}
+                try {
+                    let last = JSON.parse(sessionStorage.getItem('lastSavedProfile')) || {};
+                    last.avatar = avatar;
+                    sessionStorage.setItem('lastSavedProfile', JSON.stringify(last));
+                } catch {}
+                if (typeof updateUserProfile === 'function') {
+                    try { updateUserProfile(username, { avatar }); } catch {}
+                }
+            }
+        }
+    } catch {}
     const profileInfo = document.getElementById('profileInfo');
     const username = localStorage.getItem('loggedInUser');
     const token = localStorage.getItem('token');
@@ -52,30 +101,30 @@ document.addEventListener('DOMContentLoaded', function() {
         fetchOptions.headers = { 'Authorization': 'Bearer ' + token };
     }
     function getBestAvatar(profile, username) {
-        // Try avatar in profile
-        if (profile && profile.avatar && profile.avatar.trim()) return profile.avatar;
-        // Try dedicated cache key
+        // 1. Try dedicated cache key (localStorage/sessionStorage)
         if (username) {
             let cached = localStorage.getItem('profileAvatar:' + username.toLowerCase()) || sessionStorage.getItem('profileAvatar:' + username.toLowerCase());
-            if (cached && cached.trim()) return cached;
+            if (cached && cached.trim() && cached.startsWith('data:image/')) return cached;
         }
-        // Try lastSavedProfile
+        // 2. Try lastSavedProfile
         try {
             let last = JSON.parse(localStorage.getItem('lastSavedProfile'));
-            if (last && last.avatar && last.avatar.trim()) return last.avatar;
+            if (last && last.avatar && last.avatar.trim() && last.avatar.startsWith('data:image/')) return last.avatar;
         } catch {}
         try {
             let last = JSON.parse(sessionStorage.getItem('lastSavedProfile'));
-            if (last && last.avatar && last.avatar.trim()) return last.avatar;
+            if (last && last.avatar && last.avatar.trim() && last.avatar.startsWith('data:image/')) return last.avatar;
         } catch {}
-        // Try user.js
+        // 3. Try user.js
         if (typeof getUserProfile === 'function' && username) {
             try {
                 let userjs = getUserProfile(username);
-                if (userjs && userjs.avatar && userjs.avatar.trim()) return userjs.avatar;
+                if (userjs && userjs.avatar && userjs.avatar.trim() && userjs.avatar.startsWith('data:image/')) return userjs.avatar;
             } catch {}
         }
-        // Default
+        // 4. Try avatar in profile (from backend)
+        if (profile && profile.avatar && profile.avatar.trim() && profile.avatar.startsWith('data:image/')) return profile.avatar;
+        // 5. Default
         return 'logos_and_profileicons/default-profile.png';
     }
     function loadProfileFromBackends() {

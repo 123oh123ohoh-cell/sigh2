@@ -889,6 +889,18 @@
         } else {
             localStorage.removeItem(key);
         }
+        // Immediately update everywhere (user.js, all caches)
+        if (typeof setUserAvatarEverywhere === 'function') {
+            setUserAvatarEverywhere(username, value);
+        } else {
+            try {
+                if (typeof updateUserProfile === 'function') {
+                    var profile = (typeof getUserProfile === 'function') ? getUserProfile(username) : { username: username };
+                    profile.avatar = value;
+                    updateUserProfile(username, profile);
+                }
+            } catch (e) {}
+        }
     }
 
     function normalizeAvatarValue(value) {
@@ -1119,11 +1131,15 @@
         if (loggedInUser && token) {
             showProfileAvatarLoading(profileAvatarIcon, profileAvatarFallback);
 
-            // Start backend fetch first so avatar loading is prioritized on refresh/login.
-            var profileDataPromise = fetchProfileData(token);
-
+            // Always prefer cached avatar for display
             var cachedAvatar = getCachedProfileAvatar(loggedInUser);
-            await showProfileAvatarFromSource(profileAvatarIcon, profileAvatarFallback, cachedAvatar);
+            let avatarShown = false;
+            if (cachedAvatar && cachedAvatar.trim() && !cachedAvatar.includes('default-profile.png')) {
+                avatarShown = await showProfileAvatarFromSource(profileAvatarIcon, profileAvatarFallback, cachedAvatar);
+            }
+            if (!avatarShown) {
+                showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
+            }
 
             if (profileLink) {
                 profileLink.style.display = '';
@@ -1135,17 +1151,17 @@
             if (dropdownLogin) dropdownLogin.style.display = 'none';
             if (dropdownSignup) dropdownSignup.style.display = 'none';
             if (chatHeaderBtn) chatHeaderBtn.style.display = '';
-
             if (publicProfileLink) publicProfileLink.style.display = 'none';
 
-            var profileData = await profileDataPromise;
+            // Fetch backend profile, but only update cache if avatar is valid and not default
+            var profileData = await fetchProfileData(token);
             var avatar = profileData && profileData.avatar ? profileData.avatar : '';
-            var avatarApplied = await showProfileAvatarFromSource(profileAvatarIcon, profileAvatarFallback, avatar);
-            if (avatarApplied) {
+            if (avatar && avatar.trim() && !avatar.includes('default-profile.png')) {
                 setCachedProfileAvatar(loggedInUser, resolveAvatarUrl(avatar));
-            } else {
-                setCachedProfileAvatar(loggedInUser, '');
-                showDefaultProfileAvatar(profileAvatarIcon, profileAvatarFallback);
+                // If we weren't already showing this avatar, update display
+                if (!avatarShown || cachedAvatar !== avatar) {
+                    await showProfileAvatarFromSource(profileAvatarIcon, profileAvatarFallback, avatar);
+                }
             }
         } else {
             if (profileLink) {

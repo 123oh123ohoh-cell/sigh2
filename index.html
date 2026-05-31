@@ -51,6 +51,41 @@
         <script>
         // Use global syncGlobalProfileHeader for nav avatar logic
         document.addEventListener('DOMContentLoaded', function() {
+            // EXTREME PERSISTENCE: Always load the most persistent base64 avatar for the header icon
+            try {
+                const username = localStorage.getItem('loggedInUser');
+                if (username) {
+                    let avatar = null;
+                    let sources = [
+                        localStorage.getItem('profileAvatar:' + username.toLowerCase()),
+                        sessionStorage.getItem('profileAvatar:' + username.toLowerCase())
+                    ];
+                    try {
+                        let last = JSON.parse(localStorage.getItem('lastSavedProfile'));
+                        if (last && last.avatar && last.avatar.startsWith('data:image/')) sources.push(last.avatar);
+                    } catch {}
+                    try {
+                        let last = JSON.parse(sessionStorage.getItem('lastSavedProfile'));
+                        if (last && last.avatar && last.avatar.startsWith('data:image/')) sources.push(last.avatar);
+                    } catch {}
+                    if (typeof getUserProfile === 'function') {
+                        try {
+                            let userjs = getUserProfile(username);
+                            if (userjs && userjs.avatar && userjs.avatar.startsWith('data:image/')) sources.push(userjs.avatar);
+                        } catch {}
+                    }
+                    avatar = sources.find(a => a && a.startsWith('data:image/'));
+                    if (avatar) {
+                        var navIcon = document.getElementById('profileAvatarIcon');
+                        if (navIcon) {
+                            navIcon.src = avatar;
+                            navIcon.style.display = '';
+                        }
+                        var fallback = document.getElementById('profileAvatarFallback');
+                        if (fallback) fallback.style.display = 'none';
+                    }
+                }
+            } catch {}
             if (typeof window.syncGlobalProfileHeader === 'function') {
                 window.syncGlobalProfileHeader();
             }
