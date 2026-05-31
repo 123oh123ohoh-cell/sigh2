@@ -1,3 +1,16 @@
+// ─── PERSISTENT STORAGE CHECK ─────────────────────────────
+const fs = require('fs');
+const DATA_PATH = '/data';
+try {
+  if (!fs.existsSync(DATA_PATH)) {
+    fs.mkdirSync(DATA_PATH, { recursive: true });
+    console.log('Created /data directory for persistent storage.');
+  }
+  fs.accessSync(DATA_PATH, fs.constants.W_OK);
+} catch (e) {
+  console.warn('WARNING: /data directory is not writable or could not be created. Persistent storage may not work!');
+}
+
 // ─── IMPORTS ────────────────────────────────────────────────
 const express = require('express');
 const cors = require('cors');
@@ -24,6 +37,23 @@ app.use(express.json({ limit: '10mb' }));
 // ─── DATABASES ────────────────────────────────────────────────
 const dbSigh2 = new Database('/data/sigh2.db');
 const dbOwnshub = new Database('/data/ownshub.db');
+
+// ─── HEALTH ENDPOINT FOR STORAGE ──────────────────────────
+app.get('/api/storage-health', (req, res) => {
+  try {
+    const sigh2Exists = fs.existsSync('/data/sigh2.db');
+    const ownshubExists = fs.existsSync('/data/ownshub.db');
+    fs.accessSync('/data', fs.constants.W_OK);
+    res.json({
+      sigh2Db: sigh2Exists ? 'exists' : 'missing',
+      ownshubDb: ownshubExists ? 'exists' : 'missing',
+      dataDir: 'writable',
+      status: (sigh2Exists && ownshubExists) ? 'ok' : 'missing-db'
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'Storage not writable or missing', details: e.message });
+  }
+});
 
 // Helper: run on both DBs for writes
 function runOnBothDbs(sql, params) {
