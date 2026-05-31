@@ -11,42 +11,32 @@
     <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
 </head>
 <body>
-        <div id="globalError" style="display:none;position:fixed;top:0;left:0;width:100vw;z-index:9999;background:#ff2222;color:#fff;text-align:center;padding:10px 0;font-weight:bold;letter-spacing:0.04em;">Network or backend error. Some features may not work.</div>
     <!-- Header -->
     <header class="header">
-        <!-- Hamburger button for mobile (match arts.html style/placement) -->
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation" style="display:none;position:fixed;top:18px;left:10px;width:38px;height:38px;border:1.5px solid var(--border-color);border-radius:11px;background:var(--card-bg);color:var(--text-light);align-items:center;justify-content:center;font-size:26px;line-height:1;z-index:4010;box-shadow:0 1px 6px #0002;transition:background 0.2s,box-shadow 0.2s;">
-            <span style="font-size:1.6em;line-height:1;">&#9776;</span>
-        </button>
-        <a href="index.html" class="logo"><img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:32px;vertical-align:middle;margin-right:8px;">own's hub</a>
+        <a href="index.html" class="logo">
+            <img src="logos_and_profileicons/logo6.png" alt="Logo" style="height:50px; width:auto; display:block;">
+        </a>
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="chat6.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+            <a href="chat2.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
             <a href="#" class="nav-link">Live</a>
-            <a href="models.html" class="nav-link">Models</a>
+            <a href="model.html" class="nav-link">Models</a>
             <a href="#" class="nav-link">Categories</a>
             <a href="premium.html" class="nav-link">Premium</a>
             <a href="arts.html" class="nav-link">Arts</a>
+            <!-- Profile and Sign Out moved to dropdown -->
         </nav>
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Search models...">
         </div>
         <span id="premiumBadgeHeader" style="display:inline-block;vertical-align:middle;margin-left:12px;margin-right:8px;"></span>
-        <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 10px;transition:background 0.18s;">Upload</a>
-        <link rel="stylesheet" href="diamond-button.css">
-        <span id="diamondDisplay" onclick="window.location.href='diamonds.html'" title="Buy diamonds; click to purchase" style="display:none;font-size:1.15em; padding: 5px 16px; min-height: 32px; min-width: 60px;">
-            <span class="diamond-btn-inner" style="font-size:1em; min-height:24px;">
-                <span class="diamond-icon-wrap" style="height:1.3em;width:1.3em;">
-                    <img id="diamondIcon" src="logos_and_profileicons/diamond.png" alt="💎" style="height:1.3em;width:1.3em;">
-                    <span id="diamondSparkle" style="font-size:0.95em;left:-7px;top:0;">✧</span>
-                </span>
-                <span id="diamondAmount" style="font-size:1em;margin-left:7px;">0</span>
-            </span>
-        </span>
+        <!-- Upload Button: Centered between search bar and profile icon -->
+        <a href="upload.html" id="uploadNavBtn" class="btn" style="background:#ff2222;color:#fff;font-weight:700;padding:8px 22px;border-radius:8px;font-size:1.08em;vertical-align:middle;display:inline-block;box-shadow:0 2px 8px #0002;margin:0 18px 0 18px;transition:background 0.18s;">Upload</a>
+        <!-- Dropdown for login/profile -->
         <div class="profile-dropdown">
             <button class="profile-btn" id="profileDropdownBtn" style="margin-left:0;vertical-align:middle;padding:0;background:none;border:none;">
                 <img id="profileAvatarIcon" src="" alt="Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;">
-                <img id="profileAvatarFallback" src="logos_and_profileicons/defaultpfp.webp" alt="Default Profile" style="display:none;width:36px;height:36px;border-radius:50%;vertical-align:middle;object-fit:cover;cursor:pointer;">
+                <span id="profileAvatarFallback" style="font-size:2em;vertical-align:middle;">👤</span>
             </button>
             <div class="dropdown-content" id="profileDropdownMenu">
                 <a href="profile.html" id="profileLink" style="display:none;">Profile</a>
@@ -57,204 +47,17 @@
             </div>
         </div>
         <script>
-        // Hamburger menu toggle for mobile
+        // Use global syncGlobalProfileHeader for nav avatar logic
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileBtn = document.getElementById('mobileMenuBtn');
-            const header = document.querySelector('.header');
-            const navLinks = document.querySelector('.nav-links');
-            function isMobile() {
-                return window.innerWidth <= 600 || document.body.classList.contains('mobile-mode');
-            }
-            function updateMobileBtn() {
-                if (isMobile()) {
-                    mobileBtn.style.display = '';
-                    navLinks.style.display = '';
-                } else {
-                    mobileBtn.style.display = 'none';
-                    navLinks.classList.remove('show');
-                }
-            }
-            mobileBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                header.classList.toggle('mobile-nav-open');
-            });
-            document.addEventListener('click', function(e) {
-                if (!header.contains(e.target)) {
-                    header.classList.remove('mobile-nav-open');
-                }
-            });
-            window.addEventListener('resize', updateMobileBtn);
-            updateMobileBtn();
-        });
-                        // --- Smart fetch wrapper with retry, fallback, and error UI ---
-                        async function smartFetch(url, opts = {}, { fallback = null, retries = 2, timeout = 6000 } = {}) {
-                            let lastErr;
-                            for (let i = 0; i <= retries; i++) {
-                                try {
-                                    const ctrl = new AbortController();
-                                    const to = setTimeout(() => ctrl.abort(), timeout);
-                                    const res = await fetch(url, { ...opts, signal: ctrl.signal });
-                                    clearTimeout(to);
-                                    if (res.ok) return await res.json();
-                                    lastErr = new Error('HTTP ' + res.status);
-                                } catch (e) { lastErr = e; }
-                            }
-                            if (fallback !== null) return fallback;
-                            showGlobalError('Network or backend error. Some features may not work.');
-                            throw lastErr;
-                        }
-
-                        function showGlobalError(msg) {
-                            const el = document.getElementById('globalError');
-                            if (el) { el.textContent = msg; el.style.display = ''; }
-                        }
-                        function hideGlobalError() {
-                            const el = document.getElementById('globalError');
-                            if (el) el.style.display = 'none';
-                        }
-
-                        // --- Health check indicator ---
-                        async function updateHealthStatus() {
-                            let status = 'Checking...';
-                            try {
-                                const health = await smartFetch('/api/health', {}, { fallback: { status: 'down' }, retries: 0, timeout: 3000 });
-                                if (health.status === 'healthy') status = '🟢 All systems go';
-                                else if (health.status === 'degraded') status = '🟡 Degraded';
-                                else status = '🔴 Offline';
-                            } catch { status = '🔴 Offline'; }
-                            const el = document.getElementById('healthStatus');
-                            if (el) el.textContent = status;
-                        }
-                        document.addEventListener('DOMContentLoaded', function() {
-                            updateHealthStatus();
-                            setInterval(updateHealthStatus, 20000);
-                        });
-                    // Health status footer
-                    <footer style="width:100vw;text-align:center;padding:8px 0 4px 0;font-size:1em;color:#fff;background:#222;letter-spacing:0.04em;opacity:0.93;">
-                        <span id="healthStatus">Checking...</span>
-                    </footer>
-                // Hide/show diamonds button based on user profile setting, always check on load and on storage change
-                function checkDiamondsEnabled() {
-                    const diamondDisplay = document.getElementById('diamondDisplay');
-                    let enabled = false;
-                    try {
-                        const username = localStorage.getItem('loggedInUser');
-                        // Defensive: wait for user.js to be loaded
-                        if (username && typeof getUserProfile === 'function') {
-                            // Defensive: try/catch in case userProfiles is not yet set
-                            try {
-                                const profile = getUserProfile(username);
-                                enabled = !!profile.diamondsEnabled;
-                            } catch {}
-                        }
-                    } catch {}
-                    // Hide for not logged in or not enabled
-                    if (diamondDisplay) diamondDisplay.style.display = (username && enabled) ? '' : 'none';
-                }
-                // Always check on load, after a short delay to ensure user.js is loaded
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(checkDiamondsEnabled, 0);
-                });
-                // Also check after every storage change
-                window.addEventListener('storage', function(e) {
-                    if (e.key === 'userProfiles' || e.key === 'loggedInUser') {
-                        setTimeout(checkDiamondsEnabled, 0);
-                    }
-                });
-                // Also check after every navigation (for SPA or reload)
-                window.addEventListener('focus', function() {
-                    setTimeout(checkDiamondsEnabled, 0);
-                });
-        // Avatar loading logic for nav bar
-        async function loadNavAvatar() {
-            const avatarImg = document.getElementById('profileAvatarIcon');
-            const fallback = document.getElementById('profileAvatarFallback');
-            let username = localStorage.getItem('loggedInUser');
-            let avatar = '';
-            let token = localStorage.getItem('token');
-            let errorLog = [];
-            // 1. Try sigh2 backend
-            if (username && token) {
-                try {
-                    let res = await fetch('https://sigh2.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
-                    if (res.ok) {
-                        let data = await res.json();
-                        if (data.avatar && data.avatar.trim()) avatar = data.avatar;
-                    }
-                } catch (e) { errorLog.push('sigh2 backend fail: ' + e); }
-            }
-            // 2. Try ownshub backend if not found
-            if (!avatar && username && token) {
-                try {
-                    let res = await fetch('https://ownshub.onrender.com/api/profile', { headers: { 'Authorization': 'Bearer ' + token } });
-                    if (res.ok) {
-                        let data = await res.json();
-                        if (data.avatar && data.avatar.trim()) avatar = data.avatar;
-                    }
-                } catch (e) { errorLog.push('ownshub backend fail: ' + e); }
-            }
-            // 3. Try localStorage cache
-            if (!avatar) {
-                try {
-                    let cached = localStorage.getItem('lastSavedProfile');
-                    if (cached) {
-                        let data = JSON.parse(cached);
-                        if (data.avatar && data.avatar.trim()) avatar = data.avatar;
-                    }
-                } catch (e) { errorLog.push('localStorage fail: ' + e); }
-            }
-            // 4. Try user.js (userProfiles)
-            if (!avatar && typeof getUserProfile === 'function' && username) {
-                try {
-                    let data = getUserProfile(username);
-                    if (data && data.avatar && data.avatar.trim()) avatar = data.avatar;
-                } catch (e) { errorLog.push('user.js fail: ' + e); }
-            }
-            // 5. Try sessionStorage cache
-            if (!avatar) {
-                try {
-                    let cached = sessionStorage.getItem('lastSavedProfile');
-                    if (cached) {
-                        let data = JSON.parse(cached);
-                        if (data.avatar && data.avatar.trim()) avatar = data.avatar;
-                    }
-                } catch (e) { errorLog.push('sessionStorage fail: ' + e); }
-            }
-            // 6. Fallback defaultpfp.webp
-            if (!avatar) avatar = 'logos_and_profileicons/defaultpfp.webp';
-            // Set avatar
-            if (avatar && avatarImg) {
-                avatarImg.src = avatar;
-                avatarImg.style.display = '';
-                if (fallback) fallback.style.display = 'none';
-            } else {
-                if (avatarImg) avatarImg.style.display = 'none';
-                if (fallback) fallback.style.display = '';
-            }
-            // If avatar is missing, retry after a delay (auto-recovery)
-            if ((!avatar || avatar === 'logos_and_profileicons/defaultpfp.webp') && username) {
-                setTimeout(loadNavAvatar, 3000);
-            }
-            // Log errors for debugging
-            if (errorLog.length && window.console) {
-                console.warn('Avatar load errors:', errorLog);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            loadNavAvatar();
-            // Make fallback avatar clickable to open dropdown
-            const fallback = document.getElementById('profileAvatarFallback');
-            const btn = document.getElementById('profileDropdownBtn');
-            if (fallback && btn) {
-                fallback.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    btn.click();
-                });
+            if (typeof window.syncGlobalProfileHeader === 'function') {
+                window.syncGlobalProfileHeader();
             }
         });
         window.addEventListener('storage', function(e) {
-            if (e.key === 'loggedInUser' || e.key === 'token' || e.key === 'lastSavedProfile') {
-                loadNavAvatar();
+            if (e.key === 'loggedInUser' || e.key === 'token') {
+                if (typeof window.syncGlobalProfileHeader === 'function') {
+                    window.syncGlobalProfileHeader();
+                }
             }
         });
         </script>
@@ -391,31 +194,8 @@
             <a href="#" class="footer-link">Contact</a>
         </div>
         <p>&copy; 2024 own's hub. All rights reserved. Premium entertainment for everyone.</p>
-        <div id="devVersionFooter" style="display:none;font-size:1em;color:#ff69b4;margin-top:8px;"></div>
     </footer>
-    <script>
-    // Show commit version in footer if developer mode is enabled
-    (function() {
-        var commit = '79606f8'; // <-- Short commit hash from HEAD
-        function isDeveloperMode() {
-            return localStorage.getItem('developerMode') === 'true';
-        }
-        function updateDevFooter() {
-            var el = document.getElementById('devVersionFooter');
-            if (!el) return;
-            if (isDeveloperMode()) {
-                el.style.display = '';
-                el.textContent = 'Developer Mode • Commit: ' + commit;
-            } else {
-                el.style.display = 'none';
-            }
-        }
-        document.addEventListener('DOMContentLoaded', updateDevFooter);
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'developerMode') updateDevFooter();
-        });
-    })();
-    </script>
+
     <script src="script.js"></script>
 </main>
 
