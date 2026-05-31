@@ -185,75 +185,73 @@ app.post('/api/groups', (req, res) => {
     socket.on('join', (user) => {
       username = user;
       if (username) {
-        onlineUsers.add(username);
-        socket.join(username);
-        if (!userStatus[username]) userStatus[username] = 'online';
-        io.emit('online_users', Array.from(onlineUsers));
-        io.emit('user_status', userStatus);
-      }
-    });
 
-    socket.on('disconnect', () => {
-      if (username) {
-        onlineUsers.delete(username);
-        userStatus[username] = 'offline';
-        io.emit('online_users', Array.from(onlineUsers));
-        io.emit('user_status', userStatus);
-      }
-    });
-
-    socket.on('get_online_users', () => {
-      socket.emit('online_users', Array.from(onlineUsers));
-      socket.emit('user_status', userStatus);
-    });
-
-    socket.on('set_status', (data) => {
-      if (data.username && data.status) {
-        userStatus[data.username] = data.status;
-        io.emit('user_status', userStatus);
-      }
-    });
-
-    socket.on('typing', (data) => {
-      if (data.to) io.to(data.to).emit('typing', data);
-    });
-
-    socket.on('private_message', (msg) => {
-      const timestamp = msg.timestamp || new Date().toISOString();
-      // Save to DB
-      db.run(
-        'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
-        [msg.sender, msg.receiver, msg.content || '', msg.image || null, msg.gif || null, timestamp],
-        () => {}
-      );
-      // Deliver to recipient and sender
-      io.to(msg.receiver).emit('private_message', { ...msg, timestamp });
-      io.to(msg.sender).emit('private_message', { ...msg, timestamp });
-    });
-
-    // Real-time group message support
-    socket.on('group_message', (msg) => {
-      const timestamp = msg.timestamp || new Date().toISOString();
-      // Save to DB (store group as receiver)
-      db.run(
-        'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
-        [msg.sender, msg.group, msg.content || '', msg.image || null, msg.gif || null, timestamp],
-        () => {}
-      );
-      // Broadcast to all in group except sender
-      socket.broadcast.emit('group_message', { ...msg, timestamp });
-      // Optionally, echo to sender as well:
-      socket.emit('group_message', { ...msg, timestamp });
-    });
-  });
-
-app.get('/', (req, res) => res.send('OwnsHub Backend API running!'));
-
-// Auth
-app.post('/api/signup', (req, res) => {
-  const { username, password, device } = req.body;
-  if (!username || !password) return res.status(400).json({ error: 'Missing fields' });
   const row = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+        let username;
+        socket.on('join', (user) => {
+          username = user;
+          if (username) {
+            onlineUsers.add(username);
+            socket.join(username);
+            if (!userStatus[username]) userStatus[username] = 'online';
+            io.emit('online_users', Array.from(onlineUsers));
+            io.emit('user_status', userStatus);
+          }
+        });
+
+        socket.on('disconnect', () => {
+          if (username) {
+            onlineUsers.delete(username);
+            userStatus[username] = 'offline';
+            io.emit('online_users', Array.from(onlineUsers));
+            io.emit('user_status', userStatus);
+          }
+        });
+
+        socket.on('get_online_users', () => {
+          socket.emit('online_users', Array.from(onlineUsers));
+          socket.emit('user_status', userStatus);
+        });
+
+        socket.on('set_status', (data) => {
+          if (data.username && data.status) {
+            userStatus[data.username] = data.status;
+            io.emit('user_status', userStatus);
+          }
+        });
+
+        socket.on('typing', (data) => {
+          if (data.to) io.to(data.to).emit('typing', data);
+        });
+
+        socket.on('private_message', (msg) => {
+          const timestamp = msg.timestamp || new Date().toISOString();
+          // Save to DB
+          db.run(
+            'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
+            [msg.sender, msg.receiver, msg.content || '', msg.image || null, msg.gif || null, timestamp],
+            () => {}
+          );
+          // Deliver to recipient and sender
+          io.to(msg.receiver).emit('private_message', { ...msg, timestamp });
+          io.to(msg.sender).emit('private_message', { ...msg, timestamp });
+        });
+
+        // Real-time group message support
+        socket.on('group_message', (msg) => {
+          const timestamp = msg.timestamp || new Date().toISOString();
+          // Save to DB (store group as receiver)
+          db.run(
+            'INSERT INTO messages (sender, receiver, content, image, gif, timestamp) VALUES (?, ?, ?, ?, ?, ?)',
+            [msg.sender, msg.group, msg.content || '', msg.image || null, msg.gif || null, timestamp],
+            () => {}
+          );
+          // Broadcast to all in group except sender
+          socket.broadcast.emit('group_message', { ...msg, timestamp });
+          // Optionally, echo to sender as well:
+          socket.emit('group_message', { ...msg, timestamp });
+        });
+      });
   if (row) return res.status(409).json({ error: 'Username exists' });
   const hash = bcrypt.hashSync(password, 10);
   const now = new Date().toISOString();
