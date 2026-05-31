@@ -98,6 +98,7 @@ try {
   });
 } catch (e) { console.error('DB migration error (all):', e); }
 
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   let sigh2Ok = false, ownshubOk = false;
