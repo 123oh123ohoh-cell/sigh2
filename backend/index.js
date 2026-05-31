@@ -176,7 +176,7 @@ try {
     username TEXT UNIQUE,
     password TEXT
   )`).run();
-});
+}
 
   socket.on('join', (user) => {
     username = user;
