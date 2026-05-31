@@ -22,8 +22,8 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // ─── DATABASES ────────────────────────────────────────────────
-const dbSigh2 = new Database('./sigh2.db');
-const dbOwnshub = new Database('./ownshub.db');
+const dbSigh2 = new Database('/data/sigh2.db');
+const dbOwnshub = new Database('/data/ownshub.db');
 
 // Helper: run on both DBs for writes
 function runOnBothDbs(sql, params) {
