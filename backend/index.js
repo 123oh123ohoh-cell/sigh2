@@ -251,26 +251,8 @@ app.post('/api/groups', (req, res) => {
           // Optionally, echo to sender as well:
           socket.emit('group_message', { ...msg, timestamp });
         });
-      });
-  if (row) return res.status(409).json({ error: 'Username exists' });
-  const hash = bcrypt.hashSync(password, 10);
-  const now = new Date().toISOString();
-  try {
-    const tx = db.transaction(() => {
-      db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run(username, hash);
-      // Auto-create profile row with registration date and device info
-      db.prepare(`INSERT INTO profiles (username, displayName, bio, avatar, followers, following, premiumTier, customPronouns, pronouns, lastLogin, lastDevice, registeredAt)
-        VALUES (?, ?, '', '', 0, 0, NULL, '', '', ?, ?, ?)
-        ON CONFLICT(username) DO NOTHING`)
-        .run(username, username, now, device && device.deviceType ? device.deviceType : '', now);
-    });
-    tx();
-    const token = jwt.sign({ username }, SECRET, { expiresIn: '7d' });
-    res.json({ token, username });
-  } catch (err) {
-    return res.status(500).json({ error: 'DB error' });
-  }
-});
+      }); // <-- Properly close io.on('connection', ...)
+
 
 
 app.post('/api/login', (req, res) => {
