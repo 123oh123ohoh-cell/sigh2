@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/mobile.css">
   <script src="theme-mode.js"></script>
   <script src="user.js"></script>
   <link rel="icon" type="image/png" href="logos_and_profileicons/logo6.png">
@@ -130,7 +131,7 @@
   </script>
   <main>
     <!-- Premium Filter Bar -->
-    <div style="display:flex;gap:18px;align-items:center;margin-bottom:32px;justify-content:center;">
+    <div class="yt-filter-bar" style="display:flex;gap:18px;align-items:center;margin-bottom:32px;justify-content:center;">
       <span style="background:linear-gradient(90deg,#ffd700,#ffb800);color:#222;font-weight:900;padding:8px 24px;border-radius:18px;font-size:1.2em;box-shadow:0 2px 12px #ffd70088;letter-spacing:1px;">PREMIUM</span>
       <span style="background:#222;color:#ffd700;font-weight:700;padding:8px 18px;border-radius:14px;font-size:1.1em;box-shadow:0 2px 8px #0008;">Full HD</span>
       <span style="background:#222;color:#ffd700;font-weight:700;padding:8px 18px;border-radius:14px;font-size:1.1em;box-shadow:0 2px 8px #0008;">4K</span>
@@ -328,5 +329,101 @@
   </footer>
 
   <script src="youtube-clone.js"></script>
+
+  <style>
+    /* === Models page: mobile-mode overrides (only active when mobile detected) === */
+
+    /* Header: force grid layout, overriding inline flex style */
+    body.mobile-mode .header {
+      display: grid !important;
+      grid-template-columns: 40px minmax(0, 1fr) 42px !important;
+      column-gap: 4px !important;
+      row-gap: 4px !important;
+      padding: 10px 12px 10px 52px !important;
+      align-items: center !important;
+      justify-content: normal !important;
+    }
+    /* Hide upload btn, diamond, premium badge to keep header compact */
+    body.mobile-mode #uploadNavBtn,
+    body.mobile-mode #diamondDisplay,
+    body.mobile-mode #premiumBadgeHeader {
+      display: none !important;
+    }
+    /* Profile wrapper: last div in header → grid cell 3 */
+    body.mobile-mode .header > div:last-of-type {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+    }
+
+    /* Carousel: make slides fill viewport width instead of fixed 600px */
+    body.mobile-mode #featuredCarousel {
+      height: auto !important;
+      padding: 0 !important;
+    }
+    body.mobile-mode #featuredCarousel .carousel-slide {
+      min-width: 100vw !important;
+      max-width: 100vw !important;
+      position: relative !important;
+      border-radius: 0 !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      margin: 0 !important;
+    }
+    /* Scale down carousel badge font sizes */
+    body.mobile-mode #featuredCarousel .carousel-slide > div {
+      font-size: 0.72em !important;
+      padding: 2px 6px !important;
+    }
+
+    /* Filter bar: horizontal scroll instead of wrapping overflow */
+    body.mobile-mode .yt-filter-bar {
+      overflow-x: auto !important;
+      flex-wrap: nowrap !important;
+      justify-content: flex-start !important;
+      padding: 0 8px 8px !important;
+      gap: 8px !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    body.mobile-mode .yt-filter-bar::-webkit-scrollbar { display: none; }
+    body.mobile-mode .yt-filter-bar > span {
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-size: 0.88em !important;
+      padding: 6px 12px !important;
+    }
+
+    /* Video grid: 2 columns on mobile */
+    body.mobile-mode .yt-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 8px !important;
+      width: 100% !important;
+      padding: 0 8px 56px !important;
+      box-sizing: border-box !important;
+    }
+    /* Shrink overlay badge font in cards */
+    body.mobile-mode .yt-grid > div > div {
+      font-size: 0.68em !important;
+      padding: 1px 5px !important;
+    }
+    /* Hide the two side badges (left:80px / right:80px) and center badge to keep cards readable */
+    body.mobile-mode .yt-grid > div > div[style*="left:80px"],
+    body.mobile-mode .yt-grid > div > div[style*="right:80px"],
+    body.mobile-mode .yt-grid > div > div[style*="left:50%"] {
+      display: none !important;
+    }
+
+    /* Shrink floating Join Premium button on mobile */
+    body.mobile-mode footer a[style*="position:fixed"] {
+      bottom: 14px !important;
+      right: 14px !important;
+      padding: 10px 18px !important;
+      font-size: 1em !important;
+      border-radius: 22px !important;
+    }
+  </style>
 </body>
 </html>
