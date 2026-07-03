@@ -1,7 +1,6 @@
-// ─── START SERVER ─────────────────────────────────────────────
-server.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
-});
+// ─── ENVIRONMENT CONFIG ─────────────────────────────────────
+const PORT = process.env.PORT || 5500;
+const SECRET = process.env.JWT_SECRET || 'supersecretkey';
 // ─── PERSISTENT STORAGE CHECK ─────────────────────────────
 const fs = require('fs');
 const DATA_PATH = './data';
@@ -50,10 +49,20 @@ function authenticateToken(req, res, next) {
 // ─── ONLINE USERS & STATUS ─────────────────────────────────
 const onlineUsers = new Set();
 const userStatus = {};
+const tsukiPlayers = new Map();
 
 // ─── SOCKET.IO HANDLERS ─────────────────────────────────────
 io.on('connection', (socket) => {
   let username;
+  let gameUsername = null;
+  let gameRoom = null;
+
+  const joinGameRoom = (mapId) => {
+    const nextRoom = `tsuki:${mapId || 'grove'}`;
+    if (gameRoom && gameRoom !== nextRoom) socket.leave(gameRoom);
+    gameRoom = nextRoom;
+    socket.join(gameRoom);
+  };
   socket.on('join', (user) => {
     username = user;
     if (username) {
@@ -116,6 +125,56 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('group_message', { ...msg, timestamp });
     // Optionally, echo to sender as well:
     socket.emit('group_message', { ...msg, timestamp });
+  });
+
+  socket.on('join_game', (payload = {}) => {
+    if (!payload.username) return;
+    gameUsername = payload.username;
+    const mapId = payload.mapId || 'grove';
+    joinGameRoom(mapId);
+
+    const currentState = {
+      username: gameUsername,
+      mapId,
+      x: typeof payload.x === 'number' ? payload.x : 0,
+      y: typeof payload.y === 'number' ? payload.y : 0,
+      facing: payload.facing || 'down',
+      score: typeof payload.score === 'number' ? payload.score : 0,
+      updatedAt: Date.now()
+    };
+    tsukiPlayers.set(gameUsername, currentState);
+
+    const roomPlayers = Array.from(tsukiPlayers.values()).filter(
+      p => p.mapId === mapId && p.username !== gameUsername
+    );
+    socket.emit('game_state_snapshot', { players: roomPlayers });
+    socket.to(gameRoom).emit('game_player_update', currentState);
+  });
+
+  socket.on('game_state_update', (payload = {}) => {
+    if (!gameUsername || !payload || payload.username !== gameUsername) return;
+    const mapId = payload.mapId || 'grove';
+    joinGameRoom(mapId);
+    const playerState = {
+      username: gameUsername,
+      mapId,
+      x: typeof payload.x === 'number' ? payload.x : 0,
+      y: typeof payload.y === 'number' ? payload.y : 0,
+      facing: payload.facing || 'down',
+      score: typeof payload.score === 'number' ? payload.score : 0,
+      updatedAt: Date.now()
+    };
+    tsukiPlayers.set(gameUsername, playerState);
+    socket.to(gameRoom).emit('game_player_update', playerState);
+  });
+
+  socket.on('disconnect', () => {
+    if (gameUsername) {
+      tsukiPlayers.delete(gameUsername);
+      if (gameRoom) {
+        socket.to(gameRoom).emit('game_player_leave', { username: gameUsername });
+      }
+    }
   });
 });
 

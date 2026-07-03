@@ -34,14 +34,72 @@ const ITEM_ICONS = {
     'Jingle Bell': '🔔'
 };
 
-const ART_COLLECTIONS = [
-    { key: 'hijab-img-1', label: 'Hijab Image 1', icon: '🧕', src: 'public/hijabarts/IMG_0862.png', map: 'grove' },
-    { key: 'hijab-img-2', label: 'Hijab Image 2', icon: '🧕', src: 'public/hijabarts/69decdf6db8a7d1ef0a59a50.jpg', map: 'grove' },
-    { key: 'lifesuck-img-1', label: 'Life Suck Image 1', icon: '⚡', src: 'lifesuck/1i.jpg', map: 'meadow' },
-    { key: 'lifesuck-img-2', label: 'Life Suck Image 2', icon: '⚡', src: 'lifesuck/12i.jpg', map: 'meadow' },
-    { key: 'japan-img-1', label: 'Japan Image 1', icon: '🌸', src: 'public/imagetab/IMG_0842.png', map: 'shore' },
-    { key: 'gf-img-1', label: 'Girlfriend Image 1', icon: '💌', src: 'girlfriend/girl1.jpg', map: 'shore' }
+const COLLECTION_IMAGE_SOURCES = [
+    { src: 'public/hijabarts/(m=q18T2ZXbeaSaaTbaAaaaa)(mh=zJMuchy9Z1JP4GC7)0.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69decdf6db8a7d1ef0a59a50.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69ded0b5db8a7d1ef0aaeb4f.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69dfa9ffdb8a7d1ef04d28b1.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69e07b86db8a7d1ef0e1649d.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69e091e3db8a7d1ef0090cd9.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69e0924edb8a7d1ef009da19.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69e8c2c0f453f2f497b436d5.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69e9649f7d96736a341dbffc.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/69eb39517d96736a34b337ba.jpg', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/IMG_0862.png', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/hijabarts/IMG_0863.png', icon: '🧕', color: '#f3b2d3' },
+    { src: 'public/imagetab/IMG_0842.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0866.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0867.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0869.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0870.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0871.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0872.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0873.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0878.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0879.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0880.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0881.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0882.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'public/imagetab/IMG_0884.png', icon: '🌸', color: '#cfc7ff' },
+    { src: 'lifesuck/1i.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/12i.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/246867237_alexia_anders_illicit_exam_-_alexia_anders_2_pt.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/3880330-insatiable-brunette-office-slut-sophia-leone-latin-hottie-sophia-leone-fucks-her-real-estate-ag.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/6242477-733hot55-12c7.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/80153253_013_25e5.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/i.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/i.webp', icon: '⚡', color: '#ffe89b' },
+    { src: 'lifesuck/i22.jpg', icon: '⚡', color: '#ffe89b' },
+    { src: 'girlfriend/girl1.jpg', icon: '💌', color: '#ffd785' },
+    { src: 'girlfriend/girl1.webp', icon: '💌', color: '#ffd785' },
+    { src: 'girlfriend/girl3.jpg', icon: '💌', color: '#ffd785' },
+    { src: 'girlfriend/girl4.jpeg', icon: '💌', color: '#ffd785' },
+    { src: 'girlfriend/girl5.webp', icon: '💌', color: '#ffd785' },
+    { src: 'girlfriend/girl6.webp', icon: '💌', color: '#ffd785' },
+    { src: 'girlfriend/girl7.jpg', icon: '💌', color: '#ffd785' },
+    { src: 'girlfriend/girl8.jpg', icon: '💌', color: '#ffd785' }
 ];
+
+function toCollectionLabel(src) {
+    const fileName = src.split('/').pop() || src;
+    const noExt = fileName.replace(/\.[^.]+$/, '');
+    const cleaned = noExt.replace(/[()]/g, ' ').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+    return cleaned.slice(0, 52) || 'Collection Image';
+}
+
+function buildArtCollections() {
+    const maps = ['grove', 'meadow', 'shore'];
+    return COLLECTION_IMAGE_SOURCES.map((entry, index) => ({
+        key: `collection-${index + 1}`,
+        label: toCollectionLabel(entry.src),
+        icon: entry.icon,
+        src: entry.src,
+        color: entry.color,
+        map: maps[index % maps.length]
+    }));
+}
+
+const ART_COLLECTIONS = buildArtCollections();
 
 const MAPS = {
     grove: {
@@ -117,6 +175,34 @@ const state = {
     lastInteract: 0
 };
 
+const MULTIPLAYER_ENDPOINTS = ['https://sigh2.onrender.com', 'https://ownshub.onrender.com'];
+const multiplayer = {
+    socket: null,
+    endpointIndex: 0,
+    username: null,
+    connected: false,
+    remotePlayers: new Map(),
+    lastBroadcastAt: 0
+};
+
+function buildArtDropsForMap(mapId, mapWidth, mapHeight) {
+    const mapArts = ART_COLLECTIONS.filter(art => art.map === mapId);
+    return mapArts.map((art, index) => {
+        const nx = ((index * 37) % 97) / 96;
+        const ny = ((index * 53) % 89) / 88;
+        return {
+            x: 160 + nx * Math.max(200, mapWidth - 320),
+            y: 220 + ny * Math.max(220, mapHeight - 420),
+            key: art.key,
+            label: art.label,
+            icon: art.icon,
+            color: art.color,
+            src: art.src,
+            collected: !!state.artCollectionUnlocks[art.key]
+        };
+    });
+}
+
 try {
     const savedHome = JSON.parse(localStorage.getItem('tsukiHome') || 'null');
     if (savedHome) {
@@ -142,6 +228,107 @@ function saveArtUnlocks() {
     } catch (err) {
         /* ignore storage errors */
     }
+}
+
+function getAuthSession() {
+    const username = localStorage.getItem('loggedInUser');
+    const token = localStorage.getItem('token');
+    if (!username || !token) return null;
+    return { username, token };
+}
+
+function upsertRemotePlayer(player) {
+    if (!player || !player.username || player.username === multiplayer.username) return;
+    const previous = multiplayer.remotePlayers.get(player.username) || {};
+    multiplayer.remotePlayers.set(player.username, {
+        username: player.username,
+        x: typeof player.x === 'number' ? player.x : previous.x || 0,
+        y: typeof player.y === 'number' ? player.y : previous.y || 0,
+        facing: player.facing || previous.facing || 'down',
+        mapId: player.mapId || previous.mapId || 'grove',
+        score: typeof player.score === 'number' ? player.score : previous.score || 0,
+        updatedAt: Date.now()
+    });
+}
+
+function cleanupRemotePlayers() {
+    const now = Date.now();
+    multiplayer.remotePlayers.forEach((player, username) => {
+        if (now - player.updatedAt > 25000) multiplayer.remotePlayers.delete(username);
+    });
+}
+
+function connectMultiplayer(endpointIndex) {
+    if (typeof window.io !== 'function') {
+        setMessage('Multiplayer library unavailable. Running in solo mode.', 'Tsuki Oddessy');
+        return;
+    }
+    if (endpointIndex >= MULTIPLAYER_ENDPOINTS.length) {
+        setMessage('Multiplayer servers are offline. Running in solo mode.', 'Tsuki Oddessy');
+        return;
+    }
+
+    const endpoint = MULTIPLAYER_ENDPOINTS[endpointIndex];
+    const socket = window.io(endpoint, {
+        transports: ['websocket', 'polling'],
+        timeout: 7000
+    });
+
+    multiplayer.socket = socket;
+    multiplayer.endpointIndex = endpointIndex;
+
+    socket.on('connect', () => {
+        multiplayer.connected = true;
+        socket.emit('join_game', { username: multiplayer.username, mapId: state.mapId });
+        broadcastMultiplayerState(true);
+        setMessage(`Live multiplayer connected as ${multiplayer.username}.`, 'Tsuki Oddessy');
+    });
+
+    socket.on('connect_error', () => {
+        if (multiplayer.connected) return;
+        socket.disconnect();
+        connectMultiplayer(endpointIndex + 1);
+    });
+
+    socket.on('game_state_snapshot', payload => {
+        const players = payload && Array.isArray(payload.players) ? payload.players : [];
+        players.forEach(upsertRemotePlayer);
+    });
+
+    socket.on('game_player_update', upsertRemotePlayer);
+
+    socket.on('game_player_leave', payload => {
+        if (payload && payload.username) multiplayer.remotePlayers.delete(payload.username);
+    });
+
+    socket.on('disconnect', () => {
+        multiplayer.connected = false;
+    });
+}
+
+function initMultiplayer() {
+    const session = getAuthSession();
+    if (!session) {
+        setMessage('Log in on the official site to enable live multiplayer.', 'Tsuki Oddessy');
+        return;
+    }
+    multiplayer.username = session.username;
+    connectMultiplayer(0);
+}
+
+function broadcastMultiplayerState(force) {
+    if (!multiplayer.socket || !multiplayer.connected || !multiplayer.username) return;
+    const now = Date.now();
+    if (!force && now - multiplayer.lastBroadcastAt < 90) return;
+    multiplayer.lastBroadcastAt = now;
+    multiplayer.socket.emit('game_state_update', {
+        username: multiplayer.username,
+        mapId: state.mapId,
+        x: state.player.x,
+        y: state.player.y,
+        facing: state.player.facing,
+        score: state.score
+    });
 }
 
 function clamp(value, min, max) {
@@ -209,26 +396,7 @@ function spawnWorld(mapId) {
             { x: 460, y: 1300, label: 'Jingle Bell', color: '#ffe37a', icon: '🔔', collected: false }
         ];
 
-        state.artDrops = [
-            {
-                x: 520, y: 980,
-                key: 'hijab-img-1',
-                label: 'Hijab Image 1',
-                icon: '🧕',
-                color: '#f3b2d3',
-                src: 'public/hijabarts/IMG_0862.png',
-                collected: !!state.artCollectionUnlocks['hijab-img-1']
-            },
-            {
-                x: 2740, y: 1260,
-                key: 'hijab-img-2',
-                label: 'Hijab Image 2',
-                icon: '🧕',
-                color: '#f6c4d8',
-                src: 'public/hijabarts/69decdf6db8a7d1ef0a59a50.jpg',
-                collected: !!state.artCollectionUnlocks['hijab-img-2']
-            }
-        ];
+        state.artDrops = buildArtDropsForMap(id, map.width, map.height);
 
         state.npcs = [
             {
@@ -423,26 +591,7 @@ function spawnWorld(mapId) {
         }
     } else if (id === 'meadow') {
         state.items = [];
-        state.artDrops = [
-            {
-                x: 1080, y: 620,
-                key: 'lifesuck-img-1',
-                label: 'Life Suck Image 1',
-                icon: '⚡',
-                color: '#ffe89b',
-                src: 'lifesuck/1i.jpg',
-                collected: !!state.artCollectionUnlocks['lifesuck-img-1']
-            },
-            {
-                x: 1830, y: 1140,
-                key: 'lifesuck-img-2',
-                label: 'Life Suck Image 2',
-                icon: '⚡',
-                color: '#ffe1a0',
-                src: 'lifesuck/12i.jpg',
-                collected: !!state.artCollectionUnlocks['lifesuck-img-2']
-            }
-        ];
+        state.artDrops = buildArtDropsForMap(id, map.width, map.height);
         state.npcs = [];
         state.hasPond = false;
         state.pond = { x: 0, y: 0 };
@@ -513,26 +662,7 @@ function spawnWorld(mapId) {
         }
     } else if (id === 'shore') {
         state.items = [];
-        state.artDrops = [
-            {
-                x: 910, y: 1220,
-                key: 'japan-img-1',
-                label: 'Japan Image 1',
-                icon: '🌸',
-                color: '#cfc7ff',
-                src: 'public/imagetab/IMG_0842.png',
-                collected: !!state.artCollectionUnlocks['japan-img-1']
-            },
-            {
-                x: 2260, y: 1380,
-                key: 'gf-img-1',
-                label: 'Girlfriend Image 1',
-                icon: '💌',
-                color: '#ffd785',
-                src: 'girlfriend/girl1.jpg',
-                collected: !!state.artCollectionUnlocks['gf-img-1']
-            }
-        ];
+        state.artDrops = buildArtDropsForMap(id, map.width, map.height);
         state.npcs = [];
         state.hasPond = true;
         state.pond = { x: state.worldWidth * 0.62, y: state.worldHeight * 0.4 };
@@ -737,6 +867,7 @@ function travelTo(mapId) {
     updateCamera();
     setMessage(`You arrive at the ${MAPS[mapId].name}.`, MAPS[mapId].name);
     flashZoneBanner(MAPS[mapId].name);
+    broadcastMultiplayerState(true);
     closeModal();
 }
 
@@ -763,6 +894,7 @@ function enterHome() {
     updateCamera();
     setMessage('Your cozy cottage. Press H to decorate, or walk to the door to head out.', 'Home Sweet Home');
     flashZoneBanner('Home Sweet Home');
+    broadcastMultiplayerState(true);
     closeModal();
 }
 
@@ -774,6 +906,7 @@ function exitHome() {
     updateCamera();
     setMessage(`Back in the ${MAPS.grove.name}.`, MAPS.grove.name);
     flashZoneBanner(MAPS.grove.name);
+    broadcastMultiplayerState(true);
 }
 
 function openModal(name) {
@@ -925,6 +1058,7 @@ function startGame() {
     updateUI();
     setMessage('Welcome, cutie. Explore the Whispering Grove and sniff out treats.', 'Whispering Grove');
     flashZoneBanner('Whispering Grove');
+    initMultiplayer();
     requestAnimationFrame(gameLoop);
 }
 
@@ -951,7 +1085,7 @@ function missionHtml() {
         { label: 'Cuddle with Mochi', done: state.chatCount > 0 },
         { label: 'Collect 6 treats', done: state.collected >= 6 },
         { label: 'Gift someone their favorite', done: groveNpcs.some(n => n.giftedFavorite) },
-        { label: 'Unlock Hijab and Life Suck images', done: !!state.artCollectionUnlocks['hijab-img-1'] && !!state.artCollectionUnlocks['lifesuck-img-1'] }
+        { label: 'Unlock 10 collection images', done: Object.keys(state.artCollectionUnlocks).length >= 10 }
     ];
     return missions.map(mission => `
         <li class="${mission.done ? 'complete' : ''}">
@@ -1649,6 +1783,26 @@ function drawNpc(npc) {
     });
 }
 
+function drawRemotePlayer(remote) {
+    drawHuman(
+        {
+            x: remote.x,
+            y: remote.y,
+            facing: remote.facing || 'down',
+            moving: true,
+            walkCycle: state.tone * 3
+        },
+        {
+            skin: '#ffd5be',
+            hair: '#2b1a16',
+            outfit: '#58b9ff',
+            pants: '#365b7c',
+            male: true,
+            label: `${remote.username} (${remote.score || 0})`
+        }
+    );
+}
+
 function drawPlayer() {
     drawHuman(state.player, {
         skin: state.player.skin, hair: state.player.hair, outfit: state.player.outfit,
@@ -1703,6 +1857,14 @@ function drawMinimap() {
         minimapCtx.fill();
     });
 
+    multiplayer.remotePlayers.forEach(remote => {
+        if (remote.mapId !== state.mapId) return;
+        minimapCtx.fillStyle = '#58b9ff';
+        minimapCtx.beginPath();
+        minimapCtx.arc(remote.x * scaleX, remote.y * scaleY, 3.2, 0, Math.PI * 2);
+        minimapCtx.fill();
+    });
+
     minimapCtx.fillStyle = '#ffffff';
     minimapCtx.beginPath();
     minimapCtx.arc(state.player.x * scaleX, state.player.y * scaleY, 4, 0, Math.PI * 2);
@@ -1729,6 +1891,9 @@ function drawScene() {
         const sortables = [
             ...state.trees.map(t => ({ y: t.y, draw: () => drawTreeShape(t) })),
             ...state.npcs.map(n => ({ y: n.y, draw: () => drawNpc(n) })),
+            ...Array.from(multiplayer.remotePlayers.values())
+                .filter(remote => remote.mapId === state.mapId)
+                .map(remote => ({ y: remote.y, draw: () => drawRemotePlayer(remote) })),
             ...state.signposts.map(s => ({ y: s.y, draw: () => drawSignpost(s) })),
             ...(state.homeDoor ? [{ y: state.homeDoor.y, draw: () => drawHomeDoor() }] : []),
             { y: state.player.y, draw: () => drawPlayer() }
@@ -1770,6 +1935,7 @@ function updatePlayer() {
     if (moved) {
         p.walkCycle += 0.22;
         updateCamera();
+        broadcastMultiplayerState(false);
     }
 
     const touchedArt = state.artDrops.find(drop => !drop.collected && Math.hypot(drop.x - p.x, drop.y - p.y) < 28);
@@ -1866,6 +2032,8 @@ function gameLoop() {
     updateNpcs();
     drawScene();
     updateUI();
+    cleanupRemotePlayers();
+    broadcastMultiplayerState(false);
 
     if (state.mapId === 'grove' && state.items.length && state.items.every(item => item.collected)) {
         state.running = false;
@@ -1877,7 +2045,7 @@ function gameLoop() {
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 32px Georgia, serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Tsuki Odyssey complete!', state.width / 2, state.height / 2 - 14);
+        ctx.fillText('Tsuki Oddessy complete!', state.width / 2, state.height / 2 - 14);
         ctx.font = '17px Georgia, serif';
         ctx.fillText('Restart to cuddle up all over again.', state.width / 2, state.height / 2 + 22);
         ctx.restore();
