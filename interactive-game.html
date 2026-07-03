@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tsuki Odyssey | Cats are Cute</title>
+    <style>
+        :root { color-scheme: dark; --bg: #0b0613; --surface: #121122; --pink: #ff7fd6; --violet: #9b7cff; --text: #f8f4ff; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: radial-gradient(circle at top, #37216e 0%, #09030f 42%, #05030d 100%); color: var(--text); overflow-x: hidden; }
+        body::before { content: ""; position: fixed; inset: 0; background: radial-gradient(circle at 20% 15%, rgba(255,122,213,.18), transparent 14%), radial-gradient(circle at 80% 10%, rgba(138,159,255,.16), transparent 16%), radial-gradient(circle at 50% 80%, rgba(255,103,175,.12), transparent 18%); pointer-events: none; }
+        main.page-shell { position: relative; min-height: 100vh; padding: 1.2rem 1.5rem 2.5rem; display: flex; flex-direction: column; justify-content: center; gap: 2rem; }
+        .top-nav { max-width: 1200px; width: 100%; margin: 0 auto; border-radius: 999px; padding: .7rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: linear-gradient(135deg, rgba(255,124,218,.16), rgba(145,117,255,.12)); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(18px); box-shadow: 0 18px 48px rgba(17,11,36,.35); }
+        .nav-brand { display: inline-flex; align-items: center; gap: .6rem; text-decoration: none; color: #ffe7ff; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: .85rem; }
+        .nav-brand-dot { width: .65rem; height: .65rem; border-radius: 50%; background: linear-gradient(135deg, #ff8fdd, #b89dff); box-shadow: 0 0 18px rgba(255,132,221,.7); }
+        .nav-links { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; justify-content: flex-end; }
+        .nav-links a { text-decoration: none; color: rgba(248,244,255,.9); font-size: .84rem; letter-spacing: .06em; text-transform: uppercase; padding: .55rem .9rem; border-radius: 999px; border: 1px solid transparent; transition: background .2s ease, border-color .2s ease, transform .2s ease, color .2s ease; }
+        .nav-links a:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.18); color: #fff; transform: translateY(-1px); }
+        .nav-links a.nav-current { background: linear-gradient(135deg, rgba(255,128,217,.28), rgba(154,111,255,.2)); border-color: rgba(255,255,255,.24); color: #fff; }
+        .brand-bar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: space-between; }
+        .brand-pill { font-size: .9rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; padding: .75rem 1.05rem; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(16px); }
+        .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: center; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .hero-copy { max-width: 600px; }
+        .hero-copy h1 { font-size: min(5.2rem, clamp(3.4rem, 6vw, 5.8rem)); line-height: .96; margin: 0; background: linear-gradient(90deg, #ffc4e5, #d39dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .hero-copy p { margin: .9rem 0 1.7rem; font-size: 1.06rem; line-height: 1.7; color: rgba(248,244,255,.82); }
+        .buttons { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .button-primary, .button-secondary { padding: 1rem 1.6rem; border-radius: 999px; font-weight: 700; letter-spacing: .05em; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, background .2s ease; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+        .button-primary { border: 1px solid rgba(255,255,255,.18); background: linear-gradient(135deg, rgba(255,125,213,.92), rgba(154,111,255,.88)); color: #fff; text-transform: uppercase; }
+        .button-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 45px rgba(255,106,208,.24); }
+        .button-secondary { border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); color: #f8f4ff; }
+        .button-secondary:hover { background: rgba(255,255,255,.12); transform: translateY(-2px); }
+        .panel { border-radius: 36px; background: rgba(8,7,18,.88); border: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(18px); padding: 1.8rem; box-shadow: 0 35px 120px rgba(13,11,33,.35); }
+        .panel h2 { margin: 0 0 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .2em; color: #c8baff; }
+        .panel p { margin: 0; color: rgba(248,244,255,.82); line-height: 1.75; }
+        .hero-visual { position: relative; min-height: 520px; border-radius: 40px; overflow: hidden; box-shadow: 0 45px 120px rgba(8,5,22,.45); background: linear-gradient(180deg, rgba(128,88,255,.22), rgba(14,7,31,.96)); }
+        .hero-visual::before { content: ""; position: absolute; inset: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="360" height="360"><defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.5)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="260" cy="140" r="95" fill="url(%23g)"/><circle cx="120" cy="340" r="58" fill="url(%23g)"/></svg>') center/contain no-repeat, radial-gradient(circle at 30% 25%, rgba(255,158,240,.2), transparent 20%), radial-gradient(circle at 80% 20%, rgba(172,143,255,.18), transparent 18%); }
+        .hero-visual .moon { position: absolute; top: 18%; left: 52%; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.65) 28%, rgba(255,255,255,0) 75%); box-shadow: 0 0 120px rgba(255,255,255,.18), 0 0 48px rgba(201,141,255,.18); }
+        .hero-visual .moon::after { content: ''; position: absolute; inset: 22px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, rgba(255,255,255,.48), transparent 50%); }
+        .hero-cat { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 560px; height: auto; }
+        .hero-cat svg { width: 100%; height: auto; }
+        .sticky-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+        .hero-filters-below { max-width: 1200px; width: 100%; margin: -0.6rem auto 0; }
+        .feature-tag { display: flex; align-items: center; gap: .9rem; padding: 1rem 1.2rem; border-radius: 22px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+        .feature-tag span { display: inline-flex; align-items: center; justify-content: center; width: 2.6rem; height: 2.6rem; border-radius: 18px; background: rgba(255,120,226,.18); color: #ffdaff; font-size: 1.1rem; }
+        .feature-tag strong { font-weight: 700; }
+        .context-note { display: grid; gap: .85rem; max-width: 660px; margin: 0 auto; }
+        .context-note small { color: #bdb5ff; text-transform: uppercase; letter-spacing: .18em; font-size: .82rem; }
+        .wave-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .wave-chip { padding: 1rem 1rem; border-radius: 24px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); min-height: 108px; }
+        .wave-chip h3 { margin: 0 0 .55rem; font-size: 1rem; color: #fff; }
+        .wave-chip p { margin: 0; color: rgba(248,244,255,.78); line-height: 1.6; font-size: .95rem; }
+        .heart-pulse { position: absolute; top: 16%; left: 18%; width: 88px; height: 88px; background: rgba(255,89,188,.24); border-radius: 50%; filter: blur(12px); animation: pulse 3.8s ease-in-out infinite; }
+        .heart-pulse:nth-child(2) { top: 32%; left: 78%; width: 60px; height: 60px; background: rgba(163,114,255,.24); animation-delay: .9s; }
+        .heart-pulse:nth-child(3) { top: 68%; left: 24%; width: 74px; height: 74px; background: rgba(255,79,181,.18); animation-delay: 1.4s; }
+        @keyframes pulse { 0%,100% { transform: scale(0.92); } 50% { transform: scale(1.08); } }
+        @media (max-width:1060px) { .hero { grid-template-columns: 1fr; } .hero-visual { min-height: 420px; } .sticky-notes { grid-template-columns: 1fr; } .wave-grid { grid-template-columns: 1fr; } .top-nav { border-radius: 24px; } }
+        @media (max-width:760px) { .top-nav { flex-direction: column; align-items: stretch; padding: .8rem; border-radius: 22px; } .nav-links { justify-content: center; } .nav-brand { justify-content: center; } }
+        @media (max-width:640px) { main.page-shell { padding: 1rem 1rem 1.5rem; } .hero-copy h1 { font-size: clamp(2.8rem, 9vw, 4.4rem); } .hero-visual { min-height: 360px; } .brand-bar { flex-direction: column; align-items: flex-start; } .wave-chip { min-height: unset; } .nav-links a { font-size: .78rem; padding: .5rem .75rem; } }
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <nav class="top-nav" aria-label="Primary">
+            <a class="nav-brand" href="index.html">
+                <span class="nav-brand-dot" aria-hidden="true"></span>
+                <span>Tsuki Odyssey</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="arts.html">Arts</a>
+                <a href="collections.html">Collections</a>
+                <a href="chat10.html">Chat</a>
+                <a class="nav-current" href="interactive-game.html">Interactive Game</a>
+            </div>
+        </nav>
+        <div class="brand-bar">
+            <span class="brand-pill">Tsuki Odyssey</span>
+            <span class="brand-pill">Cats are Cute</span>
+        </div>
+        <section class="hero">
+            <div class="hero-copy">
+                <h1>Moonlit Cats & Velvet Whispers</h1>
+                <p>Dive into a playful nightscape where lunar felines purr secrets, soft paws leave starry trails, and every glance feels like a flirty invitation.</p>
+                <div class="buttons">
+                    <a class="button-primary" id="playBtn" href="tsuki-odyssey-game.html">▶ Play Tsuki Odyssey</a>
+                    <button class="button-secondary" id="charmBtn">Show Me the Cute</button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <span class="heart-pulse"></span>
+                <span class="heart-pulse"></span>
+                <span class="heart-pulse"></span>
+                <div class="moon"></div>
+                <div class="hero-cat">
+                    <svg viewBox="0 0 700 540" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="350" cy="483" rx="220" ry="40" fill="rgba(255,255,255,0.08)"/>
+                        <path d="M193 254c16-75 110-98 142-50 31-48 126-30 142 45 25 116-36 146-120 150-84-4-154-18-164-145Z" fill="#ffe2ff"/>
+                        <path d="M286 156c16-44 78-61 108-35 25-31 81-20 94 25 16 55-19 72-70 74-51-2-104-11-132-64Z" fill="#ffb9f3"/>
+                        <path d="M419 163c0-28-28-44-52-44s-52 16-52 44c0 29 28 54 52 54s52-25 52-54Z" fill="#fff"/>
+                        <circle cx="310" cy="168" r="16" fill="#2d1b35"/>
+                        <circle cx="405" cy="168" r="16" fill="#2d1b35"/>
+                        <path d="M312 190c18 9 55 8 74 0" stroke="#2d1b35" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M250 240c34 48 104 74 160 74 47 0 94-20 124-46" stroke="#ff8ae8" stroke-width="26" stroke-linecap="round"/>
+                        <path d="M194 180c10-55 54-92 97-92s87 37 97 92" stroke="#ffbef5" stroke-width="22" stroke-linecap="round"/>
+                        <path d="M516 248c23 72-18 139-85 166-67 27-154 18-206-28-51-46-50-138-11-197" stroke="#ffd2f2" stroke-width="22" stroke-linecap="round"/>
+                        <path d="M219 310c52 58 174 86 256 16" stroke="#fa8cff" stroke-width="24" stroke-linecap="round"/>
+                        <path d="M432 226c46 12 64 44 68 85" stroke="#ffc2f2" stroke-width="22" stroke-linecap="round"/>
+                        <path d="M255 118c-24-28-74-50-111-10" stroke="#ffc1ee" stroke-width="20" stroke-linecap="round"/>
+                        <path d="M506 116c34-20 46-70 4-96" stroke="#f2b0ff" stroke-width="18" stroke-linecap="round"/>
+                        <path d="M345 100c16 24 47 44 88 46" stroke="#ffd3f9" stroke-width="14" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+        <section class="hero-filters-below" aria-label="Highlights">
+            <div class="sticky-notes">
+                <div class="feature-tag"><span>💫</span><strong>Dreamy</strong> moonlit ambience</div>
+                <div class="feature-tag"><span>😽</span><strong>Flirty</strong> feline charm</div>
+            </div>
+        </section>
+        <section class="panel">
+            <div class="context-note">
+                <small>Tsuki Odyssey</small>
+                <h2>Whiskers, moonbeams, and soft secret invitations</h2>
+                <p>This page is your gateway to a silky world where cats are cute and every corner of the night feels warmly flirtatious. A velvet-soft narrative wraps around you, with glowing charms, moon blossom petals, and playful feline companions.</p>
+            </div>
+            <div class="wave-grid">
+                <div class="wave-chip">
+                    <h3>Cat Charm</h3>
+                    <p>Watch a moon cat lean into the night and send a cheeky wink your way.</p>
+                </div>
+                <div class="wave-chip">
+                    <h3>Lunar Glow</h3>
+                    <p>Soft purple haze, subtle motion, and a dreamy aura set the stage for romance.</p>
+                </div>
+                <div class="wave-chip">
+                    <h3>Playful Pulse</h3>
+                    <p>Every button, every line, and every phrase is designed to feel cute, slightly sexy, and full of charm.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="interactive-game.js"></script>
+</body>
+</html>
