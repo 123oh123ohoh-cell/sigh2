@@ -205,7 +205,21 @@ function saveInventory() {
     }
 }
 function formatInventoryItem(item) {
-    return `<li class="inventory-item" data-item-id="${item.id}"><div><strong>${item.title}</strong><br><span>${item.desc}</span></div><button type="button" class="btn" data-remove-id="${item.id}" style="background:#ff4d4d;">Remove</button></li>`;
+    return `
+        <li class="inventory-item" data-item-id="${item.id}">
+            <div class="inventory-item-main">
+                <button type="button" class="inventory-thumb-btn" data-view-src="${item.src}" aria-label="View ${item.title}">
+                    <img src="${item.src}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackCardImage}';">
+                </button>
+                <div>
+                    <strong>${item.title}</strong><br><span>${item.desc}</span>
+                </div>
+            </div>
+            <div class="inventory-actions">
+                <button type="button" class="inventory-view-btn" data-view-src="${item.src}">View</button>
+                <button type="button" class="btn" data-remove-id="${item.id}" style="background:#ff4d4d;">Remove</button>
+            </div>
+        </li>`;
 }
 function updateInventoryPanel(lastCollectedTitle) {
     const inventoryList = document.getElementById('inventoryList');
@@ -272,6 +286,24 @@ function removeInventoryItem(itemId) {
     renderGameCards();
     updateInventoryPanel(highlightedItem ? gameCards.find(item => item.id === highlightedItem)?.title : null);
 }
+
+function openImageViewer(src) {
+    const viewer = document.getElementById('imageViewer');
+    const viewerImg = document.getElementById('imageViewerImg');
+    if (!viewer || !viewerImg || !src) return;
+    viewerImg.src = src;
+    viewer.classList.add('is-open');
+    viewer.setAttribute('aria-hidden', 'false');
+}
+
+function closeImageViewer() {
+    const viewer = document.getElementById('imageViewer');
+    const viewerImg = document.getElementById('imageViewerImg');
+    if (!viewer || !viewerImg) return;
+    viewer.classList.remove('is-open');
+    viewer.setAttribute('aria-hidden', 'true');
+    viewerImg.src = '';
+}
 function chooseRandomArt() {
     const ownedSources = getOwnedSources();
     const remaining = gameCards.filter(card => !ownedSources.has(card.src));
@@ -320,6 +352,8 @@ function attachEventHandlers() {
     const clearHighlightsBtn = document.getElementById('clearHighlightsBtn');
     const randomFindBtn = document.getElementById('randomFindBtn');
     const resetInventoryBtn = document.getElementById('resetInventoryBtn');
+    const imageViewer = document.getElementById('imageViewer');
+    const closeImageViewerBtn = document.getElementById('closeImageViewerBtn');
 
     if (grid) {
         grid.addEventListener('click', event => {
@@ -339,8 +373,22 @@ function attachEventHandlers() {
     if (randomFindBtn) randomFindBtn.addEventListener('click', chooseRandomArt);
     if (resetInventoryBtn) resetInventoryBtn.addEventListener('click', resetInventory);
     document.getElementById('inventoryList')?.addEventListener('click', event => {
+        const viewBtn = event.target.closest('[data-view-src]');
+        if (viewBtn) {
+            openImageViewer(viewBtn.dataset.viewSrc);
+            return;
+        }
         const removeBtn = event.target.closest('[data-remove-id]');
         if (removeBtn) removeInventoryItem(removeBtn.dataset.removeId);
+    });
+    if (closeImageViewerBtn) closeImageViewerBtn.addEventListener('click', closeImageViewer);
+    if (imageViewer) {
+        imageViewer.addEventListener('click', event => {
+            if (event.target === imageViewer) closeImageViewer();
+        });
+    }
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeImageViewer();
     });
 }
 function initializeGame() {

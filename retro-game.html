@@ -126,6 +126,88 @@
             align-items: center;
             gap: 12px;
         }
+        .inventory-item-main {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+        .inventory-thumb-btn {
+            border: 1px solid rgba(255,255,255,0.14);
+            background: #090909;
+            border-radius: 10px;
+            width: 56px;
+            height: 56px;
+            padding: 0;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .inventory-thumb-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .inventory-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .inventory-view-btn {
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            background: rgba(255,190,62,0.2);
+            color: #ffd98c;
+        }
+        .inventory-view-btn:hover {
+            background: rgba(255,190,62,0.3);
+        }
+        .image-viewer {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.84);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1200;
+        }
+        .image-viewer.is-open {
+            display: flex;
+        }
+        .image-viewer-dialog {
+            position: relative;
+            max-width: min(960px, 95vw);
+            max-height: 90vh;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: #090909;
+        }
+        .image-viewer-dialog img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 88vh;
+            object-fit: contain;
+            background: #090909;
+        }
+        .image-viewer-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            border-radius: 999px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+        }
         .inventory-item strong {
             color: #ffe2a7;
         }
@@ -252,6 +334,13 @@
             </aside>
         </div>
     </main>
+
+    <div class="image-viewer" id="imageViewer" aria-hidden="true">
+        <div class="image-viewer-dialog" role="dialog" aria-modal="true" aria-label="Inventory image viewer">
+            <button type="button" class="image-viewer-close" id="closeImageViewerBtn" aria-label="Close image viewer">×</button>
+            <img id="imageViewerImg" src="" alt="Inventory art preview">
+        </div>
+    </div>
 
     <script src="retro-game.js"></script>
 </body>
