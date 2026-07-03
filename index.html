@@ -20,12 +20,13 @@
         </a>
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="chat2.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
+            <a href="chat10.html" id="chatHeaderBtn" class="nav-link" style="display:none;">Chat</a>
             <a href="#" class="nav-link">Live</a>
                 <a href="models.html" class="nav-link">Models</a>
             <a href="#" class="nav-link">Categories</a>
             <a href="premium.html" class="nav-link">Premium</a>
             <a href="arts.html" class="nav-link">Arts</a>
+            <a href="game.html" id="gameHeaderBtn" class="nav-link" style="display:none;">Game</a>
             <!-- Profile and Sign Out moved to dropdown -->
         </nav>
         <div class="search-bar">
@@ -49,6 +50,13 @@
             </div>
         </div>
         <script>
+        function syncGameHeaderButton() {
+            const gameBtn = document.getElementById('gameHeaderBtn');
+            if (!gameBtn) return;
+            const isLoggedIn = !!localStorage.getItem('loggedInUser') && !!localStorage.getItem('token');
+            gameBtn.style.display = isLoggedIn ? '' : 'none';
+        }
+
         // Use global syncGlobalProfileHeader for nav avatar logic
         document.addEventListener('DOMContentLoaded', function() {
             // EXTREME PERSISTENCE: Always load the most persistent base64 avatar for the header icon
@@ -89,12 +97,14 @@
             if (typeof window.syncGlobalProfileHeader === 'function') {
                 window.syncGlobalProfileHeader();
             }
+            syncGameHeaderButton();
         });
         window.addEventListener('storage', function(e) {
             if (e.key === 'loggedInUser' || e.key === 'token') {
                 if (typeof window.syncGlobalProfileHeader === 'function') {
                     window.syncGlobalProfileHeader();
                 }
+                syncGameHeaderButton();
             }
         });
         </script>
